@@ -500,3 +500,54 @@ a:active {
   border: 0.1rem solid rgba(0, 0, 0, 0.3);
   border-radius: 11px;
 }
+
+/* -------------------------------------- */
+/* REGISTER PAGE */
+/* -------------------------------------- */
+
+.register-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.register-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 9rem 4rem;
+  box-shadow: 0 0 4rem rgba(0, 0, 0, 0.05);
+}
+
+.lead-register {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 2.4rem;
+}
+
+.lead-register h1 {
+  font-size: 3rem;
+}
+
+.icon-register {
+  width: 20rem;
+}
+
+.register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2.4rem;
+  /* row-gap: ; */
+}
+
+.span-2-cols {
+  grid-column: span 2;
+}
+
+.register-input {
+  margin: 0;
+  margin-bottom: 2.4rem;
+}
