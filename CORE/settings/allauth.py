@@ -7,3 +7,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # Enable later
 ACCOUNT_EMAIL_NOTIFICATIONS = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
+ACCOUNT_FORMS = {
+    "signup": "accounts.forms.CustomSignupForm",
+}

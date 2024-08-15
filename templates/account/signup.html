@@ -12,69 +12,26 @@
         </div>
   
         <form class="register-form" action="{% url "account_signup" %}" method="post">
-          {% for field in form %}
-            {{ field }}
-          {% endfor %}
-
           {% csrf_token %}
-          <div class="register-input input-container span-2-cols">
-            <input
-              class="input-form"
-              type="email"
-              id="id_email"
-              name="email"
-              placeholder=" "
-              required
-            />
-            <label class="label-form" for="email">E-mail</label>
-          </div>
-          <div class="register-input input-container">
-            <input
-              class="input-form"
-              type="text"
-              id="first-name"
-              name="first-name"
-              placeholder=" "
-              required
-            />
-            <label class="label-form" for="first-name">First name</label>
-          </div>
-          <div class="register-input input-container">
-            <input
-              class="input-form"
-              type="text"
-              id="last-name"
-              name="last-name"
-              placeholder=" "
-              required
-            />
-            <label class="label-form" for="last-name">Last name</label>
-          </div>
-          <div class="register-input input-container">
-            <input
-              class="input-form"
-              type="password"
-              id="id_password1"
-              name="password"
-              placeholder=" "
-              required
-            />
-            <label class="label-form" for="password">Password</label>
-          </div>
-          <div class="register-input input-container">
-            <input
-              class="input-form"
-              type="password"
-              id="id_password2"
-              name="confirm-password"
-              placeholder=" "
-              required
-            />
-            <label class="label-form" for="confirm-password"
-              >Confirm password</label
-            >
-          </div>
+
+          {% for field in form %}
+            <div class="register-input input-container {% if field.name == "email" %}span-2-cols{% endif %}">
+              <input
+                class="input-form"
+                type="{{ field.field.widget.input_type }}"
+                id="{{ field.id_for_label }}"
+                name="{{ field.name }}"
+                placeholder=" "
+                required
+              />
+              <label class="label-form" for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+            </div>
+            
+            {{ field.help_text }}
+          {% endfor %}
   
+
           <div class="form-options">
             <div class="form-check">
               <input
