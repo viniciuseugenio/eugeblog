@@ -11,26 +11,38 @@
           <img src="{{ MEDIA_URL }}icons/eugeblog-hori.svg" class="icon-register" alt="" />
         </div>
   
-        <form class="register-form" action="{% url "account_signup" %}" method="post">
+        <form class="form-register" action="{% url "account_signup" %}" method="post">
           {% csrf_token %}
 
           {% for field in form %}
-            <div class="register-input input-container {% if field.name == "email" %}span-2-cols{% endif %}">
-              <input
-                class="input-form"
-                type="{{ field.field.widget.input_type }}"
-                id="{{ field.id_for_label }}"
-                name="{{ field.name }}"
-                placeholder=" "
-                required
-              />
-              <label class="label-form" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div class="input-container {% if field.name == "email" %}span-2-cols{% endif %}">
+              <div class="input-float">
+                <input
+                  class="input-form"
+                  type="{{ field.field.widget.input_type }}"
+                  id="{{ field.id_for_label }}"
+                  name="{{ field.name }}"
+                  placeholder=" "
+                  required
+                />
+                <label class="label-form" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              </div>
+              
+              {% if field.errors %}
+                {% for error in field.errors %}
+                  <p class="form-error">
+                    {{ error }}              
+                  </p>
+                {% endfor %}
+              {% endif %}
+
+              <div class="help-text-container">
+                {{ field.help_text }}
+              </div>
 
             </div>
-            
-            {{ field.help_text }}
           {% endfor %}
-  
+
 
           <div class="form-options">
             <div class="form-check">
@@ -40,10 +52,9 @@
                 id="conditions-agree"
                 class="form-check-input"
                 required
-                required
               />
               <label class="form-check-label" for="conditions-agree"
-                >I agree with the terms and conditions</label
+                >I agree with the <a href="{% url "account_terms_service" %}">terms and conditions</a></label
               >
             </div>
           </div>

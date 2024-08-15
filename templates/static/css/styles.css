@@ -305,13 +305,12 @@
   margin-bottom: 2rem;
 }
 
-.inputs-login {
-  margin-top: 2.4rem;
+.form-login .input-float {
+  margin-bottom: 2rem;
 }
 
-.input-container {
-  position: relative;
-  margin: 2rem 0;
+.inputs-login {
+  margin-top: 2.4rem;
 }
 
 .form-options {
@@ -404,6 +403,7 @@
 
 .register-card {
   display: flex;
+  max-width: 60rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -426,11 +426,15 @@
   width: 20rem;
 }
 
-.register-form {
+.form-register {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 2.4rem;
   /* row-gap: ; */
+}
+
+.input-container {
+  margin-bottom: 2rem;
 }
 
 .span-2-cols {
@@ -440,4 +444,22 @@
 .register-input {
   margin: 0;
   margin-bottom: 2.4rem;
+}
+
+.help-text-container {
+  margin-top: 1.2rem;
+}
+
+.help-text-container ul {
+  list-style: none;
+}
+
+.help-text-container li {
+  font-size: 1.2rem;
+}
+
+.form-error {
+  font-size: 1.2rem;
+  margin-top: 1.2rem;
+  color: #f00;
 }
