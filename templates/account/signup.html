@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "partials/_head.html" %}
+  </head>
+  <body>
+    <div class="register-container">
+      <div class="register-card">
+        <div class="lead-register">
+          <h1>Get started with</h1>
+          <img src="{{ MEDIA_URL }}icons/eugeblog-hori.svg" class="icon-register" alt="" />
+        </div>
+  
+        <form class="register-form" action="{% url "account_signup" %}" method="post">
+          {% for field in form %}
+            {{ field }}
+          {% endfor %}
+
+          {% csrf_token %}
+          <div class="register-input input-container span-2-cols">
+            <input
+              class="input-form"
+              type="email"
+              id="id_email"
+              name="email"
+              placeholder=" "
+              required
+            />
+            <label class="label-form" for="email">E-mail</label>
+          </div>
+          <div class="register-input input-container">
+            <input
+              class="input-form"
+              type="text"
+              id="first-name"
+              name="first-name"
+              placeholder=" "
+              required
+            />
+            <label class="label-form" for="first-name">First name</label>
+          </div>
+          <div class="register-input input-container">
+            <input
+              class="input-form"
+              type="text"
+              id="last-name"
+              name="last-name"
+              placeholder=" "
+              required
+            />
+            <label class="label-form" for="last-name">Last name</label>
+          </div>
+          <div class="register-input input-container">
+            <input
+              class="input-form"
+              type="password"
+              id="id_password1"
+              name="password"
+              placeholder=" "
+              required
+            />
+            <label class="label-form" for="password">Password</label>
+          </div>
+          <div class="register-input input-container">
+            <input
+              class="input-form"
+              type="password"
+              id="id_password2"
+              name="confirm-password"
+              placeholder=" "
+              required
+            />
+            <label class="label-form" for="confirm-password"
+              >Confirm password</label
+            >
+          </div>
+  
+          <div class="form-options">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                name="conditions-agree"
+                id="conditions-agree"
+                class="form-check-input"
+                required
+                required
+              />
+              <label class="form-check-label" for="conditions-agree"
+                >I agree with the terms and conditions</label
+              >
+            </div>
+          </div>
+  
+          <button class="btn-primary span-2-cols" type="submit">Sign Up</button>
+          <span class="default-font-size"
+            >Doesn't have an account?
+            <a class="font-w-600" href="{% url "account_login" %}">Sign in</a></span
+          >
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
