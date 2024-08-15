@@ -384,10 +384,24 @@
 
 .login-social-link {
   display: flex;
-  font-size: 4rem;
   padding: 1.2rem;
   border: 0.1rem solid rgba(0, 0, 0, 0.3);
   border-radius: 11px;
+}
+
+.btn-social-login {
+  display: flex;
+  font-size: 3.2rem;
+  align-items: center;
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  transition: .3s all;
+}
+
+.btn-social-login:hover,
+.btn-social-login:active {
+  color: var(--primary-color);
 }
 
 /* -------------------------------------- */
@@ -461,5 +475,5 @@
 .form-error {
   font-size: 1.2rem;
   margin-top: 1.2rem;
-  color: #f00;
+  color: var(--primary-color);
 }

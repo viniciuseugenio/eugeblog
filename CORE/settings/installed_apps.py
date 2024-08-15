@@ -15,9 +15,8 @@ EXTERNAL_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.apple",
+    "allauth.socialaccount.providers.github",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + EXTERNAL_APPS
