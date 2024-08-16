@@ -15,20 +15,23 @@
   
         <form class="form-login" action="{% url "account_login" %}" method="post">
           {% csrf_token %}
+
           <div class="inputs-login">
             <div class="input-float">
-              <input class="input-form" type="email" placeholder="" required />
-              <label class="label-form" for="">E-mail</label>
+              <input class="input-form" type="email" name="login" id="id_login" placeholder="" autcomplete="email" required />
+              <label class="label-form" for="id_email">E-mail</label>
             </div>
   
             <div class="input-float">
               <input
                 class="input-form"
                 type="password"
+                name="password"
+                id="id_password"
                 placeholder=""
                 required
               />
-              <label class="label-form" for="">Password</label>
+              <label class="label-form" for="id_password">Password</label>
             </div>
           </div>
   
@@ -37,10 +40,10 @@
               <input
                 type="checkbox"
                 name="remember"
-                id="remember"
+                id="id_remember"
                 class="form-check-input"
               />
-              <label class="form-check-label" for="remember">Remember me</label>
+              <label class="form-check-label" for="id_remember">Remember me</label>
             </div>
   
             <a href="#" class="reset-password">Reset password?</a>
