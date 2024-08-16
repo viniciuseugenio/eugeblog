@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # Application definition
 
@@ -57,6 +58,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
+]
+
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 

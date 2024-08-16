@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "partials/_head.html" %}
+  </head>
+  <body>
+    <div class="register-container">
+      <div class="register-card">
+        <div class="lead-register">
+          <h1>Get started with</h1>
+          <img src="{{ MEDIA_URL }}icons/eugeblog-hori.svg" class="icon-register" alt="" />
+        </div>
+  
+        <form class="form-register" action="{% url "account_signup" %}" method="post">
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="input-container {% if field.name == "email" %}span-2-cols{% endif %}">
+              <div class="input-float">
+                <input
+                  class="input-form"
+                  type="{{ field.field.widget.input_type }}"
+                  id="{{ field.id_for_label }}"
+                  name="{{ field.name }}"
+                  placeholder=" "
+                  required
+                />
+                <label class="label-form" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              </div>
+              
+              {% if field.errors %}
+                {% for error in field.errors %}
+                  <p class="form-error">
+                    {{ error }}              
+                  </p>
+                {% endfor %}
+              {% endif %}
+
+              <div class="help-text-container">
+                {{ field.help_text }}
+              </div>
+
+            </div>
+          {% endfor %}
+
+
+          <div class="form-options">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                name="conditions-agree"
+                id="conditions-agree"
+                class="form-check-input"
+                required
+              />
+              <label class="form-check-label" for="conditions-agree"
+                >I agree with the <a href="{% url "account_terms_service" %}">terms and conditions</a></label
+              >
+            </div>
+          </div>
+  
+          <button class="btn-primary span-2-cols" type="submit">Sign Up</button>
+          <span class="default-font-size"
+            >Doesn't have an account?
+            <a class="font-w-600" href="{% url "account_login" %}">Sign in</a></span
+          >
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
