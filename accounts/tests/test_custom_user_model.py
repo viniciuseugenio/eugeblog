@@ -1,5 +1,6 @@
 from django.test import TestCase
-from .models import CustomUser
+from django.urls import reverse
+from accounts.models import CustomUser
 
 
 class TestUser(TestCase):
@@ -28,7 +29,7 @@ class TestUser(TestCase):
             "last_name",
             "password",
             "is_active",
-            "is_admin",
+            "is_staff",
             "is_superuser",
             "date_joined",
             "last_login",
