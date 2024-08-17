@@ -23,7 +23,11 @@ class Post(models.Model):
     )
     image = models.ImageField(upload_to="posts_images/", verbose_name=_("Image"))
     category = models.ForeignKey(
-        Category, null=True, on_delete=models.SET_NULL, verbose_name=_("Category")
+        Category,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name=_("Category"),
     )
     title = models.CharField(max_length=264, verbose_name=_("Title"))
     excerpt = models.CharField(max_length=264, verbose_name=_("Excerpt"))
