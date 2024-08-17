@@ -1,11 +1,11 @@
 <header class="header">
-  <a href="#">
+  <a href="{% url "posts:list_view" %}">
     <img class="site-icon" src="{{ MEDIA_URL }}icons/eugeblog-hori.svg" alt="" />
   </a>
 
   <nav class="main-nav">
     <ul class="main-nav-list">
-      <li><a class="main-nav-link" href="login.html">Login</a></li>
+      <li><a class="main-nav-link" href="{% url "account_login" %}">Login</a></li>
       <li><a class="main-nav-link" href="#">About us</a></li>
       <li><a class="main-nav-link" href="#">Contact</a></li>
       <li><a class="main-nav-link" href="#">Support</a></li>
