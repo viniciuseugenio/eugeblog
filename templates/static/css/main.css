@@ -35,6 +35,9 @@ body {
   font-family: "Inter", sans-serif;
   box-sizing: border-box;
   color: #212529;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
 a:link,
