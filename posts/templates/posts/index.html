@@ -8,176 +8,23 @@
   </div>
 
   <div class="posts-section">
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
+    {% for post in posts %}
+      <div class="post-card">
+        <img class="post-img-card" src="{{ post.image.url }}" alt="" />
+        <div class="post-text-card">
+          <div class="post-title-card">{{ post.title }}</div>
+          <div class="post-excerpt-card">
+            {{ post.excerpt }}
+          </div>
         </div>
+        <a class="read-icon-block" href="post.html">
+          <span>Read</span>
+          <ion-icon
+            class="read-icon"
+            name="arrow-forward-circle-outline"
+          ></ion-icon>
+        </a>
       </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
-    <div class="post-card">
-      <img class="post-img-card" src="./media/coffee.jpg" alt="" />
-      <div class="post-text-card">
-        <div class="post-title-card">Lorem ipsum dolor sit amet.</div>
-        <div class="post-excerpt-card">
-          Consectetur adipisicing elit. Eius veniam, reiciendis quisquam
-          pariatur quae commodi doloribus illum ipsa nobis laborum totam,
-          rerum, corrupti quia! Quam, labore? Atque itaque consequuntur
-          molestias?
-        </div>
-      </div>
-      <a class="read-icon-block" href="post.html">
-        <span>Read</span>
-        <ion-icon
-          class="read-icon"
-          name="arrow-forward-circle-outline"
-        ></ion-icon>
-      </a>
-    </div>
+    {% endfor %}
   </div>
 {% endblock content %}
