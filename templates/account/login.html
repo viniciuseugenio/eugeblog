@@ -9,7 +9,9 @@
     <div class="login-page">
       <div class="login-container">
         <div class="login-header">
-          <img class="site-icon-login" src="{{ MEDIA_URL }}icons/eu-icon.svg" alt="" />
+          <a href="{% url "posts:list_view" %}">
+            <img class="site-icon-login" src="{{ MEDIA_URL }}icons/eu-icon.svg" alt="" />
+          </a>
           <h1 class="login-greeting">Welcome to Eugeblog</h1>
         </div>
   

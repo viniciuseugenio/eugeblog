@@ -11,3 +11,5 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_FORMS = {
     "signup": "accounts.forms.CustomSignupForm",
 }
+
+LOGIN_REDIRECT_URL = "posts:list_view"
