@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("posts.urls")),  # URLs from django-allauth
+    path("", include("posts.urls")),
     path("accounts/", include("allauth.urls")),  # URLs from django-allauth
     path("accounts/", include("accounts.urls")),  # Additional URLs
+    path("summernote/", include("django_summernote.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

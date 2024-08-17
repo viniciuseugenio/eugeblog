@@ -1,4 +1,5 @@
 asgiref==3.8.1
+bleach==6.1.0
 certifi==2024.7.4
 cffi==1.17.0
 charset-normalizer==3.3.2
@@ -6,6 +7,7 @@ coverage==7.6.1
 cryptography==43.0.0
 Django==5.1
 django-allauth==64.0.0
+django-summernote==0.8.20.0
 exceptiongroup==1.2.2
 idna==3.7
 iniconfig==2.0.0
@@ -22,7 +24,9 @@ pytest-django==4.8.0
 python-dotenv==1.0.1
 requests==2.32.3
 requests-oauthlib==2.0.0
+six==1.16.0
 sqlparse==0.5.1
 tomli==2.0.1
 typing_extensions==4.12.2
 urllib3==2.2.2
+webencodings==0.5.1
