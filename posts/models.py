@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from django_resized import ResizedImageField
 
 
 User = get_user_model()
@@ -21,7 +22,14 @@ class Post(models.Model):
     author = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL, verbose_name=_("Author")
     )
-    image = models.ImageField(upload_to="posts_images/", verbose_name=_("Image"))
+    image = ResizedImageField(
+        size=[1366, 768],
+        scale=2,
+        quality=75,
+        upload_to="posts_images/",
+        verbose_name=_("Image"),
+        help_text=_("Recommended size: 1366	× 768"),
+    )
     category = models.ForeignKey(
         Category,
         blank=True,
