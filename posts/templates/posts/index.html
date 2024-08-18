@@ -17,7 +17,7 @@
             {{ post.excerpt }}
           </div>
         </div>
-        <a class="read-icon-block" href="post.html">
+        <a class="read-icon-block" href="{% url "posts:details_view" post.pk %}">
           <span>Read</span>
           <ion-icon
             class="read-icon"

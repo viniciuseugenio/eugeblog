@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Post | {% endblock title %}
+
+{% block content %}
+  <div class="post-container">
+    <div class="post-w-70">
+      <div class="post-content">
+        <div class="post-img-block">
+          <img class="post-img" src="{{ post.image.url }}" alt="" />
+        </div>
+
+        <div class="post-title">
+          <h1>{{ post.title }}</h1>
+        </div>
+
+        <div class="post-details">
+          <div class="post-detail post-author">
+            <ion-icon
+              class="details-icon"
+              name="person-circle-outline"
+            ></ion-icon>
+            <span>{{ post.author.first_name }} {{ post.author.last_name }}</span>
+          </div>
+
+          <div class="post-detail post-creation-date">
+            <ion-icon class="details-icon" name="calendar-outline"></ion-icon>
+            <span>{{ post.created_at|naturalday|title }}</span>
+          </div>
+
+          <div class="post-detail post-category">
+            <ion-icon class="details-icon" name="pricetag-outline"></ion-icon>
+            <span>{{ post.category }}</span>
+          </div>
+        </div>
+
+        <div class="post-text-content">
+          <div class="post-excerpt">
+            {{ post.excerpt }}
+          </div>
+
+          <div class="post-text">
+            {{ post.content|safe }}
+          </div>
+        </div>
+      </div>
+
+      <div class="post-comments-container">
+        <h3 class="comments-counter">31 comments</h3>
+
+        <input
+          class="comment-input"
+          type="text"
+          placeholder="Add a comment..."
+        />
+
+        <div class="post-comments">
+          <div class="comment">
+            <ion-icon
+              class="user-icon"
+              name="person-circle-outline"
+            ></ion-icon>
+
+            <div class="comment-details">
+              <span class="comment-author">Vinicius Eugênio</span> &mdash; 28
+              jun. 2024
+            </div>
+            <p class="comment-text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+              Expedita maiores distinctio deserunt?
+            </p>
+          </div>
+          <div class="comment">
+            <ion-icon
+              class="user-icon"
+              name="person-circle-outline"
+            ></ion-icon>
+
+            <div class="comment-details">
+              <span class="comment-author">Gustavo Nunes</span> &mdash; 28
+              jun. 2024
+            </div>
+            <p class="comment-text">
+              Sapiente omnis nemo eligendi itaque dolore! Saepe accusantium
+              doloribus optio laboriosam atque, omnis qui fuga non ipsa a
+              impedit, cum ut consequuntur. impedit, cum ut consequuntur.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+              debitis libero optio? Eos nisi natus reprehenderit eum, dicta
+              distinctio tempora modi quis. Doloribus perspiciatis nostrum
+              quam voluptatum eos consequuntur alias? Lorem ipsum dolor sit
+              amet consectetur adipisicing elit. Ad sapiente numquam odit
+              quasi incidunt obcaecati nemo, quas suscipit sequi, repellendus
+              harum modi. Corrupti odio asperiores est accusamus animi iste
+              laudantium!
+            </p>
+          </div>
+          <div class="comment">
+            <ion-icon
+              class="user-icon"
+              name="person-circle-outline"
+            ></ion-icon>
+
+            <div class="comment-details">
+              <span class="comment-author">José Eugênio</span> &mdash; 28 jun.
+              2024
+            </div>
+            <p class="comment-text">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Reprehenderit ut, iste quo ipsum deserunt obcaecati et iure esse
+              aspernatur atque cum fugit? Consequuntur reprehenderit doloribus
+              nulla ut dicta commodi obcaecati.
+            </p>
+          </div>
+          <div class="comment">
+            <ion-icon
+              class="user-icon"
+              name="person-circle-outline"
+            ></ion-icon>
+
+            <div class="comment-details">
+              <span class="comment-author">Gustavo Arantes</span> &mdash; 28
+              jun. 2024
+            </div>
+            <p class="comment-text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+              Exercitationem dolor dolore consequuntur repudiandae asperiores
+              velit cupiditate iure
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
