@@ -53,15 +53,12 @@ a:active {
 
 .btn-primary {
   background-color: var(--primary-color);
-  width: 100%;
-  font-size: 2rem;
-  height: 4.4rem;
   border: none;
   border-radius: 9px;
   color: var(--primary-tint);
   font-family: inherit;
   font-weight: 500;
-  margin-bottom: 1.2rem;
+  cursor: pointer;
 }
 
 

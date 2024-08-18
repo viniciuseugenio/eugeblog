@@ -348,6 +348,13 @@
   font-size: 1.4rem;
 }
 
+.btn-auth {
+  width: 100%;
+  font-size: 2rem;
+  height: 4.4rem;
+  margin-bottom: 1.2rem;
+}
+
 #or {
   position: relative;
   width: 100%;
