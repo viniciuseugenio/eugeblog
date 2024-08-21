@@ -5,7 +5,11 @@
 
   <nav class="main-nav">
     <ul class="main-nav-list">
-      <li><a class="main-nav-link" href="{% url "account_login" %}">Login</a></li>
+      {% if not request.user.is_authenticated %}
+        <li><a class="main-nav-link" href="{% url "account_login" %}">Login</a></li>
+      {% else %}
+        <li><a class="main-nav-link" href="{% url "account_logout" %}">Logout</a></li>
+      {% endif %}
       <li><a class="main-nav-link" href="#">About us</a></li>
       <li><a class="main-nav-link" href="#">Contact</a></li>
       <li><a class="main-nav-link" href="#">Support</a></li>
