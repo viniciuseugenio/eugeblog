@@ -47,87 +47,51 @@
       </div>
 
       <div class="post-comments-container">
-        <h3 class="comments-counter">31 comments</h3>
+        <h3 class="comments-counter">{{ qty_comments }} comments</h3>
 
-        <input
-          class="comment-input"
-          type="text"
-          placeholder="Add a comment..."
-        />
+        {% if request.user.is_authenticated %}
+          <form action="{% url "posts:comment_view" %}" class="form-comment" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="post" value="{{ post.pk }}">
+
+            <textarea
+              class="comment-input"
+              type="text"
+              name="comment"
+              rows='1'
+              placeholder="Add a comment..."
+              required
+            ></textarea>
+              
+            <div class="btns-container">
+              <button class="btn-primary btn-cancel" type="button">Cancel</button>
+              <button class="btn-primary btn-comment" type="submit">Comment</button>
+            </div>
+          </form>
+        {% else %}
+          <h2 class="comment-login-message">
+            Any thoughts on this? 
+            <a class="font-w-600" href="{% url "account_login" %}?next={% url "posts:details_view" post.pk %}">Login</a> 
+            and come here to share them!</h2>
+        {% endif %}
 
         <div class="post-comments">
-          <div class="comment">
-            <ion-icon
-              class="user-icon"
-              name="person-circle-outline"
-            ></ion-icon>
+          {% for comment in comments %}
+            <div class="comment">
+              <ion-icon
+                class="user-icon"
+                name="person-circle-outline"
+              ></ion-icon>
 
-            <div class="comment-details">
-              <span class="comment-author">Vinicius Eugênio</span> &mdash; 28
-              jun. 2024
-            </div>
-            <p class="comment-text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Expedita maiores distinctio deserunt?
-            </p>
-          </div>
-          <div class="comment">
-            <ion-icon
-              class="user-icon"
-              name="person-circle-outline"
-            ></ion-icon>
+              <div class="comment-details">
+                <span class="comment-author">{{ comment.author.get_full_name }}</span> &mdash; {{ comment.created_at|naturalday|title}}
+              </div>
+              <p class="comment-text">
+                {{ comment.comment }}
+              </p>
+            </div>  
+          {% endfor %}
 
-            <div class="comment-details">
-              <span class="comment-author">Gustavo Nunes</span> &mdash; 28
-              jun. 2024
-            </div>
-            <p class="comment-text">
-              Sapiente omnis nemo eligendi itaque dolore! Saepe accusantium
-              doloribus optio laboriosam atque, omnis qui fuga non ipsa a
-              impedit, cum ut consequuntur. impedit, cum ut consequuntur.
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
-              debitis libero optio? Eos nisi natus reprehenderit eum, dicta
-              distinctio tempora modi quis. Doloribus perspiciatis nostrum
-              quam voluptatum eos consequuntur alias? Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Ad sapiente numquam odit
-              quasi incidunt obcaecati nemo, quas suscipit sequi, repellendus
-              harum modi. Corrupti odio asperiores est accusamus animi iste
-              laudantium!
-            </p>
-          </div>
-          <div class="comment">
-            <ion-icon
-              class="user-icon"
-              name="person-circle-outline"
-            ></ion-icon>
-
-            <div class="comment-details">
-              <span class="comment-author">José Eugênio</span> &mdash; 28 jun.
-              2024
-            </div>
-            <p class="comment-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Reprehenderit ut, iste quo ipsum deserunt obcaecati et iure esse
-              aspernatur atque cum fugit? Consequuntur reprehenderit doloribus
-              nulla ut dicta commodi obcaecati.
-            </p>
-          </div>
-          <div class="comment">
-            <ion-icon
-              class="user-icon"
-              name="person-circle-outline"
-            ></ion-icon>
-
-            <div class="comment-details">
-              <span class="comment-author">Gustavo Arantes</span> &mdash; 28
-              jun. 2024
-            </div>
-            <p class="comment-text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Exercitationem dolor dolore consequuntur repudiandae asperiores
-              velit cupiditate iure
-            </p>
-          </div>
         </div>
       </div>
     </div>

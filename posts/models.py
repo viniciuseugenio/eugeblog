@@ -22,6 +22,7 @@ class Post(models.Model):
     author = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL, verbose_name=_("Author")
     )
+
     image = ResizedImageField(
         size=[1366, 768],
         scale=2,
@@ -50,3 +51,19 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name=_("Post"))
+    author = models.ForeignKey(
+        User, null=True, on_delete=models.SET_NULL, verbose_name=_("Author")
+    )
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
+
+    def __str__(self):
+        return f"{self.author} - {self.post} ({self.post.pk})"

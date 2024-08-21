@@ -51,6 +51,10 @@ a:active {
   color: var(--primary-shade-2);
 }
 
+textarea {
+  font-family: "Inter", sans-serif;
+}
+
 .btn-primary {
   background-color: var(--primary-color);
   border: none;
