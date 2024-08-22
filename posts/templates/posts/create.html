@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Create post | {% endblock title %}
+
+{% block content %}
+
+<div class="container-post-creation">
+  <div class="card-creation">
+    <div class="header-creation">Create a new post</div>
+    <form class="form-post-creation" action="{% url "posts:create_view" %}" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+      {% endif %}
+      
+      <div class="input-float">
+        {{ form.title }}
+        <label class="label-form" for="id_title">Title</label>
+        {{ form.title.errors }}
+      </div>
+      
+      <div class="input-float">
+        {{ form.excerpt }}
+        <label class="label-form" for="id_excerpt">Excerpt</label>
+        {{ form.excerpt.errors }}
+      </div>
+      <div class="input-float span-2-cols">
+        {{ form.content }}
+        {{ form.content.errors }}
+      </div>
+      <div class="input-file">
+        {{ form.image }}
+        <label class="label-image" for="id_image">
+          <ion-icon
+            class="upload-icon"
+            name="cloud-upload-outline"
+          ></ion-icon>
+          <span class="image-span">Upload image</span>
+          {{ form.image.errors }}
+        </label>
+      </div>
+      <div class="input-category">
+        {{ form.category }}
+        <div class="icon-category">
+          <ion-icon name="chevron-down-outline"></ion-icon>
+        </div>
+        {{ form.category.errors }}
+      </div>
+
+      <button class="btn-primary btn-create" type="submit">Create</button>
+      <input class="btn-primary btn-reset" type="reset" value="Reset" />
+    </form>
+  </div>
+</div>
+{% endblock content %}

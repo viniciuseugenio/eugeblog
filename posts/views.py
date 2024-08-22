@@ -1,11 +1,14 @@
 from typing import Any
-from django.db.models import Count
 from django.shortcuts import redirect
-from django.views.generic import ListView, DetailView, View
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, View, CreateView
 from .models import Post, Comment
 from django.contrib.auth import get_user_model
+from . import forms
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
+LOGIN_URL = "account_login"
 
 
 class PostsList(ListView):
@@ -58,3 +61,16 @@ class PostComment(View):
 
         # TODO: Add created message
         return redirect("posts:details_view", post_id)
+
+
+class PostCreate(LoginRequiredMixin, CreateView):
+    model = Post
+    form_class = forms.CreatePostForm
+    template_name = "posts/create.html"
+    login_url = LOGIN_URL
+    success_url = reverse_lazy("posts:list_view")
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        print(form)
+        return super().form_valid(form)
