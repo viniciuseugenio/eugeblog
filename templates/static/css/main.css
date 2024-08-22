@@ -114,3 +114,18 @@ textarea {
 .input-form:not(:placeholder-shown)+.label-form {
   top: 0;
 }
+
+.span-2-cols {
+  grid-column: span 2;
+}
+
+.errorlist {
+  margin-top: 0.8rem;
+  list-style: none;
+  color: var(--primary-color);
+  font-size: 1.4rem;
+}
+
+.errorlist li {
+  margin-bottom: 0.4rem;
+}
