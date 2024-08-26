@@ -3,6 +3,8 @@ from .models import Post
 from django_summernote.widgets import SummernoteWidget
 from django.utils.translation import gettext_lazy as _
 
+from templates.static import notifications
+
 
 class CreatePostForm(forms.ModelForm):
     class Meta:
@@ -49,8 +51,12 @@ class CreatePostForm(forms.ModelForm):
         excerpt = cleaned_data.get("excerpt")
 
         if title == excerpt:
-            self.add_error("title", _("The title and excerpt cannot be the same"))
-            self.add_error("excerpt", _("The title and excerpt cannot be the same"))
+            self.add_error(
+                "title", notifications.ERROR["creation_post_title_equal_excerpt"]
+            )
+            self.add_error(
+                "excerpt", notifications.ERROR["creation_post_title_equal_excerpt"]
+            )
 
         return cleaned_data
 
@@ -59,7 +65,8 @@ class CreatePostForm(forms.ModelForm):
 
         if len(title) < 10:
             self.add_error(
-                "title", _("The title can be nothing short of 10 characters.")
+                "title",
+                notifications.ERROR["creation_post_title_short_of_ten_characters"],
             )
 
         return title

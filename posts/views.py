@@ -5,8 +5,10 @@ from django.views.generic import ListView, DetailView, View, CreateView
 from .models import Post, Comment
 from django.contrib.auth import get_user_model
 from django.contrib import messages
-from . import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from templates.static import notifications
+from . import forms
 
 User = get_user_model()
 LOGIN_URL = "account_login"
@@ -40,7 +42,9 @@ class PostDetails(DetailView):
         return context
 
 
-class PostComment(View):
+class PostComment(LoginRequiredMixin, View):
+    login_url = LOGIN_URL
+
     def get(self, request, *args, **kwargs):
         return redirect("posts:list_view")
 
@@ -49,7 +53,7 @@ class PostComment(View):
         content = request.POST.get("comment").strip()
 
         if content.isspace() or not content:
-            messages.error(request, "You need to write a comment before submitting.")
+            messages.error(request, notifications.ERROR["comment_empty"])
             return redirect("posts:details_view", post_id)
 
         post_obj = Post.objects.get(id=post_id)
@@ -60,7 +64,7 @@ class PostComment(View):
             comment=content,
         )
 
-        messages.success(request, "The comment was successfully posted!")
+        messages.success(request, notifications.SUCCESS["comment_created"])
         return redirect("posts:details_view", post_id)
 
 
@@ -73,5 +77,5 @@ class PostCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        print(form)
+        messages.success(self.request, notifications.SUCCESS["post_created"])
         return super().form_valid(form)
