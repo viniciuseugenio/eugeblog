@@ -7,12 +7,13 @@
     <ul class="main-nav-list">
       {% if not request.user.is_authenticated %}
         <li><a class="main-nav-link" href="{% url "account_login" %}">Login</a></li>
+        <li><a class="main-nav-link btn-primary btn-signup" href="{% url "account_signup" %}">Get started</a></li>
       {% else %}
-        <li><a class="main-nav-link" href="{% url "account_logout" %}">Logout</a></li>
+        <li><a class="main-nav-link btn-profile" href="{% url "account_logout" %}">
+          <ion-icon class="person-icon" name="person-circle-outline"></ion-icon>
+          <span>Profile</span>
+        </a></li>
       {% endif %}
-      <li><a class="main-nav-link" href="#">About us</a></li>
-      <li><a class="main-nav-link" href="#">Contact</a></li>
-      <li><a class="main-nav-link" href="#">Support</a></li>
     </ul>
   </nav>
 </header>

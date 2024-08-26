@@ -31,6 +31,33 @@
   color: var(--primary-color);
 }
 
+.btn-signup:link,
+.btn-signup:visited {
+  color: var(--primary-tint) !important;
+  padding: 0.8rem 1.6rem;
+}
+
+.btn-signup:hover,
+.btn-signup:active {
+  color: #ffffff !important;
+  background-color: var(--primary-shade-1);
+}
+
+.btn-profile {
+  background-color: #f7cece;
+  padding: 0.8rem 1.6rem;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.person-icon {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
 .hero-section {
   background-color: var(--primary-tint);
 
