@@ -44,6 +44,13 @@
             {{ post.content|safe }}
           </div>
         </div>
+
+        <div class="action-buttons">
+          <a class="btn-edit" href="{% url "posts:edit_view" post.id %}">
+            <ion-icon name="create-outline"></ion-icon>
+            <span>Edit post</span>
+          </a>
+        </div>
       </div>
 
       <div class="post-comments-container">

@@ -278,7 +278,9 @@
 
 .post-content {
   margin: 6rem 0 6rem 0;
+  padding-bottom: 2rem;
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
 }
@@ -314,6 +316,7 @@
 
 .post-text-content {
   max-width: 70rem;
+  margin-bottom: 2.4rem;
 }
 
 .post-excerpt {
@@ -326,6 +329,26 @@
 .post-text {
   font-size: 1.6rem;
   line-height: 1.7;
+}
+
+.action-buttons {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.btn-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+
+  padding: 0.8rem 1.6rem;
+  font-size: 1.6rem;
+  background-color: #4263eb;
+  color: #fff !important;
+  text-decoration: none;
+  border-radius: 9px;
 }
 
 .post-comments-container {
