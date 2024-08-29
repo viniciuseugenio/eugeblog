@@ -9,6 +9,11 @@
         <li><a class="main-nav-link" href="{% url "account_login" %}">Login</a></li>
         <li><a class="main-nav-link btn-primary btn-signup" href="{% url "account_signup" %}">Get started</a></li>
       {% else %}
+        <li><a class="main-nav-link btn-create-post" href="{% url "posts:create_view" %}">
+          <ion-icon class="add-icon" name="add-outline"></ion-icon>
+          <span>Create post</span>
+        </a></li>
+
         <li><a class="main-nav-link btn-profile" href="{% url "account_logout" %}">
           <ion-icon class="person-icon" name="person-circle-outline"></ion-icon>
           <span>Profile</span>

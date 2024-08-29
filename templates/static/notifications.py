@@ -10,5 +10,5 @@ ERROR = {
 
 SUCCESS = {
     "comment_created": _("The comment was successfully posted!"),
-    "post_created": _("The post was successfully created!"),
+    "post_created": _("The post was sent for verification!"),
 }

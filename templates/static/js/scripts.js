@@ -111,3 +111,16 @@ class CommentsFunctionalities {
   }
 }
 if (formComment) new CommentsFunctionalities();
+
+function initRemoveNotification() {
+  notificationContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("close-notification")) {
+      e.target.closest(".notification").remove();
+
+      if (notificationContainer.children.length === 0) {
+        notificationContainer.remove();
+      }
+    }
+  });
+}
+if (notificationContainer) initRemoveNotification();

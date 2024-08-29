@@ -1,9 +1,16 @@
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-          {{ message }}
-      </li>
-    {% endfor %}
-</ul>
+<div class="notification-container">
+  {% for message in messages %}
+    <div class="notification {{ message.tags }}">
+      {% if message.tags == "notification-success" %}
+        <ion-icon class="notification-icon" name="checkmark-outline"></ion-icon>
+      {% elif message.tags == "notification-error" %}
+          <ion-icon class="notification-icon" name="close-outline"></ion-icon>
+      {% endif %}
+      <span>{{ message }}</span>
+      <ion-icon class="close-notification" name="close-circle-outline"></ion-icon>
+    </div>
+  {% endfor %}
+</div>
 {% endif %}
+
