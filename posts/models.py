@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django_resized import ResizedImageField
@@ -48,6 +49,9 @@ class Post(models.Model):
     class Meta:
         verbose_name = _("Post")
         verbose_name_plural = _("Posts")
+
+    def get_absolute_url(self):
+        return reverse("posts:details_view", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title

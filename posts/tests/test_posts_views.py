@@ -2,7 +2,7 @@ import os
 
 from django.test import TestCase
 from django.urls import reverse
-from posts.models import Post, Comment
+from posts.models import Post, Comment, Category
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
@@ -23,24 +23,35 @@ class PostViewsTests(TestCase):
             password="testCASE123.",
         )
 
+        user2 = User.objects.create_user(
+            email="email2@email.com",
+            first_name="Test",
+            last_name="Case",
+            password="testCASE123.",
+        )
+
+        category = Category.objects.create(name="Test")
+
         self.post = Post.objects.create(
             author=user,
             title="Lorem ipsum dolor sit amet.",
-            excerpt="Lorem ipsum dolor sit amet.",
-            content="Lorem ipsum dolor sit amet.",
-            image="media/coffee.jpg",
+            excerpt="Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+            content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa ipsam incidunt praesentium accusantium veritatis ut ea esse laboriosam nulla, aliquid sapiente saepe distinctio officia eos placeat. Dicta ipsa ipsum velit.",
+            image="coffee.jpg",
             is_published=True,
+            category=category,
         )
 
         self.form_data = {
-            "title": "Lorem ipsum dolor sit amet",
+            "title": "Lorem ipsum dolor sit amet.",
             "excerpt": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
             "content": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa ipsam incidunt praesentium accusantium veritatis ut ea esse laboriosam nulla, aliquid sapiente saepe distinctio officia eos placeat. Dicta ipsa ipsum velit.",
             "image": open(image_path, "rb"),
+            "category": category.pk,
         }
 
-    def login_client(self):
-        self.client.login(email="email@email.com", password="testCASE123.")
+    def login_client(self, email="email@email.com"):
+        self.client.login(email=email, password="testCASE123.")
 
     def test_list_view_returns_status_200_OK(self):
         response = self.client.get(reverse("posts:list_view"))
@@ -164,3 +175,41 @@ class PostViewsTests(TestCase):
 
         self.assertIn(str(notifications.SUCCESS["post_created"]), content)
         self.assertTrue(post_created.exists())
+
+    def test_post_edit_view_returns_status_200_OK(self):
+        self.login_client()
+
+        url = reverse("posts:edit_view", kwargs={"pk": self.post.pk})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_edit_view_redirects_if_user_not_author(self):
+        self.login_client("email2@email.com")
+
+        url = reverse("posts:edit_view", kwargs={"pk": self.post.pk})
+        response = self.client.get(url, follow=True)
+        content = response.content.decode("utf-8")
+        expected_url = reverse("posts:list_view")
+
+        self.assertRedirects(response, expected_url)
+        self.assertIn(str(notifications.ERROR["not_post_author"]), content)
+
+    def test_post_edit_view_sends_post_to_review_if_edited(self):
+        self.login_client()
+
+        url = reverse("posts:edit_view", kwargs={"pk": self.post.pk})
+        self.form_data["title"] = f"{self.post.title} (Edited!)"
+        self.client.post(url, data=self.form_data, follow=True)
+        edited_post = Post.objects.get(pk=self.post.pk)
+
+        self.assertEqual(edited_post.is_published, False)
+
+    def test_post_edit_view_does_not_sends_post_to_review_if_not_edited(self):
+        self.login_client()
+
+        url = reverse("posts:edit_view", kwargs={"pk": self.post.pk})
+        self.client.post(url, data=self.form_data, follow=True)
+        edited_post = Post.objects.get(pk=self.post.pk)
+
+        self.assertEqual(edited_post.is_published, True)

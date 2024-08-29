@@ -1,7 +1,8 @@
 from typing import Any
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, View, CreateView
+from django.views import generic
+from django.forms import model_to_dict
 from .models import Post, Comment
 from django.contrib.auth import get_user_model
 from django.contrib import messages
@@ -14,7 +15,7 @@ User = get_user_model()
 LOGIN_URL = "account_login"
 
 
-class PostsList(ListView):
+class PostsList(generic.ListView):
     model = Post
     context_object_name = "posts"
     queryset = Post.objects.filter(is_published=True)
@@ -22,7 +23,7 @@ class PostsList(ListView):
     ordering = ["-id"]
 
 
-class PostDetails(DetailView):
+class PostDetails(generic.DetailView):
     model = Post
     context_object_name = "post"
     template_name = "posts/details.html"
@@ -42,7 +43,7 @@ class PostDetails(DetailView):
         return context
 
 
-class PostComment(LoginRequiredMixin, View):
+class PostComment(LoginRequiredMixin, generic.View):
     login_url = LOGIN_URL
 
     def get(self, request, *args, **kwargs):
@@ -68,7 +69,7 @@ class PostComment(LoginRequiredMixin, View):
         return redirect("posts:details_view", post_id)
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, generic.CreateView):
     model = Post
     form_class = forms.CreatePostForm
     template_name = "posts/create.html"
@@ -78,4 +79,40 @@ class PostCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         messages.success(self.request, notifications.SUCCESS["post_created"])
+        return super().form_valid(form)
+
+
+class PostEdit(LoginRequiredMixin, generic.UpdateView):
+    model = Post
+    form_class = forms.CreatePostForm
+    template_name = "posts/edit.html"
+
+    def get(self, request, *args, **kwargs):
+        if request.user != self.get_object().author:
+            messages.error(request, notifications.ERROR["not_post_author"])
+            return redirect("posts:list_view")
+
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Verify if the post was changed
+        original_instance = model_to_dict(self.get_object())
+        edited_instance = form.cleaned_data
+
+        # Change edited_instance to display pk of category instead of model
+        edited_instance["category"] = edited_instance["category"].pk
+
+        fields = ["title", "excerpt", "content", "image", "category"]
+        edited = False
+
+        for field in fields:
+            if original_instance[field] != edited_instance[field]:
+                edited = True
+
+        if edited:
+            # Send to verification again if it was edited
+            form.instance.is_published = False
+            form.instance.save()
+            messages.success(self.request, notifications.SUCCESS["post_edited"])
+
         return super().form_valid(form)
