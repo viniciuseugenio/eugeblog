@@ -1,19 +1,8 @@
 "use strict";
 
 const allLinks = document.querySelectorAll("a:link");
-const btnComment = document.querySelector(".btn-comment");
-const btnCancel = document.querySelector(".btn-cancel");
-const commentInput = document.querySelector(".comment-input");
-const commentInputDefaultHeight = Number.parseInt(
-  getComputedStyle(commentInput).height
-);
-console.log(commentInputDefaultHeight);
 const formComment = document.querySelector(".form-comment");
-const btnsCommentContainer = document.querySelector(".btns-container");
-const btnsCommentContainerTop = Number.parseInt(
-  getComputedStyle(btnsCommentContainer).top
-);
-let btnsTopOffset;
+const notificationContainer = document.querySelector(".notification-container");
 
 // Booleans for manipulateCommentClasses function
 const add = true;
@@ -34,62 +23,91 @@ allLinks.forEach(function (link) {
   });
 });
 
-function manipulateCommentClasses(add) {
-  if (add) {
-    formComment.classList.add("form-focus");
-    btnsCommentContainer.classList.add("btn-active");
-  } else {
-    formComment.classList.remove("form-focus");
-    btnsCommentContainer.classList.remove("btn-active");
+class CommentsFunctionalities {
+  btnComment = document.querySelector(".btn-comment");
+  btnCancel = document.querySelector(".btn-cancel");
+  commentInput = document.querySelector(".comment-input");
+  commentInputDefaultHeight = Number.parseInt(
+    getComputedStyle(this.commentInput).height
+  );
+  formComment = document.querySelector(".form-comment");
+  btnsCommentContainer = document.querySelector(".btns-container");
+  btnsCommentContainerTop = Number.parseInt(
+    getComputedStyle(this.btnsCommentContainer).top
+  );
+  btnsTopOffset;
+
+  // Start all functionalities automatically
+  constructor() {
+    this.showCommentBtns();
+    this.cleanInputCancel();
+    this.autoAdjustTextAreaHeight();
+  }
+
+  manipulateCommentClasses(add) {
+    if (add) {
+      this.formComment.classList.add("form-focus");
+      this.btnsCommentContainer.classList.add("btn-active");
+    } else {
+      this.formComment.classList.remove("form-focus");
+      this.btnsCommentContainer.classList.remove("btn-active");
+    }
+  }
+
+  // Show comment action buttons only when input is focused
+  showCommentBtns() {
+    this.formComment.addEventListener(
+      "focus",
+      (e) => {
+        if (
+          [this.btnComment, this.btnCancel, this.commentInput].includes(
+            e.target
+          )
+        )
+          this.manipulateCommentClasses(add);
+      },
+      true
+    );
+
+    this.formComment.addEventListener(
+      "blur",
+      (e) => {
+        // If there's content in the input, buttons don't disappear
+        if (this.commentInput.value === "") {
+          this.manipulateCommentClasses(remove);
+        }
+      },
+      true
+    );
+  }
+
+  cleanInputCancel() {
+    this.btnCancel.addEventListener("click", () => {
+      this.commentInput.value = "";
+      this.commentInput.style.height = `${this.commentInputDefaultHeight}px`;
+      this.btnsCommentContainer.style.top = `${
+        this.commentInputDefaultHeight + 20
+      }px`;
+      this.manipulateCommentClasses(remove);
+    });
+  }
+
+  autoAdjustTextAreaHeight() {
+    this.commentInput.addEventListener("keyup", (e) => {
+      this.commentInput.style.height = "auto";
+
+      const scHeight = e.target.scrollHeight;
+
+      // Calculate offset just once to avoid negative values
+      if (!this.btnsTopOffset)
+        this.btnsTopOffset = this.btnsCommentContainerTop - scHeight;
+
+      // Adjust comment action buttons along with the changing height of input
+      this.btnsCommentContainer.style.top = `${
+        scHeight + this.btnsTopOffset
+      }px`;
+      this.commentInput.style.height = `${scHeight}px`;
+    });
   }
 }
-
-// Show comment action buttons only when input is focused
-function showCommentBtns() {
-  formComment.addEventListener(
-    "focus",
-    (e) => {
-      if ([btnComment, btnCancel, commentInput].includes(e.target))
-        manipulateCommentClasses(add);
-    },
-    true
-  );
-
-  formComment.addEventListener(
-    "blur",
-    (e) => {
-      // If there's content in the input, buttons don't disappear
-      if (commentInput.value === "") {
-        manipulateCommentClasses(remove);
-      }
-    },
-    true
-  );
-}
-if (formComment) showCommentBtns();
-
-function cleanInputCancel() {
-  btnCancel.addEventListener("click", () => {
-    commentInput.value = "";
-    commentInput.style.height = `${commentInputDefaultHeight}px`;
-    btnsCommentContainer.style.top = `${commentInputDefaultHeight + 20}px`;
-    manipulateCommentClasses(remove);
-  });
-}
-if (formComment) cleanInputCancel();
-
-function autoAdjustTextAreaHeight() {
-  commentInput.addEventListener("keyup", (e) => {
-    commentInput.style.height = "auto";
-
-    const scHeight = e.target.scrollHeight;
-
-    // Calculate offset just once to avoid negative values
-    if (!btnsTopOffset) btnsTopOffset = btnsCommentContainerTop - scHeight;
-
-    // Adjust comment action buttons along with the changing height of input
-    btnsCommentContainer.style.top = `${scHeight + btnsTopOffset}px`;
-    commentInput.style.height = `${scHeight}px`;
-  });
-}
-if (commentInput) autoAdjustTextAreaHeight();
+if (formComment) new CommentsFunctionalities();
