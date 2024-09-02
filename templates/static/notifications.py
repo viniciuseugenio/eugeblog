@@ -13,4 +13,5 @@ SUCCESS = {
     "comment_created": _("The comment was successfully posted!"),
     "post_created": _("The post was sent for verification!"),
     "post_edited": _("Your post was edited and sent for verification!"),
+    "post_deleted": _("The post was successfully deleted!"),
 }

@@ -3,6 +3,7 @@
 const allLinks = document.querySelectorAll("a:link");
 const formComment = document.querySelector(".form-comment");
 const notificationContainer = document.querySelector(".notification-container");
+const btnDelete = document.querySelector(".btn-delete");
 
 // Booleans for manipulateCommentClasses function
 const add = true;
@@ -124,3 +125,37 @@ function initRemoveNotification() {
   });
 }
 if (notificationContainer) initRemoveNotification();
+
+function hideModal() {
+  this.classList.add("modal-hidden");
+}
+
+function preventDelete() {
+  const modalConfirmation = document.querySelector(".modal-confirmation");
+  const formDeletion = document.querySelector(".form-deletion");
+  const btnCloseModal = modalConfirmation.querySelector(".close-modal-icon");
+  const btnConfirmDeletion = modalConfirmation.querySelector(
+    ".btn-confirm-deletion"
+  );
+  const btnCancelDeletion = modalConfirmation.querySelector(
+    ".btn-cancel-deletion"
+  );
+
+  formDeletion.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    modalConfirmation.classList.remove("modal-hidden");
+
+    btnConfirmDeletion.addEventListener("click", () => {
+      formDeletion.submit();
+    });
+
+    btnCloseModal.addEventListener("click", hideModal.bind(modalConfirmation));
+    btnCancelDeletion.addEventListener(
+      "click",
+      hideModal.bind(modalConfirmation)
+    );
+  });
+}
+
+if (btnDelete) preventDelete();

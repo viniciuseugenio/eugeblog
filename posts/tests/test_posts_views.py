@@ -213,3 +213,38 @@ class PostViewsTests(TestCase):
         edited_post = Post.objects.get(pk=self.post.pk)
 
         self.assertEqual(edited_post.is_published, True)
+
+    def test_post_details_show_action_buttons_if_user_is_the_author(self):
+        self.login_client("email@email.com")
+
+        url = reverse("posts:details_view", kwargs={"pk": self.post.pk})
+        response = self.client.get(url)
+
+        self.assertContains(response, 'class="action-buttons"')
+
+    def test_post_details_show_action_buttons_if_user_is_not_the_author(self):
+        # Login client with user that is not author of self.post
+        self.login_client("email2@email.com")
+
+        url = reverse("posts:details_view", kwargs={"pk": self.post.pk})
+        response = self.client.get(url)
+
+        self.assertNotContains(response, 'class="action-buttons"')
+
+    def test_post_delete_view_successfuly_deletes_post(self):
+        self.login_client()
+
+        url = reverse("posts:delete_view", kwargs={"pk": self.post.pk})
+        response = self.client.post(url)
+        post_exists = Post.objects.filter(pk=self.post.pk).exists()
+
+        self.assertFalse(post_exists)
+
+    def test_post_delete_view_displays_message_if_user_not_author(self):
+        # Login client with user that is not author of self.post
+        self.login_client("email2@email.com")
+
+        url = reverse("posts:delete_view", kwargs={"pk": self.post.pk})
+        response = self.client.post(url, follow=True)
+
+        self.assertContains(response, str(notifications.ERROR["not_post_author"]))
