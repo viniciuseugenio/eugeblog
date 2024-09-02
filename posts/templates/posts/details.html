@@ -45,12 +45,23 @@
           </div>
         </div>
 
-        <div class="action-buttons">
-          <a class="btn-edit" href="{% url "posts:edit_view" post.id %}">
-            <ion-icon name="create-outline"></ion-icon>
-            <span>Edit post</span>
-          </a>
-        </div>
+        {% if is_author %}
+          <div class="action-buttons">
+            <a class="btn-action btn-edit" href="{% url "posts:edit_view" post.id %}">
+              <ion-icon name="create-outline"></ion-icon>
+              <span>Edit post</span>
+            </a>
+
+            <form action="{% url "posts:delete_view" post.id %}" class="form-deletion" method="post">
+              {% csrf_token %}
+              <button class="btn-action btn-delete" type="submit">
+                <ion-icon name="trash"></ion-icon>
+                <span>Delete post</span>
+              </button>
+            </form>
+          </div>
+        {% endif %}
+
       </div>
 
       <div class="post-comments-container">

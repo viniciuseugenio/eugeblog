@@ -32,11 +32,14 @@ class PostDetails(generic.DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         comments = Comment.objects.filter(post=self.get_object()).order_by("-id")
+        post = self.get_object()
+        is_author = post.author == self.request.user
 
         context.update(
             {
                 "comments": comments,
                 "qty_comments": comments.count(),
+                "is_author": is_author,
             }
         )
 
@@ -115,4 +118,22 @@ class PostEdit(LoginRequiredMixin, generic.UpdateView):
             form.instance.save()
             messages.success(self.request, notifications.SUCCESS["post_edited"])
 
+        return super().form_valid(form)
+
+
+class PostDelete(LoginRequiredMixin, generic.DeleteView):
+    model = Post
+    success_url = reverse_lazy("posts:list_view")
+
+    def post(self, request, *args, **kwargs):
+        post_obj = self.get_object()
+
+        if request.user != post_obj.author:
+            messages.error(request, notifications.ERROR["not_post_author"])
+            return redirect("posts:details_view", self.kwargs.get("pk"))
+
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, notifications.SUCCESS["post_deleted"])
         return super().form_valid(form)
