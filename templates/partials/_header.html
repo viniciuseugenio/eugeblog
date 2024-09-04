@@ -13,10 +13,15 @@
           <ion-icon class="add-icon" name="add-outline"></ion-icon>
           <span>Create post</span>
         </a></li>
-
-        <li><a class="main-nav-link btn-profile" href="{% url "account_logout" %}">
-          <ion-icon class="person-icon" name="person-circle-outline"></ion-icon>
-          <span>Profile</span>
+        
+        <li><a class="main-nav-link">
+          <form class="form-logout" action="{% url "account_logout" %}" method="POST">
+            {% csrf_token %}
+            <button class="btn-profile" type="submit">
+              <ion-icon class="person-icon" name="person-circle-outline"></ion-icon>
+              <span>Profile</span>
+            </button>
+          </form>
         </a></li>
       {% endif %}
     </ul>

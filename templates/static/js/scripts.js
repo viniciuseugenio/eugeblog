@@ -160,3 +160,4 @@ function preventSubmitForm(modal_class, form_class) {
 }
 
 if (btnDelete) preventSubmitForm("confirm-deletion", "form-deletion");
+preventSubmitForm("confirm-logout", "form-logout");
