@@ -943,3 +943,34 @@
 .modal-hidden {
   display: none;
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6rem;
+}
+
+.pagination-list {
+  list-style: none;
+  display: flex;
+  gap: 3rem;
+}
+
+.pagination-list li {
+  display: flex;
+}
+
+.pagination-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  font-size: 1.8rem;
+}
+
+.page-active {
+  font-size: 2rem;
+  font-weight: 700;
+}
