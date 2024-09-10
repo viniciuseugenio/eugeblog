@@ -1,3 +1,5 @@
+import os
+
 from typing import Any
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -7,12 +9,16 @@ from .models import Post, Comment
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from dotenv import load_dotenv
 
-from templates.static import notifications
+from templates.static import notifications, utils
 from . import forms
+
+load_dotenv()
 
 User = get_user_model()
 LOGIN_URL = "account_login"
+PER_PAGE = os.environ.get("PER_PAGE")
 
 
 class PostsList(generic.ListView):
@@ -21,6 +27,17 @@ class PostsList(generic.ListView):
     queryset = Post.objects.filter(is_published=True)
     template_name = "posts/index.html"
     ordering = ["-id"]
+    paginate_by = PER_PAGE
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        page_range = context["paginator"].page_range
+        current_page = context["page_obj"].number
+        paginator = utils.make_pagination(page_range, current_page)
+
+        context["paginator"] = paginator
+        return context
 
 
 class PostDetails(generic.DetailView):
