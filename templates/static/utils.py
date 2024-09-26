@@ -1,16 +1,22 @@
+import math
+
+
 def make_pagination(page_range, cur_page, qty_pages=10):
-    mid_page = qty_pages // 2
+    total_pages = len(page_range)
+
+    if qty_pages > total_pages:
+        qty_pages = total_pages
+
+    mid_page = math.ceil(qty_pages / 2)
     start_page = cur_page - mid_page
     end_page = cur_page + mid_page
 
     if start_page < 0:
-        start_page_offset = abs(start_page)
-        end_page += start_page_offset
+        end_page += abs(start_page)
         start_page = 0
 
-    if end_page > len(page_range):
-        end_page_offset = end_page - len(page_range)
-        start_page -= end_page_offset
+    if end_page > total_pages + 1:
+        start_page -= abs(end_page - total_pages)
 
     return {
         "has_previous": cur_page > 1,
