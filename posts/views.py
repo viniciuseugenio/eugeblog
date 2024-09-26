@@ -1,18 +1,20 @@
 import os
-
 from typing import Any
+
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.forms import model_to_dict
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
-from django.forms import model_to_dict
-from .models import Post, Comment
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from dotenv import load_dotenv
 
 from templates.static import notifications, utils
+
 from . import forms
+from .models import Comment, Post
 
 load_dotenv()
 
@@ -29,14 +31,32 @@ class PostsList(generic.ListView):
     ordering = ["-id"]
     paginate_by = PER_PAGE
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        search_term = self.request.GET.get("q")
+
+        if search_term:
+            search_term = search_term.strip()
+
+            qs = qs.filter(
+                Q(
+                    Q(title__icontains=search_term)
+                    | Q(author__first_name__icontains=search_term)
+                )
+            )
+
+        return qs
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         page_range = context["paginator"].page_range
         current_page = context["page_obj"].number
         paginator = utils.make_pagination(page_range, current_page)
+        has_search = self.request.GET.get("q", "") != ""
 
         context["paginator"] = paginator
+        context["has_search"] = has_search
         return context
 
 

@@ -2,6 +2,11 @@
   <a href="{% url "posts:list_view" %}">
     <img class="site-icon" src="{{ MEDIA_URL }}icons/eugeblog-hori.svg" alt="" />
   </a>
+  
+  <form class="form-search" action="{% url "posts:list_view" %}" method="GET">
+    <input class="form-input" type="text" placeholder="Search..." name="q" value="{{ request.GET.q }}" required>
+    <button class="btn-search" type="submit"><span><ion-icon name="search-outline"></ion-icon></span></button>
+  </form>
 
   <nav class="main-nav">
     <ul class="main-nav-list">
