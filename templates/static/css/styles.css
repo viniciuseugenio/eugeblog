@@ -326,3 +326,42 @@ li:hover .dropdown {
   font-size: 2rem;
   font-weight: 700;
 }
+
+.form-search {
+  display: flex;
+  position: relative;
+  background-color: #edb6b6;
+  border-radius: 9px;
+}
+
+.form-search:focus-within {
+  outline: #e28686 2px solid;
+}
+
+.form-input {
+  max-height: 100%;
+  border: none;
+  padding: 1rem 2rem;
+  outline: none;
+  font-size: 1.5rem;
+  color: #212529;
+  background-color: #edb6b6;
+  border-radius: 9px;
+  font-family: inherit;
+}
+
+.btn-search {
+  padding: 0rem 1.2rem;
+  font-size: 1.6rem;
+  border-radius: 9px;
+  background-color: inherit;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-search span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
