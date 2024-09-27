@@ -1,9 +1,10 @@
 from django import forms
-from .models import Post
-from django_summernote.widgets import SummernoteWidget
 from django.utils.translation import gettext_lazy as _
+from django_summernote.widgets import SummernoteWidget
 
-from templates.static import notifications
+from utils import notifications
+
+from .models import Post
 
 
 class CreatePostForm(forms.ModelForm):
