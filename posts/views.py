@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from dotenv import load_dotenv
 
-from templates.static import notifications, utils
+import utils
 
 from . import forms
 from .models import Comment, Post
@@ -94,7 +94,7 @@ class PostComment(LoginRequiredMixin, generic.View):
         content = request.POST.get("comment").strip()
 
         if content.isspace() or not content:
-            messages.error(request, notifications.ERROR["comment_empty"])
+            messages.error(request, utils.notifications.ERROR["comment_empty"])
             return redirect("posts:details_view", post_id)
 
         post_obj = Post.objects.get(id=post_id)
@@ -105,7 +105,7 @@ class PostComment(LoginRequiredMixin, generic.View):
             comment=content,
         )
 
-        messages.success(request, notifications.SUCCESS["comment_created"])
+        messages.success(request, utils.notifications.SUCCESS["comment_created"])
         return redirect("posts:details_view", post_id)
 
 
@@ -118,7 +118,7 @@ class PostCreate(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, notifications.SUCCESS["post_created"])
+        messages.success(self.request, utils.notifications.SUCCESS["post_created"])
         return super().form_valid(form)
 
 
@@ -129,7 +129,7 @@ class PostEdit(LoginRequiredMixin, generic.UpdateView):
 
     def get(self, request, *args, **kwargs):
         if request.user != self.get_object().author:
-            messages.error(request, notifications.ERROR["not_post_author"])
+            messages.error(request, utils.notifications.ERROR["not_post_author"])
             return redirect("posts:list_view")
 
         return super().get(request, *args, **kwargs)
@@ -153,7 +153,7 @@ class PostEdit(LoginRequiredMixin, generic.UpdateView):
             # Send to verification again if it was edited
             form.instance.is_published = False
             form.instance.save()
-            messages.success(self.request, notifications.SUCCESS["post_edited"])
+            messages.success(self.request, utils.notifications.SUCCESS["post_edited"])
 
         return super().form_valid(form)
 
@@ -166,11 +166,11 @@ class PostDelete(LoginRequiredMixin, generic.DeleteView):
         post_obj = self.get_object()
 
         if request.user != post_obj.author:
-            messages.error(request, notifications.ERROR["not_post_author"])
+            messages.error(request, utils.notifications.ERROR["not_post_author"])
             return redirect("posts:details_view", self.kwargs.get("pk"))
 
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, notifications.SUCCESS["post_deleted"])
+        messages.success(self.request, utils.notifications.SUCCESS["post_deleted"])
         return super().form_valid(form)
