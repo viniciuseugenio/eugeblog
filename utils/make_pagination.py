@@ -25,4 +25,8 @@ def make_pagination(page_range, cur_page, qty_pages=10):
         "cur_page": cur_page,
         "prev_page": cur_page - 1,
         "next_page": cur_page + 1,
+        "qty_pages": qty_pages,
+        "start_page": start_page,
+        "end_page": end_page,
+        "total_pages": total_pages,
     }
