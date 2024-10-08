@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-
-{% block title %}Home | {% endblock title %}
-
+{% block title %}
+  Home |
+{% endblock title %}
 {% block content %}
   <div class="hero-section">
     <h1>"Stay Informed, Stay Ahead &mdash; Your Daily News with Eugenda"</h1>
   </div>
-
   <div class="posts-section">
     {% for post in posts %}
       {% include "partials/_post_card.html" %}

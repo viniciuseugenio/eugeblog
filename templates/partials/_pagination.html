@@ -1,33 +1,28 @@
 {% if is_paginated %}
-<div class="pagination">
-  <ul class="pagination-list">
-    {% if paginator.has_previous %}
-    <li>
-      <a
-        href="?page={{ paginator.prev_page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
-        class="pagination-link primary-link"
-      >
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </a>
-    </li>
-    {% endif %} {% for page in paginator.page_range %}
-    <li>
-      <a
-        href="?page={{ page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
-        class="pagination-link primary-link {% if paginator.cur_page == page %}page-active{% endif %}"
-        >{{ page }}</a
-      >
-    </li>
-    {% endfor %} {% if paginator.has_next %}
-    <li>
-      <a
-        href="?page={{ paginator.next_page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
-        class="pagination-link primary-link"
-      >
-        <ion-icon name="chevron-forward-outline"></ion-icon>
-      </a>
-    </li>
-    {% endif %}
-  </ul>
-</div>
+  <div class="pagination">
+    <ul class="pagination-list">
+      {% if paginator.has_previous %}
+        <li>
+          <a href="?page={{ paginator.prev_page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
+             class="pagination-link primary-link">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </a>
+        </li>
+      {% endif %}
+      {% for page in paginator.page_range %}
+        <li>
+          <a href="?page={{ page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
+             class="pagination-link primary-link {% if paginator.cur_page == page %}page-active{% endif %}">{{ page }}</a>
+        </li>
+      {% endfor %}
+      {% if paginator.has_next %}
+        <li>
+          <a href="?page={{ paginator.next_page }}{% if has_search %}&q={{ request.GET.q }}{% endif %}"
+             class="pagination-link primary-link">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
 {% endif %}
