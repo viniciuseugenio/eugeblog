@@ -40,7 +40,7 @@ class PostViewsTests(BasePostTest, TestCase):
         url = reverse("posts:details_view", kwargs={"pk": self.post.pk})
         response = self.client.get(url)
 
-        self.assertContains(response, 'class="action-buttons"')
+        self.assertContains(response, 'class="post-actions"')
 
     def test_post_details_show_action_buttons_if_user_is_not_the_author(self):
         # Login client with user that is not author of self.post
@@ -49,7 +49,7 @@ class PostViewsTests(BasePostTest, TestCase):
         url = reverse("posts:details_view", kwargs={"pk": self.post.pk})
         response = self.client.get(url)
 
-        self.assertNotContains(response, 'class="action-buttons"')
+        self.assertNotContains(response, 'class="post-actions"')
 
     def test_post_delete_view_successfuly_deletes_post(self):
         self.login_client()
