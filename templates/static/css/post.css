@@ -355,6 +355,44 @@
   line-height: 1.6;
 }
 
+.history-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4rem 0;
+}
+
+.history-title {
+  margin-bottom: 3rem;
+}
+
+.history-cards-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-simple-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+
+  min-height: 20rem;
+
+  font-size: 1.4rem;
+  padding: 2rem 1rem;
+
+  box-shadow: 0 0 1.2rem rgba(0, 0, 0, 0.2);
+}
+
+.post-history-title {
+  margin-bottom: 2rem;
+}
+
 /* -------------------------------------- */
 /* POST CREATION PAGE */
 /* -------------------------------------- */

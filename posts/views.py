@@ -67,11 +67,25 @@ class PostDetails(generic.DetailView):
     template_name = "posts/details.html"
     pk_url_kwarg = "pk"
 
+    def get(self, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        history = self.request.session.get("history", [])
+
+        if not history:
+            self.request.session["history"] = []
+
+        if pk not in history:
+            history.append(pk)
+
+        self.request.session["history"] = history
+        return super().get(*args, **kwargs)
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
         comments = Comment.objects.filter(post=self.get_object()).order_by("-id")
+
         post = self.get_object()
         is_author = post.author == user
 
@@ -79,11 +93,18 @@ class PostDetails(generic.DetailView):
             is_bookmarked = Bookmarks.objects.filter(user=user, post=post).exists()
             context.update({"is_bookmarked": is_bookmarked})
 
+        history = self.request.session.get("history")
+        history_objs = []
+
+        if len(history) > 0:
+            history_objs = [Post.objects.get(id=id) for id in history]
+
         context.update(
             {
                 "comments": comments,
                 "qty_comments": comments.count(),
                 "is_author": is_author,
+                "history_objs": history_objs,
             }
         )
 
