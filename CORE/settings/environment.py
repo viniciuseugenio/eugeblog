@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -90,4 +91,5 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.SUCCESS: "notification-success",
     messages.ERROR: "notification-error",
+    messages.WARNING: "notification-warning",
 }

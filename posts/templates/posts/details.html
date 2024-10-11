@@ -34,6 +34,27 @@
         </div>
         {% if is_author %}
           <div class="action-buttons">
+            {% if not is_bookmarked %}
+              <form action="{% url "bookmarks:create_view" post.pk %}"
+                    method="post"
+                    class="form-bookmark">
+                {% csrf_token %}
+                <button class="btn-bookmark">
+                  <span class="bookmark-icon"><ion-icon name="bookmark-outline"></ion-icon></span>
+                  <span class="bookmark-text">Bookmark</span>
+                </button>
+              </form>
+            {% else %}
+              <form action="{% url "bookmarks:delete_view" post.pk "details" %}"
+                    method="post"
+                    class="form-bookmark">
+                {% csrf_token %}
+                <button class="btn-bookmark">
+                  <span class="bookmark-icon"><ion-icon name="bookmark"></ion-icon></span>
+                  <span class="bookmark-text">Remove bookmark</span>
+                </button>
+              </form>
+            {% endif %}
             <div class="post-actions">
               <a class="btn-action btn-edit"
                  href="{% url "posts:edit_view" post.id %}">
@@ -51,6 +72,32 @@
               </form>
             </div>
           </div>
+        {% else %}
+          {% if not is_bookmarked %}
+            <div class="action-buttons">
+              <form action="{% url "bookmarks:create_view" post.pk %}"
+                    method="post"
+                    class="form-bookmark">
+                {% csrf_token %}
+                <button class="btn-bookmark">
+                  <span class="bookmark-icon"><ion-icon name="bookmark-outline"></ion-icon></span>
+                  <span class="bookmark-text">Bookmark</span>
+                </button>
+              </form>
+            </div>
+          {% else %}
+            <div class="action-buttons">
+              <form action="{% url "bookmarks:delete_view" post.pk "details" %}"
+                    method="post"
+                    class="form-bookmark">
+                {% csrf_token %}
+                <button class="btn-bookmark">
+                  <span class="bookmark-icon"><ion-icon name="bookmark"></ion-icon></span>
+                  <span class="bookmark-text">Remove bookmark</span>
+                </button>
+              </form>
+            </div>
+          {% endif %}
         {% endif %}
       </div>
       <div class="post-comments-container">

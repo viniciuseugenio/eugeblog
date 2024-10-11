@@ -6,6 +6,8 @@
           <ion-icon class="notification-icon" name="checkmark-outline"></ion-icon>
         {% elif message.tags == "notification-error" %}
           <ion-icon class="notification-icon" name="close-outline"></ion-icon>
+        {% elif message.tags == "notification-warning" %}
+          <ion-icon class="notification-icon" name="alert-circle-outline"></ion-icon>
         {% endif %}
         <span>{{ message }}</span>
         <ion-icon class="close-notification" name="close-circle-outline"></ion-icon>
