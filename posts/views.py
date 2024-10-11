@@ -12,6 +12,7 @@ from django.views import generic
 from dotenv import load_dotenv
 
 import utils
+from bookmarks.models import Bookmarks
 
 from . import forms
 from .models import Comment, Post
@@ -68,9 +69,15 @@ class PostDetails(generic.DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        user = self.request.user
+
         comments = Comment.objects.filter(post=self.get_object()).order_by("-id")
         post = self.get_object()
-        is_author = post.author == self.request.user
+        is_author = post.author == user
+
+        if user.is_authenticated:
+            is_bookmarked = Bookmarks.objects.filter(user=user, post=post).exists()
+            context.update({"is_bookmarked": is_bookmarked})
 
         context.update(
             {

@@ -158,6 +158,14 @@ li:hover .dropdown {
   background-color: rgba(43, 138, 62, 0.5);
 }
 
+.notification-warning .notification-icon {
+  background-color: rgb(252, 196, 25);
+}
+
+.notification-warning {
+  background-color: rgb(252, 196, 25, 0.5);
+}
+
 .close-notification {
   font-size: 2rem;
   justify-self: end;
