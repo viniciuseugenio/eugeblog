@@ -74,8 +74,14 @@ class PostDetails(generic.DetailView):
         if not history:
             self.request.session["history"] = []
 
-        if pk not in history:
-            history.append(pk)
+        if pk in history:
+            index = history.index(pk)
+            history.pop(index)
+
+        if len(history) == 5 and pk not in history:
+            history.pop()
+
+        history.insert(0, pk)
 
         self.request.session["history"] = history
         return super().get(*args, **kwargs)
@@ -97,7 +103,11 @@ class PostDetails(generic.DetailView):
         history_objs = []
 
         if len(history) > 0:
-            history_objs = [Post.objects.get(id=id) for id in history]
+            history_objs = [
+                Post.objects.get(id=id)
+                for id in history
+                if Post.objects.filter(id=id, is_published=True).exists()
+            ]
 
         context.update(
             {
