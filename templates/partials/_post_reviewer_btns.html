@@ -1,0 +1,17 @@
+{% if is_post_reviewer %}
+  <div class="post-actions">
+    <form action="{% url "posts:review_allow" post.pk %}" method="post">
+      {% csrf_token %}
+      <button class="btn-action btn-edit btn-authorize" type="submit">
+        <ion-icon name="create-outline"></ion-icon>
+        <span>Authorize post</span>
+      </button>
+    </form>
+    <button class="btn-action btn-delete">
+      <ion-icon name="trash"></ion-icon>
+      <span>Delete post</span>
+    </button>
+  </div>
+{% else %}
+  <h1 class="post-review-message">This post is under review. Please wait for the authorization.</h1>
+{% endif %}

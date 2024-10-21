@@ -4,7 +4,7 @@
     <div class="post-title-card">{{ post.title }}</div>
     <div class="post-excerpt-card">{{ post.excerpt }}</div>
   </div>
-  <a class="read-icon-block" href="{% url "posts:details_view" post.pk %}">
+  <a class="read-icon-block" href="{{ url }}{{ post.pk }}">
     <span>Read</span>
     <ion-icon class="read-icon" name="arrow-forward-circle-outline"></ion-icon>
   </a>

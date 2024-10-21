@@ -1,0 +1,29 @@
+{% load humanize %}
+<div class="post-img-block">
+  <img class="post-img" src="{{ post.image.url }}" alt="" />
+</div>
+<div class="post-title">
+  <h1>{{ post.title }}</h1>
+</div>
+<div class="post-details">
+  <div class="post-detail post-author">
+    <ion-icon class="details-icon" name="person-circle-outline"></ion-icon>
+    <span>{{ post.author.first_name }} {{ post.author.last_name }}</span>
+  </div>
+  <div class="post-detail post-creation-date">
+    <ion-icon class="details-icon" name="calendar-outline"></ion-icon>
+    <span>{{ post.created_at|naturalday|title }}</span>
+  </div>
+  <div class="post-detail post-category">
+    <ion-icon class="details-icon" name="pricetag-outline"></ion-icon>
+    <span>{{ post.category }}</span>
+  </div>
+</div>
+<div class="post-text-content">
+  <div class="post-excerpt">{{ post.excerpt }}</div>
+  {% if is_safe %}
+    <div class="post-text">{{ post.content|safe }}</div>
+  {% else %}
+    <div class="post-text">{{ post.content }}</div>
+  {% endif %}
+</div>

@@ -1,0 +1,21 @@
+{% if not is_bookmarked %}
+  <form action="{% url "bookmarks:create_view" post.pk %}"
+        method="post"
+        class="form-bookmark">
+    {% csrf_token %}
+    <button class="btn-bookmark">
+      <span class="bookmark-icon"><ion-icon name="bookmark-outline"></ion-icon></span>
+      <span class="bookmark-text">Bookmark</span>
+    </button>
+  </form>
+{% else %}
+  <form action="{% url "bookmarks:delete_view" post.pk "details" %}"
+        method="post"
+        class="form-bookmark">
+    {% csrf_token %}
+    <button class="btn-bookmark">
+      <span class="bookmark-icon"><ion-icon name="bookmark"></ion-icon></span>
+      <span class="bookmark-text">Remove bookmark</span>
+    </button>
+  </form>
+{% endif %}

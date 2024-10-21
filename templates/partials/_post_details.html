@@ -1,0 +1,20 @@
+{% load humanize %}
+<div class="post-container">
+  <div class="post-w-70">
+    <div class="post-content">
+      {% include "partials/_post_content.html" %}
+      <div class="action-buttons">
+        {% if page == "details" %}
+          {% include "partials/_post_action_bar.html" %}
+        {% endif %}
+      </div>
+      {% if page == "review" %}
+        {% include "partials/_post_reviewer_btns.html" %}
+      {% endif %}
+    </div>
+    {% if page == "details" %}
+      {% include "partials/_post_comments.html" %}
+    {% endif %}
+    {% include "partials/_post_history_section.html" %}
+  </div>
+</div>

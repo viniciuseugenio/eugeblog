@@ -1,0 +1,14 @@
+{% if history_objs %}
+  <div class="history-container">
+    <h1 class="history-title">Remembered of something? Here's the last 5 posts you read.</h1>
+    <div class="history-cards-row">
+      {% for post in history_objs %}
+        <div class="post-simple-card">
+          <img src="{{ post.image.url }}" height='100rem'>
+          <p class="post-history-title">{{ post.title }}</p>
+          <a class="primary-link" href="{% url "posts:details_view" post.pk %}">Read</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

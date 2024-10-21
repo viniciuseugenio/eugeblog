@@ -1,0 +1,42 @@
+{% load humanize %}
+{% load static %}
+
+<div class="post-comments-container">
+  <h3 class="comments-counter">{{ qty_comments }} comments</h3>
+  {% if request.user.is_authenticated %}
+    <form action="{% url "posts:comment_view" %}"
+          class="form-comment"
+          method="post">
+      {% csrf_token %}
+      <input type="hidden" name="post" value="{{ post.pk }}">
+      <textarea class="comment-input"
+                type="text"
+                name="comment"
+                rows='1'
+                placeholder="Add a comment..."
+                required></textarea>
+      <div class="btns-container">
+        <button class="btn-primary btn-cancel" type="button">Cancel</button>
+        <button class="btn-primary btn-comment" type="submit">Comment</button>
+      </div>
+    </form>
+  {% else %}
+    <h2 class="comment-login-message">
+      Any thoughts on this?
+      <a class="font-w-600 primary-link"
+         href="{% url "account_login" %}?next={% url "posts:details_view" post.pk %}">Login</a>
+      and come here to share them!
+    </h2>
+  {% endif %}
+  <div class="post-comments">
+    {% for comment in comments %}
+      <div class="comment">
+        <ion-icon class="user-icon" name="person-circle-outline"></ion-icon>
+        <div class="comment-details">
+          <span class="comment-author">{{ comment.author.get_full_name }}</span> &mdash; {{ comment.created_at|naturalday|title }}
+        </div>
+        <p class="comment-text">{{ comment.comment }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
