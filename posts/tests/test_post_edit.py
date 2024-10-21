@@ -12,7 +12,7 @@ class PostEditTest(BasePostTest, TestCase):
         super().setUp()
         self.post = self.create_post(self.user, "You may never doubt yourself.")
 
-        self.create_user("email2@email.com")
+        self.create_user("email2@email.com", is_post_reviewer=False)
 
     def test_post_edit_view_returns_status_200_OK(self):
         self.login_client()
@@ -22,7 +22,7 @@ class PostEditTest(BasePostTest, TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_post_edit_view_redirects_if_user_not_author(self):
+    def test_post_edit_view_redirects_if_user_not_author_nor_post_reviewer(self):
         self.login_client("email2@email.com")
 
         url = reverse("posts:edit_view", kwargs={"pk": self.post.pk})
