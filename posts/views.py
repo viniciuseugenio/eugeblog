@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 import utils
 from bookmarks.models import Bookmarks
+from utils import notifications
 
 from . import forms
 from .models import Comment, Post
@@ -106,6 +107,12 @@ class PostDetails(generic.DetailView):
 
     def get(self, *args, **kwargs):
         pk = self.kwargs.get("pk")
+        post = self.get_object()
+
+        if not post.is_published:
+            messages.error(self.request, notifications.ERROR["prohibited_notification"])
+            return redirect("posts:list_view")
+
         history = self.request.session.get("history", [])
 
         if not history:
