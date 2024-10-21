@@ -144,14 +144,15 @@ class PostDetails(generic.DetailView):
             context.update({"is_bookmarked": is_bookmarked})
 
         history = self.request.session.get("history")
-        history_objs = []
 
-        if len(history) > 0:
-            history_objs = [
-                Post.objects.get(id=id)
-                for id in history
-                if Post.objects.filter(id=id, is_published=True).exists()
-            ]
+        history_objs = [
+            Post.objects.get(id=id)
+            for id in history
+            if Post.objects.filter(id=id, is_published=True).exists()
+        ]
+
+        is_safe = True
+        page = "details"
 
         context.update(
             {
@@ -159,6 +160,8 @@ class PostDetails(generic.DetailView):
                 "qty_comments": comments.count(),
                 "is_author": is_author,
                 "history_objs": history_objs,
+                "is_safe": is_safe,
+                "page": page,
             }
         )
 
