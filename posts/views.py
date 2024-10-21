@@ -84,8 +84,17 @@ class PostsList(generic.ListView):
         paginator = utils.make_pagination(page_range, current_page)
         has_search = self.request.GET.get("q", "") != ""
 
-        context["paginator"] = paginator
-        context["has_search"] = has_search
+        # Done this way to get the URL dinamically and remove the 0 kwarg from the end
+        url = reverse_lazy("posts:details_view", kwargs={"pk": 0})[0:-1]
+
+        context.update(
+            {
+                "paginator": paginator,
+                "has_search": has_search,
+                "url": url,
+            }
+        )
+
         return context
 
 
