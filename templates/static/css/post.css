@@ -243,6 +243,11 @@
   background-color: var(--primary-shade-1);
 }
 
+.btn-authorize {
+  cursor: pointer;
+  border: none;
+}
+
 .post-comments-container {
   margin-bottom: 6rem;
 }

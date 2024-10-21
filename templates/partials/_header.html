@@ -16,6 +16,11 @@
   <nav class="main-nav">
     <ul class="main-nav-list">
       {% if request.user.is_authenticated %}
+        {% if is_post_reviewer %}
+          <li>
+            <a href="{% url "posts:review_list" %}" class="main-nav-link">Review posts</a>
+          </li>
+        {% endif %}
         <li>
           <a href="#" class="main-nav-link actions-link">
             <span>Actions</span>

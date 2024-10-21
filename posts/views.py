@@ -24,6 +24,34 @@ LOGIN_URL = "account_login"
 PER_PAGE = os.environ.get("PER_PAGE")
 
 
+class PostReviewerCheck:
+    def dispatch(self, request, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        is_allowed = (
+            request.user.groups.filter(name="post_reviewer").exists()
+            or request.user.is_superuser
+        )
+
+        if not is_allowed and pk is None:
+            messages.error(request, utils.notifications.ERROR["not_post_reviewer"])
+            return redirect("posts:list_view")
+
+        if pk is not None:
+            post = Post.objects.get(pk=pk)
+
+            if post.is_published:
+                messages.error(request, utils.notifications.ERROR["post_is_published"])
+                return redirect("posts:details_view", pk)
+
+            if request.user != post.author and not is_allowed:
+                messages.error(
+                    request, utils.notifications.ERROR["prohibited_notification"]
+                )
+                return redirect("posts:list_view")
+
+        return super().dispatch(request, *args, **kwargs)
+
+
 class PostsList(generic.ListView):
     model = Post
     context_object_name = "posts"
@@ -166,7 +194,12 @@ class PostEdit(LoginRequiredMixin, generic.UpdateView):
     template_name = "posts/edit.html"
 
     def get(self, request, *args, **kwargs):
-        if request.user != self.get_object().author:
+        is_allowed = (
+            request.user.groups.filter(name="post_reviewer").exists()
+            or request.user.is_superuser
+        )
+
+        if request.user != self.get_object().author and not is_allowed:
             messages.error(request, utils.notifications.ERROR["not_post_author"])
             return redirect("posts:list_view")
 
@@ -212,3 +245,59 @@ class PostDelete(LoginRequiredMixin, generic.DeleteView):
     def form_valid(self, form):
         messages.success(self.request, utils.notifications.SUCCESS["post_deleted"])
         return super().form_valid(form)
+
+
+class PostsReview(LoginRequiredMixin, PostReviewerCheck, generic.ListView):
+    model = Post
+    template_name = "posts/review_list.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(is_published=False)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        url = reverse_lazy("posts:review_details", kwargs={"pk": 0})[0:-1]
+
+        context.update(
+            {
+                "url": url,
+            }
+        )
+        return context
+
+
+class ReviewDetails(LoginRequiredMixin, PostReviewerCheck, generic.DetailView):
+    model = Post
+    template_name = "posts/review_details.html"
+    context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        is_safe = False
+        page = "review"
+
+        context.update(
+            {
+                "is_safe": is_safe,
+                "page": page,
+            }
+        )
+
+        return context
+
+
+def review_allow(request, pk):
+    if request.method != "POST":
+        return redirect("posts:review_list")
+
+    post = Post.objects.get(pk=pk)
+    post.is_published = True
+    post.save()
+
+    messages.success(request, utils.notifications.SUCCESS["post_published"])
+    return redirect("posts:details_view", pk)
