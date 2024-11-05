@@ -15,8 +15,8 @@ import utils
 from bookmarks.models import Bookmarks
 from utils import notifications
 
-from . import forms
-from .models import Comment, Post
+from .. import forms
+from ..models import Comment, Post
 
 load_dotenv()
 

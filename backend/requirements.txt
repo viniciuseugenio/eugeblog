@@ -5,12 +5,15 @@ cffi==1.17.1
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
+coverage==7.6.4
 cryptography==43.0.1
 cssbeautifier==1.15.1
 Django==5.1.1
 django-allauth==65.0.1
+django-cors-headers==4.6.0
 django-resized==1.0.2
 django-summernote==0.8.20.0
+djangorestframework==3.15.2
 djlint==1.35.2
 EditorConfig==0.12.4
 html-tag-names==0.1.2

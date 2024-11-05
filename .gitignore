@@ -60,8 +60,8 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-**/migrations
-media/posts_images
+**/migrations/
+**/posts_images/
 
 # Flask stuff:
 instance/

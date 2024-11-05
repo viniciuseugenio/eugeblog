@@ -93,3 +93,13 @@ MESSAGE_TAGS = {
     messages.ERROR: "notification-error",
     messages.WARNING: "notification-warning",
 }
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 28,
+}

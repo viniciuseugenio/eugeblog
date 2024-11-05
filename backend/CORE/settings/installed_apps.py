@@ -6,6 +6,7 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "rest_framework",
 ]
 
 PROJECT_APPS = [
@@ -21,6 +22,7 @@ EXTERNAL_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
     "django_summernote",
+    "corsheaders",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + EXTERNAL_APPS
