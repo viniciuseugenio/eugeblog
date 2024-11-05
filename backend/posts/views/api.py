@@ -55,7 +55,7 @@ class PostDetails(APIView):
 
 
 class PostComments(APIView):
-    def get(self, pk):
+    def get(self, request, pk):
         comments = Comment.objects.filter(post=pk).order_by("-id")
         serializer = CommentDetailsSerializer(comments, many=True)
         return Response(serializer.data)
