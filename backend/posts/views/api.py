@@ -3,7 +3,6 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
 from ..serializers import (
     PostDetailsSerializer,
     PostListSerializer,
@@ -47,26 +46,25 @@ class PostsList(generics.ListAPIView):
     pagination_class = PostsListPagination
 
 
-class PostDetails(APIView):
-    def get(self, request, pk):
-        post = Post.objects.filter(is_published=True).get(pk=pk)
-        serializer = PostDetailsSerializer(post, context={"request": request})
-        return Response(serializer.data)
+class PostDetails(generics.RetrieveAPIView):
+    queryset = Post.objects.filter(is_published=True)
+    serializer_class = PostDetailsSerializer
 
 
-class PostComments(APIView):
-    def get(self, request, pk):
-        comments = Comment.objects.filter(post=pk).order_by("-id")
-        serializer = CommentDetailsSerializer(comments, many=True)
-        return Response(serializer.data)
+class PostComments(generics.ListCreateAPIView):
+    serializer_class = CommentDetailsSerializer
 
-    def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
+    def get_queryset(self):
+        post_id = self.kwargs.get("pk")
+        return Comment.objects.filter(post=post_id).order_by("-id")
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CommentCreateSerializer
+
+        return CommentDetailsSerializer
+
+    def perform_create(self, serializer):
+        post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
         author = User.objects.get(pk=1)
-        serializer = CommentCreateSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save(author=author, post=post)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(author=author, post=post)

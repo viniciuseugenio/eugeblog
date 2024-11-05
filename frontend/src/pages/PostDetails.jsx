@@ -90,7 +90,8 @@ async function loadComments(id) {
     );
   }
 
-  return await response.json();
+  const data = await response.json();
+  return data.results;
 }
 
 export async function loader({ params }) {
