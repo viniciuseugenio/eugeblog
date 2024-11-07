@@ -28,14 +28,14 @@ const router = createBrowserRouter([
         action: createComment,
       },
       {
-        path: "login",
-        element: <LoginPage />,
-      },
-      {
         path: "privacy-policy",
         element: <PrivacyPolicyPage />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);
 
