@@ -7,6 +7,7 @@ import {
   redirect,
   useActionData,
   useNavigate,
+  useNavigation,
 } from "react-router-dom";
 import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
@@ -19,6 +20,7 @@ export default function LoginPage() {
   const data = useActionData();
   const { isLogged } = useAuth();
   const navigate = useNavigate();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (data) {
@@ -67,7 +69,7 @@ export default function LoginPage() {
             </div>
             <Link to="/forgot-password">Forgot password?</Link>
           </div>
-          <PrimaryButton text="Login" />
+          <PrimaryButton text="Login" state={navigation.state} />
           <div className="mb-6 mt-3">
             <span className="mr-1">Don&apos;t have an account?</span>
             <Link to="/signup" className="text-primary underline">
