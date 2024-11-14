@@ -4,6 +4,7 @@ import ContextWrapper, { loader as authLoader } from "./pages/ContextWrapper";
 import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
 import LoginPage, { action as loginAction } from "./pages/Login";
+import { action as logoutAction } from "./pages/Logout";
 import PostDetailsPage, {
   action as createComment,
   loader as loadPost,
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         path: "/login",
         element: <LoginPage />,
         action: loginAction,
+      },
+      {
+        path: "/logout",
+        action: logoutAction,
       },
     ],
   },
