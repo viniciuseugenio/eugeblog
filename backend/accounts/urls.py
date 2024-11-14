@@ -12,4 +12,5 @@ urlpatterns = [
     ),
     path("api/login/", views.LoginAPI.as_view(), name="login_api"),
     path("api/logout/", views.LogoutAPI.as_view(), name="logout_api"),
+    path("api/verify-user/", views.VerifyUser.as_view(), name="verify_user"),
 ]
