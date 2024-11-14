@@ -78,15 +78,18 @@ def check_authentication(request, response):
         try:
             refresh = RefreshToken(refresh_token)
 
-            set_access_token(response, refresh.access_token, "on")
-            set_refresh_token(response, str(refresh))
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            set_access_token(response, access_token, "on")
+            set_refresh_token(response, refresh_token)
             response.data["authenticated"] = True
 
             return {
                 "response": response,
                 "authenticated": True,
-                "user_id": get_user_id(refresh.access_token),
-                "access_token": refresh.access_token,
+                "user_id": get_user_id(access_token),
+                "access_token": access_token,
             }
 
         except jwt.InvalidTokenError:
