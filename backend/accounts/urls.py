@@ -10,4 +10,5 @@ urlpatterns = [
         views.TermsOfService.as_view(),
         name="account_terms_service",
     ),
+    path("api/login/", views.LoginAPI.as_view(), name="login_api"),
 ]
