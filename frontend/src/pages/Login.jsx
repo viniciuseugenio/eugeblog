@@ -23,10 +23,6 @@ export default function LoginPage() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (data) {
-      toast.error(data.error);
-    }
-
     if (isLogged) {
       return navigate("/");
     }
@@ -128,6 +124,7 @@ export async function action({ request }) {
       );
     }
 
+    toast.success("Logged in successfully.");
     return redirect("/");
   } catch {
     return json(
