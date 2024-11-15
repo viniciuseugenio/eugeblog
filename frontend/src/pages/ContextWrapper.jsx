@@ -1,4 +1,5 @@
 import { Outlet, useLoaderData } from "react-router-dom";
+import { Toaster } from "sonner";
 import AuthContextProvider from "../store/auth-context";
 
 export default function ContextWrapper() {
@@ -6,6 +7,7 @@ export default function ContextWrapper() {
 
   return (
     <AuthContextProvider initialAuthState={isAuthenticated}>
+      <Toaster position="top-right" richColors duration={3000} />
       <Outlet />
     </AuthContextProvider>
   );
