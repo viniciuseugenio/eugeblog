@@ -71,7 +71,7 @@ export default function PostDetailsPage() {
             ></p>
           </div>
 
-          <PostActions />
+          <PostActions canModify={main.has_modify_permission} />
 
           <Comments comments={comments} />
         </div>
@@ -133,7 +133,7 @@ export async function action({ request, params }) {
   );
 
   if (comment.trim().length === 0) {
-    return json({ message: "Comment cannot be empty." }, { status: 200 });
+    return json({ message: "Comment cannot be empty." }, { status: 400 });
   }
 
   if (!response.ok) {

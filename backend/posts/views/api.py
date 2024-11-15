@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from dotenv import load_dotenv
 from ..serializers import (
     PostDetailsSerializer,
     PostListSerializer,
@@ -10,9 +10,11 @@ from ..serializers import (
     CommentCreateSerializer,
 )
 from ..models import Post, Comment
+from utils import api_helpers
 
 
 User = get_user_model()
+load_dotenv()
 
 
 class PostsListPagination(PageNumberPagination):
@@ -49,6 +51,31 @@ class PostsList(generics.ListAPIView):
 class PostDetails(generics.RetrieveAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailsSerializer
+
+    def get(self, request, *args, **kwargs):
+        post_pk = kwargs.get("pk")
+        postObj = Post.objects.get(pk=post_pk)
+        postSerialized = PostDetailsSerializer(postObj)
+
+        base_response = Response(
+            {
+                "post": postSerialized.data,
+                "authenticated": False,
+                "has_modify_permission": False,
+            }
+        )
+
+        auth_info = api_helpers.check_authentication(request, base_response)
+        auth_response = auth_info.get("response")
+
+        if auth_info["authenticated"]:
+            auth_response.data["has_modify_permission"] = (
+                api_helpers.check_if_is_allowed_to_edit(
+                    auth_info.get("access_token"), post_pk
+                )
+            )
+
+        return auth_response
 
 
 class PostComments(generics.ListCreateAPIView):
