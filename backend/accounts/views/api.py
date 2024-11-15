@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework import status
 from utils import api_helpers
+from ..serializers import UserSerializer
 
 
 class VerifyUser(APIView):
@@ -45,6 +46,23 @@ class LoginAPI(APIView):
                 },
                 status=401,
             )
+
+
+class SignupAPI(APIView):
+    def post(self, request):
+        request.data["agree"] = "off" if request.data.get("agree") is None else "on"
+        serializer = UserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "User created!"}, status=status.HTTP_201_CREATED
+            )
+
+        print(serializer.errors)
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class LogoutAPI(APIView):

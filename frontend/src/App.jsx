@@ -11,6 +11,7 @@ import PostDetailsPage, {
 } from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
+import SignupPage, { action as signupAction } from "./pages/Signup";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
       {
         path: "/logout",
         action: logoutAction,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
+        action: signupAction,
       },
     ],
   },

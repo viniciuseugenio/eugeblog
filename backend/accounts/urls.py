@@ -11,6 +11,7 @@ urlpatterns = [
         name="account_terms_service",
     ),
     path("api/login/", views.LoginAPI.as_view(), name="login_api"),
+    path("api/signup/", views.SignupAPI.as_view(), name="signup_api"),
     path("api/logout/", views.LogoutAPI.as_view(), name="logout_api"),
     path("api/verify-user/", views.VerifyUser.as_view(), name="verify_user"),
 ]
