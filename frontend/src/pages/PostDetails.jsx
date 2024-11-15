@@ -2,13 +2,26 @@ import { toast } from "sonner";
 import { useLoaderData, useActionData, defer, json } from "react-router-dom";
 import PostMeta from "../components/PostDetails/PostMeta";
 import Comments from "../components/PostDetails/Comments";
+import PostActions from "../components/PostDetails/PostActions";
 import { formatDate } from "../utils/helpers";
 import { useEffect } from "react";
+import { useAuth } from "../store/auth-context";
 
 export default function PostDetailsPage() {
-  const { post, comments } = useLoaderData();
-  const actionData = useActionData();
+  const { login, logout, isLogged } = useAuth();
+  const { main, comments } = useLoaderData();
 
+  useEffect(() => {
+    if (!main.authenticated && isLogged) {
+      logout();
+    }
+
+    if (main.authenticated && !isLogged) {
+      login();
+    }
+  }, [main.authenticated, isLogged, login, logout]);
+
+  const actionData = useActionData();
   useEffect(() => {
     if (actionData) {
       const toastMethod =
@@ -17,58 +30,61 @@ export default function PostDetailsPage() {
     }
   }, [actionData]);
 
-  const createdAt = formatDate(post.created_at);
+  const createdAt = formatDate(main.post.created_at);
+  const image = `http://localhost:8000${main.post.image}`;
 
   return (
-    <div className="flex flex-col items-center py-24">
-      <div className="max-w-[52rem]">
-        <div className="flex flex-col items-center">
-          <img src={post.image} className="mb-8 w-[52rem]" alt="" />
+    <>
+      <div className="flex flex-col items-center py-24">
+        <div className="max-w-[52rem]">
+          <div className="flex flex-col items-center">
+            <img src={image} className="mb-8 w-[52rem]" alt="" />
 
-          <h1 className="mb-6 max-w-2xl text-center text-4xl font-bold">
-            {post.title}
-          </h1>
+            <h1 className="mb-6 max-w-2xl text-center text-4xl font-bold">
+              {main.post.title}
+            </h1>
 
-          <div className="mb-5 flex gap-4">
-            <PostMeta>
-              <ion-icon name="person-circle-outline" />
-              <span>{post.author}</span>
-            </PostMeta>
+            <div className="mb-5 flex gap-4">
+              <PostMeta>
+                <ion-icon name="person-circle-outline" />
+                <span>{main.post.author}</span>
+              </PostMeta>
 
-            <PostMeta>
-              <ion-icon name="calendar-outline" />
-              <span>{createdAt}</span>
-            </PostMeta>
+              <PostMeta>
+                <ion-icon name="calendar-outline" />
+                <span>{createdAt}</span>
+              </PostMeta>
 
-            <PostMeta>
-              <ion-icon name="pricetag-outline" />
-              <span>{post.category}</span>
-            </PostMeta>
+              <PostMeta>
+                <ion-icon name="pricetag-outline" />
+                <span>{main.post.category}</span>
+              </PostMeta>
+            </div>
+
+            <p className="mb-12 text-center text-stone-700">
+              {main.post.excerpt}
+            </p>
+
+            <p
+              className="mb-6 leading-7"
+              dangerouslySetInnerHTML={{ __html: main.post.content }}
+            ></p>
           </div>
 
-          <p className="mb-12 text-center text-stone-700">{post.excerpt}</p>
+          <PostActions />
 
-          <p
-            className="mb-6 leading-7"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          ></p>
+          <Comments comments={comments} />
         </div>
-
-        <div className="mb-12">
-          <button className="flex items-center gap-1 text-base duration-300 hover:text-[#5b4a3e]">
-            <ion-icon name="bookmark-outline"></ion-icon>
-            <span>Bookmark</span>
-          </button>
-        </div>
-
-        <Comments comments={comments} />
       </div>
-    </div>
+    </>
   );
 }
 
 async function loadPost(id) {
-  const response = await fetch(`http://localhost:8000/api/post/${id}`);
+  const response = await fetch(`http://localhost:8000/api/post/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   if (!response.ok) {
     throw json(
@@ -96,7 +112,7 @@ async function loadComments(id) {
 
 export async function loader({ params }) {
   return defer({
-    post: await loadPost(params.id),
+    main: await loadPost(params.id),
     comments: loadComments(params.id),
   });
 }

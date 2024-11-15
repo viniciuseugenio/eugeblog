@@ -4,3 +4,4 @@ from .middleware import *
 from .templates import *
 from .database import *
 from .allauth import *
+from .rest_framework import *

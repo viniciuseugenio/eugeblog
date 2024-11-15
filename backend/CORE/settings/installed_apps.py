@@ -7,6 +7,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
 PROJECT_APPS = [
