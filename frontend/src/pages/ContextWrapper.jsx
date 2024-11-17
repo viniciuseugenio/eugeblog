@@ -7,7 +7,7 @@ export default function ContextWrapper() {
 
   return (
     <AuthContextProvider initialAuthState={isAuthenticated}>
-      <Toaster position="top-right" richColors duration={3000} />
+      <Toaster position="top-right" closeButton richColors duration={3000} />
       <Outlet />
     </AuthContextProvider>
   );
