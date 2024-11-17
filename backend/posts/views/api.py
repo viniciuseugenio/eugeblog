@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -81,6 +82,18 @@ class PostDetails(generics.RetrieveAPIView):
 class PostComments(generics.ListCreateAPIView):
     serializer_class = CommentDetailsSerializer
 
+    def post(self, request, *args, **kwargs):
+        auth_info = api_helpers.check_authentication(request, Response({}))
+        user_id = auth_info.get("user_id")
+
+        if user_id == 0:
+            return Response(
+                {"error": "You must be logged in to post a comment."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return super().post(request, *args, **kwargs)
+
     def get_queryset(self):
         post_id = self.kwargs.get("pk")
         return Comment.objects.filter(post=post_id).order_by("-id")
@@ -92,6 +105,8 @@ class PostComments(generics.ListCreateAPIView):
         return CommentDetailsSerializer
 
     def perform_create(self, serializer):
+        auth_info = api_helpers.check_authentication(self.request, Response({}))
+        user_id = auth_info.get("user_id")
+        author = User.objects.get(pk=user_id)
         post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
-        author = User.objects.get(pk=1)
         serializer.save(author=author, post=post)

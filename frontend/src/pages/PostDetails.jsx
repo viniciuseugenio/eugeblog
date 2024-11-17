@@ -129,6 +129,7 @@ export async function action({ request, params }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ comment }),
+      credentials: "include",
     },
   );
 
