@@ -1,11 +1,11 @@
+import { useEffect } from "react";
+import { defer, json, useActionData, useLoaderData } from "react-router-dom";
 import { toast } from "sonner";
-import { useLoaderData, useActionData, defer, json } from "react-router-dom";
-import PostMeta from "../components/PostDetails/PostMeta";
 import Comments from "../components/PostDetails/Comments";
 import PostActions from "../components/PostDetails/PostActions";
-import { formatDate } from "../utils/helpers";
-import { useEffect } from "react";
+import PostMeta from "../components/PostDetails/PostMeta";
 import { useAuth } from "../store/auth-context";
+import { formatDate } from "../utils/helpers";
 
 export default function PostDetailsPage() {
   const { login, logout, isLogged } = useAuth();
@@ -73,7 +73,11 @@ export default function PostDetailsPage() {
 
           <PostActions canModify={main.has_modify_permission} />
 
-          <Comments comments={comments} />
+          <Comments
+            isAuthenticated={main.authenticated}
+            postId={main.post.id}
+            comments={comments}
+          />
         </div>
       </div>
     </>
