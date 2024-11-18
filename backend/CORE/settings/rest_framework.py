@@ -20,3 +20,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": os.environ.get("SECRET_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]

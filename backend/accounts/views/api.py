@@ -1,11 +1,19 @@
-from django.contrib.auth import authenticate
+from urllib.parse import urlencode
+
+from django.conf import settings
+from django.contrib.auth import authenticate, get_user_model
 from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
+from rest_framework import serializers, status
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 from utils import api_helpers
+
 from ..serializers import UserSerializer
+
+User = get_user_model()
 
 
 class VerifyUser(APIView):
@@ -28,7 +36,7 @@ class LoginAPI(APIView):
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
-            access_token = refresh.access_token
+            access_token = str(refresh.access_token)
 
             response = JsonResponse({"success": "You have successfully logged in!"})
 
@@ -44,7 +52,7 @@ class LoginAPI(APIView):
                 {
                     "error": "The e-mail and password you provided did not match any of our records. Please, try again."
                 },
-                status=401,
+                status=402,
             )
 
 
@@ -56,20 +64,74 @@ class SignupAPI(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "User created!"}, status=status.HTTP_201_CREATED
+                {"message": "User created!"}, status=status.HTTP_202_CREATED
             )
 
         print(serializer.errors)
         return Response(
-            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"errors": serializer.errors}, status=status.HTTP_401_BAD_REQUEST
         )
 
 
 class LogoutAPI(APIView):
     def post(self, request):
+
         response = JsonResponse({"detail": "You have successfully logged out!"})
 
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
+
+        return response
+
+
+class GoogleLoginAPI(APIView):
+    class InputSerializer(serializers.Serializer):
+        code = serializers.CharField(required=False)
+        error = serializers.CharField(required=False)
+
+    def get(self, request, *args, **kwargs):
+        input_serializer = self.InputSerializer(data=request.GET)
+        input_serializer.is_valid(raise_exception=True)
+
+        validated_data = input_serializer.validated_data
+
+        code = validated_data.get("code")
+        error = validated_data.get("error")
+
+        login_url = f"{settings.BASE_FRONTEND_URL}/login"
+
+        if error or not code:
+            params = urlencode({"error": error})
+            return redirect(f"{login_url}?{params}")
+
+        domain = settings.BASE_BACKEND_URL
+        api_uri = reverse("account_login_google_api")
+        redirect_uri = f"{domain}{api_uri}"
+
+        tokens = api_helpers.google_get_tokens(code=code, redirect_uri=redirect_uri)
+        user_data = api_helpers.google_get_user_info(
+            access_token=tokens["access_token"]
+        )
+
+        profile_data = {
+            "email": user_data["email"],
+            "first_name": user_data.get("given_name", ""),
+            "last_name": user_data.get("family_name", ""),
+        }
+
+        user_exists = User.objects.filter(email=profile_data["email"]).exists()
+
+        if not user_exists:
+            user = User.objects.create_user(**profile_data)
+        else:
+            user = User.objects.get(email=profile_data["email"])
+
+        refresh_obj = RefreshToken.for_user(user)
+        response = redirect(settings.BASE_FRONTEND_URL)
+
+        api_helpers.set_access_token(
+            response, str(refresh_obj.access_token), max_age="on"
+        )
+        api_helpers.set_refresh_token(response, str(refresh_obj))
 
         return response

@@ -1,4 +1,3 @@
-import { Divider } from "@mui/material";
 import { useEffect } from "react";
 import {
   Form,
@@ -13,8 +12,8 @@ import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
-import SocialIcon from "../components/SocialIcon";
 import { useAuth } from "../store/auth-context";
+import SocialLogin from "../components/SocialLogin";
 
 export default function LoginPage() {
   const data = useActionData();
@@ -73,21 +72,16 @@ export default function LoginPage() {
             </Link>
           </div>
         </Form>
-        <Divider>Or sign in with</Divider>
-        <ul className="mt-6 flex items-center justify-center gap-12">
-          <SocialIcon>
-            <ion-icon name="logo-google"></ion-icon>
-          </SocialIcon>
-          <SocialIcon>
-            <ion-icon name="logo-github"></ion-icon>
-          </SocialIcon>
-        </ul>
+        <SocialLogin />
       </div>
     </div>
   );
 }
 
 export async function action({ request }) {
+  const currentUrl = new URL(request.url);
+  const nextPage = currentUrl.searchParams.get("next") || "/";
+
   const formData = await request.formData();
 
   const email = formData.get("email");
@@ -125,7 +119,7 @@ export async function action({ request }) {
     }
 
     toast.success("Logged in successfully.");
-    return redirect("/");
+    return redirect(nextPage);
   } catch {
     return json(
       { error: "An error occurred. Please, try again." },

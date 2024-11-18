@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import horizontalLogo from "../assets/eugeblog-hori.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
+import SocialLogin from "../components/SocialLogin";
 import { useAuth } from "../store/auth-context";
 
 export default function SignupPage() {
@@ -36,7 +37,7 @@ export default function SignupPage() {
           <img src={horizontalLogo} className="w-48" alt="" />
         </Link>
 
-        <Form method="POST" className="grid grid-cols-2 gap-x-3">
+        <Form method="POST" className="mb-6 grid grid-cols-2 gap-x-3">
           <Input
             type="email"
             id="id_email"
@@ -109,6 +110,7 @@ export default function SignupPage() {
             </Link>
           </p>
         </Form>
+        <SocialLogin />
       </div>
     </div>
   );

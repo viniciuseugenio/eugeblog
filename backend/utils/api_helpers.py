@@ -1,16 +1,21 @@
 import os
+
 import jwt
-from dotenv import load_dotenv
+import requests
 from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
-
-
+from dotenv import load_dotenv
 from posts.models import Post
+from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 load_dotenv()
 
 User = get_user_model()
+
+
+GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 
 def get_user_id(token):
@@ -96,3 +101,34 @@ def check_authentication(request, response):
             pass
 
     return {"response": response, "authenticated": False, "user_id": 0}
+
+
+def google_get_tokens(code, redirect_uri):
+    data = {
+        "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+        "client_secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": redirect_uri,
+    }
+
+    response = requests.post(GOOGLE_ACCESS_TOKEN_OBTAIN_URL, data=data)
+
+    if not response.ok:
+        raise ValidationError("Failed to obtain access token from Google.")
+
+    access_token = response.json().get("access_token")
+    refresh_token = response.json().get("refresh_token")
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
+
+
+def google_get_user_info(access_token):
+    response = requests.get(GOOGLE_USER_INFO_URL, params={"access_token": access_token})
+
+    if not response.ok:
+        raise ValidationError("Failed to obtain user info from Google.")
+
+    return response.json()
