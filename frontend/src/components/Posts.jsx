@@ -9,7 +9,7 @@ export default function Posts() {
 
   return (
     <div className="mx-24 my-12 flex flex-grow flex-col items-center justify-center">
-      <Suspense fallback={<CircularProgress />}>
+      <Suspense fallback={<CircularProgress color="#493628" />}>
         <Await resolve={data}>
           {(loadedData) => (
             <>
