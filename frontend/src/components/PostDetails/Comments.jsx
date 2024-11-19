@@ -11,7 +11,7 @@ export default function Comments({ comments, isAuthenticated, postId }) {
         <Await resolve={comments}>
           {(loadedComments) => (
             <>
-              <div className="mb-12">
+              <div>
                 <h2 className="mb-4 text-3xl font-bold">
                   {loadedComments.length} comments
                 </h2>
@@ -19,22 +19,6 @@ export default function Comments({ comments, isAuthenticated, postId }) {
                 {isAuthenticated ? (
                   <Form method="post">
                     <TextArea />
-                    <div className={` flex justify-end gap-3 duration-300`}>
-                      <button
-                        type="reset"
-                        className="rounded-lg bg-[#E4E0E1] px-3 py-1 duration-300 hover:bg-[#cdcacb]"
-                        disabled={navigation.state === "submitting"}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={navigation.state === "submitting"}
-                        className="rounded-lg bg-[#493628] px-3 py-1 text-[#E4E0E1] duration-300 hover:bg-[#33261c]"
-                      >
-                        Comment
-                      </button>
-                    </div>
                   </Form>
                 ) : (
                   <p>
