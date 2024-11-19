@@ -4,6 +4,7 @@ import jwt
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
 from dotenv import load_dotenv
 from posts.models import Post
 from rest_framework.exceptions import ValidationError
@@ -132,3 +133,20 @@ def google_get_user_info(access_token):
         raise ValidationError("Failed to obtain user info from Google.")
 
     return response.json()
+
+
+def create_account_and_jwt_tokens(profile_data):
+    user_exists = User.objects.filter(email=profile_data.get("email")).exists()
+
+    if not user_exists:
+        user = User.objects.create_user(**profile_data)
+    else:
+        user = User.objects.get(email=profile_data["email"])
+
+    refresh_obj = RefreshToken.for_user(user)
+    response = redirect(settings.BASE_FRONTEND_URL)
+
+    set_access_token(response, str(refresh_obj.access_token), max_age="on")
+    set_refresh_token(response, str(refresh_obj))
+
+    return response

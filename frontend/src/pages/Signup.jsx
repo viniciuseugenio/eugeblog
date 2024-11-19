@@ -110,7 +110,7 @@ export default function SignupPage() {
             </Link>
           </p>
         </Form>
-        <SocialLogin />
+        <SocialLogin page="sign up" />
       </div>
     </div>
   );

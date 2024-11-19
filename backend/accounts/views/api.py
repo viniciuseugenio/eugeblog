@@ -1,3 +1,4 @@
+import os
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -5,13 +6,17 @@ from django.contrib.auth import authenticate, get_user_model
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from dotenv import load_dotenv
 from rest_framework import serializers, status
+from rest_framework.compat import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from utils import api_helpers
 
 from ..serializers import UserSerializer
+
+load_dotenv()
 
 User = get_user_model()
 
@@ -119,19 +124,55 @@ class GoogleLoginAPI(APIView):
             "last_name": user_data.get("family_name", ""),
         }
 
-        user_exists = User.objects.filter(email=profile_data["email"]).exists()
+        response = api_helpers.create_account_and_jwt_tokens(profile_data)
+        return response
 
-        if not user_exists:
-            user = User.objects.create_user(**profile_data)
-        else:
-            user = User.objects.get(email=profile_data["email"])
 
-        refresh_obj = RefreshToken.for_user(user)
-        response = redirect(settings.BASE_FRONTEND_URL)
+class GithubLoginAPI(APIView):
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get("code")
 
-        api_helpers.set_access_token(
-            response, str(refresh_obj.access_token), max_age="on"
+        url = "https://github.com/login/oauth/access_token"
+        payload = {
+            "client_id": os.environ.get("GITHUB_CLIENT_ID"),
+            "client_secret": os.environ.get("GITHUB_CLIENT_SECRET"),
+            "code": code,
+        }
+        headers = {"Accept": "application/json"}
+
+        response = requests.post(url, data=payload, headers=headers)
+        access_token = response.json().get("access_token")
+
+        # Retrieve user primary e-mail
+        email_url = "https://api.github.com/user/emails"
+        email_headers = {"Authorization": f"Bearer {access_token}"}
+        email_response = requests.get(email_url, headers=email_headers)
+
+        if email_response.status_code != 200:
+            return JsonResponse(
+                {
+                    "error": "Failed to fetch emails from GitHub",
+                    "details": email_response.text,
+                },
+                status=email_response.status_code,
+            )
+
+        emails = email_response.json()
+        primary_email = next(
+            (email["email"] for email in emails if email["primary"]), None
         )
-        api_helpers.set_refresh_token(response, str(refresh_obj))
 
+        if not primary_email:
+            return JsonResponse(
+                {"error": "No primary e-mail found in GitHub account."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        profile_data = {
+            "email": primary_email,
+            "first_name": "",
+            "last_name": "",
+        }
+
+        response = api_helpers.create_account_and_jwt_tokens(profile_data)
         return response

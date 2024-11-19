@@ -72,7 +72,7 @@ export default function LoginPage() {
             </Link>
           </div>
         </Form>
-        <SocialLogin />
+        <SocialLogin page="login" />
       </div>
     </div>
   );
