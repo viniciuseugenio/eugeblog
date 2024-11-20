@@ -1,31 +1,44 @@
-import { useEffect } from "react";
 import {
   Form,
   json,
   Link,
   redirect,
   useActionData,
-  useNavigate,
   useNavigation,
+  useLocation,
 } from "react-router-dom";
 import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
-import { useAuth } from "../store/auth-context";
 import SocialLogin from "../components/SocialLogin";
+import { useEffect, useRef } from "react";
 
 export default function LoginPage() {
   const data = useActionData();
-  const { isLogged } = useAuth();
-  const navigate = useNavigate();
   const navigation = useNavigation();
+  const location = useLocation();
+  const errorNotified = useRef(false);
 
   useEffect(() => {
-    if (isLogged) {
-      return navigate("/");
+    if (errorNotified.current) return;
+
+    const queryParams = new URLSearchParams(location.search);
+    const error = queryParams.get("error");
+    const errorMessage = {
+      access_denied:
+        "You have denied access to your account. Please, try again.",
+      email_fetching:
+        "An error occurred while fetching your e-mail. Please, try again.",
+    };
+
+    if (error) {
+      toast.error(
+        errorMessage[error] || "An error occurred. Please, try again.",
+      );
+      errorNotified.current = true;
     }
-  }, [isLogged, navigate, data]);
+  }, [location]);
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -78,6 +91,22 @@ export default function LoginPage() {
   );
 }
 
+export async function loader() {
+  const response = await fetch(
+    "http://localhost:8000/accounts/api/verify-user/",
+    {
+      credentials: "include",
+    },
+  );
+  const data = await response.json();
+
+  if (data.authenticated) {
+    return redirect("/");
+  }
+
+  return data.authenticated;
+}
+
 export async function action({ request }) {
   const currentUrl = new URL(request.url);
   const nextPage = currentUrl.searchParams.get("next") || "/";
@@ -87,13 +116,6 @@ export async function action({ request }) {
   const email = formData.get("email");
   const password = formData.get("password");
   const remember = formData.get("remember");
-
-  if (!email || !password) {
-    return json(
-      { message: "Please provide both email and password." },
-      { status: 400 },
-    );
-  }
 
   try {
     const response = await fetch("http://localhost:8000/accounts/api/login/", {
@@ -107,12 +129,18 @@ export async function action({ request }) {
 
     if (!response.ok) {
       const data = await response.json();
+      const errorMessage = {
+        400: data.error || "Please provide both email and password.",
+        401: "The e-mail and password you provided did not match any of our records. Please, try again.",
+        500: "An error occurred. Please, try again.",
+      };
+      console.log(response.status);
 
       return json(
         {
           error:
-            data.error ||
-            "The e-mail and password you provided did not match any of our records. Please, try again.",
+            errorMessage[response.status] ||
+            "An error occurred. Please, try again.",
         },
         { status: response.status },
       );

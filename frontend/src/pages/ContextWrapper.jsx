@@ -1,9 +1,30 @@
-import { Outlet, useLoaderData } from "react-router-dom";
-import { Toaster } from "sonner";
+import { Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Toaster, toast } from "sonner";
 import AuthContextProvider from "../store/auth-context";
 
 export default function ContextWrapper() {
   const isAuthenticated = useLoaderData();
+  const location = useLocation();
+
+  const notified = useRef(false);
+
+  useEffect(() => {
+    if (notified.current) return;
+
+    const queryParams = new URLSearchParams(location.search);
+    const action = queryParams.get("action");
+    const provider = queryParams.get("provider");
+
+    if (action && provider) {
+      if (action === "login") {
+        toast.success(`You have successfully logged in with ${provider}!`);
+      } else if (action === "signup") {
+        toast.success(`You have successfully signed up with ${provider}!`);
+      }
+      notified.current = true;
+    }
+  }, [location]);
 
   return (
     <AuthContextProvider initialAuthState={isAuthenticated}>

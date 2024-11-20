@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlencode
 
 import jwt
 import requests
@@ -135,16 +136,20 @@ def google_get_user_info(access_token):
     return response.json()
 
 
-def create_account_and_jwt_tokens(profile_data):
+def create_account_and_jwt_tokens(profile_data, provider):
     user_exists = User.objects.filter(email=profile_data.get("email")).exists()
 
     if not user_exists:
         user = User.objects.create_user(**profile_data)
+        action = "signup"
     else:
         user = User.objects.get(email=profile_data["email"])
+        action = "login"
 
+    query_params = urlencode({"action": action, "provider": provider})
     refresh_obj = RefreshToken.for_user(user)
-    response = redirect(settings.BASE_FRONTEND_URL)
+    redirect_url = f"{settings.BASE_FRONTEND_URL}?{query_params}"
+    response = redirect(redirect_url)
 
     set_access_token(response, str(refresh_obj.access_token), max_age="on")
     set_refresh_token(response, str(refresh_obj))

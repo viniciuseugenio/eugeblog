@@ -3,7 +3,6 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
-from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from dotenv import load_dotenv
@@ -43,7 +42,10 @@ class LoginAPI(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
 
-            response = JsonResponse({"success": "You have successfully logged in!"})
+            response = Response(
+                {"success": "You have successfully logged in!"},
+                status=status.HTTP_200_OK,
+            )
 
             api_helpers.set_access_token(response, access_token, max_age=remember)
 
@@ -53,11 +55,11 @@ class LoginAPI(APIView):
             return response
 
         else:
-            return JsonResponse(
+            return Response(
                 {
                     "error": "The e-mail and password you provided did not match any of our records. Please, try again."
                 },
-                status=402,
+                status=401,
             )
 
 
@@ -81,7 +83,9 @@ class SignupAPI(APIView):
 class LogoutAPI(APIView):
     def post(self, request):
 
-        response = JsonResponse({"detail": "You have successfully logged out!"})
+        response = Response(
+            {"detail": "You have successfully logged out!"}, status=status.HTTP_200_OK
+        )
 
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
@@ -124,8 +128,7 @@ class GoogleLoginAPI(APIView):
             "last_name": user_data.get("family_name", ""),
         }
 
-        response = api_helpers.create_account_and_jwt_tokens(profile_data)
-        return response
+        return api_helpers.create_account_and_jwt_tokens(profile_data, "Google")
 
 
 class GithubLoginAPI(APIView):
@@ -149,13 +152,8 @@ class GithubLoginAPI(APIView):
         email_response = requests.get(email_url, headers=email_headers)
 
         if email_response.status_code != 200:
-            return JsonResponse(
-                {
-                    "error": "Failed to fetch emails from GitHub",
-                    "details": email_response.text,
-                },
-                status=email_response.status_code,
-            )
+            error_message = urlencode({"error": "email_fetching"})
+            return redirect(f"{settings.BASE_FRONTEND_URL}/login?{error_message}")
 
         emails = email_response.json()
         primary_email = next(
@@ -163,7 +161,7 @@ class GithubLoginAPI(APIView):
         )
 
         if not primary_email:
-            return JsonResponse(
+            return Response(
                 {"error": "No primary e-mail found in GitHub account."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -174,5 +172,4 @@ class GithubLoginAPI(APIView):
             "last_name": "",
         }
 
-        response = api_helpers.create_account_and_jwt_tokens(profile_data)
-        return response
+        return api_helpers.create_account_and_jwt_tokens(profile_data, "GitHub")

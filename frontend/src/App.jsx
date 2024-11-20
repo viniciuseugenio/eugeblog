@@ -3,7 +3,10 @@ import { loader as loadPosts } from "./components/Posts";
 import ContextWrapper, { loader as authLoader } from "./pages/ContextWrapper";
 import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
-import LoginPage, { action as loginAction } from "./pages/Login";
+import LoginPage, {
+  loader as loginLoader,
+  action as loginAction,
+} from "./pages/Login";
 import { action as logoutAction } from "./pages/Logout";
 import PostDetailsPage, {
   action as createComment,
@@ -43,6 +46,7 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+        loader: loginLoader,
         action: loginAction,
       },
       {
