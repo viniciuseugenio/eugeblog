@@ -1,10 +1,18 @@
-export default function PostActions({ canModify }) {
+import BookmarkButtons from "./BookmarkButtons";
+
+export default function PostActions({
+  isAuthenticated,
+  canModify,
+  postId,
+  initialIsBookmarked,
+}) {
   return (
     <div className="mb-12 flex justify-between">
-      <button className="flex items-center  gap-1 text-base duration-300 hover:text-[#5b4a3e]">
-        <ion-icon name="bookmark-outline"></ion-icon>
-        <span>Bookmark</span>
-      </button>
+      <BookmarkButtons
+        isAuthenticated={isAuthenticated}
+        initialIsBookmarked={initialIsBookmarked}
+        postId={postId}
+      />
       {canModify && (
         <div className="flex gap-3">
           <button className="text-light flex items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 py-1 duration-300 hover:bg-blue-700">

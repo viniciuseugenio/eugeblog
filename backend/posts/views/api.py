@@ -1,18 +1,18 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
-from rest_framework import generics
+from dotenv import load_dotenv
+from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from dotenv import load_dotenv
-from ..serializers import (
-    PostDetailsSerializer,
-    PostListSerializer,
-    CommentDetailsSerializer,
-    CommentCreateSerializer,
-)
-from ..models import Post, Comment
 from utils import api_helpers
 
+from bookmarks.models import Bookmarks
+from ..models import Comment, Post
+from ..serializers import (
+    CommentCreateSerializer,
+    CommentDetailsSerializer,
+    PostDetailsSerializer,
+    PostListSerializer,
+)
 
 User = get_user_model()
 load_dotenv()
@@ -63,11 +63,22 @@ class PostDetails(generics.RetrieveAPIView):
                 "post": postSerialized.data,
                 "authenticated": False,
                 "has_modify_permission": False,
+                "is_bookmarked": False,
             }
         )
 
         auth_info = api_helpers.check_authentication(request, base_response)
         auth_response = auth_info.get("response")
+        user_id = auth_info.get("user_id")
+
+        if user_id:
+            user_obj = User.objects.get(pk=user_id)
+            post_bookmarked = Bookmarks.objects.filter(
+                post=postObj, user=user_obj
+            ).exists()
+
+            if post_bookmarked:
+                auth_response.data["is_bookmarked"] = True
 
         if auth_info["authenticated"]:
             auth_response.data["has_modify_permission"] = (
