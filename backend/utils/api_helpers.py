@@ -136,7 +136,9 @@ def google_get_user_info(access_token):
     return response.json()
 
 
-def create_account_and_jwt_tokens(profile_data, provider):
+def create_account_and_jwt_tokens(
+    profile_data, provider, next_url=settings.BASE_FRONTEND_URL
+):
     user_exists = User.objects.filter(email=profile_data.get("email")).exists()
 
     if not user_exists:
@@ -148,7 +150,7 @@ def create_account_and_jwt_tokens(profile_data, provider):
 
     query_params = urlencode({"action": action, "provider": provider})
     refresh_obj = RefreshToken.for_user(user)
-    redirect_url = f"{settings.BASE_FRONTEND_URL}?{query_params}"
+    redirect_url = f"{next_url}?{query_params}"
     response = redirect(redirect_url)
 
     set_access_token(response, str(refresh_obj.access_token), max_age="on")

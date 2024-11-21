@@ -99,6 +99,11 @@ class GoogleLoginAPI(APIView):
         error = serializers.CharField(required=False)
 
     def get(self, request, *args, **kwargs):
+        next_url = request.GET.get("state", None)
+
+        if next_url:
+            next_url = f"{settings.BASE_FRONTEND_URL}{next_url}"
+
         input_serializer = self.InputSerializer(data=request.GET)
         input_serializer.is_valid(raise_exception=True)
 
@@ -128,11 +133,18 @@ class GoogleLoginAPI(APIView):
             "last_name": user_data.get("family_name", ""),
         }
 
-        return api_helpers.create_account_and_jwt_tokens(profile_data, "Google")
+        return api_helpers.create_account_and_jwt_tokens(
+            profile_data, "Google", next_url
+        )
 
 
 class GithubLoginAPI(APIView):
     def get(self, request, *args, **kwargs):
+        next_url = request.GET.get("state", None)
+
+        if next_url:
+            next_url = f"{settings.BASE_FRONTEND_URL}{next_url}"
+
         code = request.GET.get("code")
 
         url = "https://github.com/login/oauth/access_token"
@@ -172,4 +184,6 @@ class GithubLoginAPI(APIView):
             "last_name": "",
         }
 
-        return api_helpers.create_account_and_jwt_tokens(profile_data, "GitHub")
+        return api_helpers.create_account_and_jwt_tokens(
+            profile_data, "GitHub", next_url
+        )

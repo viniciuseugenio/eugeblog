@@ -6,7 +6,11 @@ const { VITE_GITHUB_CLIENT_ID } = import.meta.env;
 
 export default function SocialLogin({ page }) {
   function openGitLoginPage() {
-    window.location = `https://github.com/login/oauth/authorize?client_id=${VITE_GITHUB_CLIENT_ID}`;
+    const next = new URLSearchParams(window.location.search).get("next");
+    const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${VITE_GITHUB_CLIENT_ID}`;
+
+    const fullRedirectUrl = next ? `${redirectUrl}&state=${next}` : redirectUrl;
+    window.location = fullRedirectUrl;
   }
 
   return (

@@ -31,6 +31,7 @@ export function paginationRange(
 }
 
 export function openGoogleLoginPage() {
+  const next_url = new URLSearchParams(window.location.search).get("next");
   const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const redirectUri = "accounts/api/google/login/";
 
@@ -48,5 +49,5 @@ export function openGoogleLoginPage() {
   };
 
   const urlParams = new URLSearchParams(params).toString();
-  window.location = `${googleAuthUrl}?${urlParams}`;
+  window.location = `${googleAuthUrl}?${urlParams}&state=${next_url}`;
 }
