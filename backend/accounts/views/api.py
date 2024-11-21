@@ -99,10 +99,12 @@ class GoogleLoginAPI(APIView):
         error = serializers.CharField(required=False)
 
     def get(self, request, *args, **kwargs):
-        next_url = request.GET.get("state", None)
+        next_url = request.GET.get("state")
 
         if next_url:
             next_url = f"{settings.BASE_FRONTEND_URL}{next_url}"
+        else:
+            next_url = settings.BASE_FRONTEND_URL
 
         input_serializer = self.InputSerializer(data=request.GET)
         input_serializer.is_valid(raise_exception=True)
@@ -140,10 +142,12 @@ class GoogleLoginAPI(APIView):
 
 class GithubLoginAPI(APIView):
     def get(self, request, *args, **kwargs):
-        next_url = request.GET.get("state", None)
+        next_url = request.GET.get("state")
 
         if next_url:
             next_url = f"{settings.BASE_FRONTEND_URL}{next_url}"
+        else:
+            next_url = settings.BASE_FRONTEND_URL
 
         code = request.GET.get("code")
 

@@ -49,5 +49,7 @@ export function openGoogleLoginPage() {
   };
 
   const urlParams = new URLSearchParams(params).toString();
-  window.location = `${googleAuthUrl}?${urlParams}&state=${next_url}`;
+  const url = `${googleAuthUrl}?${urlParams}`;
+  const urlWithNext = next_url ? `${url}&state=${next_url}` : url;
+  window.location = urlWithNext;
 }
