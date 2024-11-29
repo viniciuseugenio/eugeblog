@@ -1,11 +1,12 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { loader as loadPosts } from "./components/Posts";
 import ContextWrapper, { loader as authLoader } from "./pages/ContextWrapper";
 import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
 import LoginPage, {
-  loader as loginLoader,
   action as loginAction,
+  loader as loginLoader,
 } from "./pages/Login";
 import { action as logoutAction } from "./pages/Logout";
 import PostDetailsPage, {
@@ -15,6 +16,7 @@ import PostDetailsPage, {
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
+import { queryClient } from "./utils/http.js";
 
 const router = createBrowserRouter([
   {
@@ -63,7 +65,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;
