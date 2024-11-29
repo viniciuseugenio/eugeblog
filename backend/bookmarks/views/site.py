@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import utils
 from posts.models import Post
 
-from .models import Bookmarks
+from bookmarks.models import Bookmarks
 
 load_dotenv()
 
