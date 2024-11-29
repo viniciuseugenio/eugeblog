@@ -5,6 +5,30 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 export const queryClient = new QueryClient();
 
+export async function loadPosts(currentPage) {
+  let url = "http://localhost:8000/api/posts/";
+  if (currentPage > 1) {
+    url += `?page=${currentPage}`;
+  }
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const error = new Error("Something went wrong while loading the posts.");
+    error.info = {
+      message: "We are very sorry for this, please, try again later.",
+    };
+    throw error;
+  }
+
+  const data = await response.json();
+
+  return {
+    posts: data.results,
+    pagination: data.pagination,
+  };
+}
+
 export async function fetchBookmarks() {
   const response = await fetch(`${VITE_BASE_BACKEND_URL}/bookmarks/api/list/`, {
     method: "GET",
