@@ -72,7 +72,6 @@ export default function PostDetailsPage() {
           </div>
 
           <PostActions
-            isAuthenticated={main.authenticated}
             postId={main.post.id}
             canModify={main.has_modify_permission}
             initialIsBookmarked={main.is_bookmarked}

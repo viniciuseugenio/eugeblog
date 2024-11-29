@@ -1,7 +1,6 @@
 import BookmarkButtons from "./BookmarkButtons";
 
 export default function PostActions({
-  isAuthenticated,
   canModify,
   postId,
   initialIsBookmarked,
@@ -9,7 +8,6 @@ export default function PostActions({
   return (
     <div className="mb-12 flex justify-between">
       <BookmarkButtons
-        isAuthenticated={isAuthenticated}
         initialIsBookmarked={initialIsBookmarked}
         postId={postId}
       />
