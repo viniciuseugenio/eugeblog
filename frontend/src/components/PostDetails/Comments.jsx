@@ -21,7 +21,7 @@ export default function Comments({ comments, isAuthenticated, postId }) {
                     <TextArea />
                   </Form>
                 ) : (
-                  <p>
+                  <p className="mb-6">
                     Any thoughts on this?{" "}
                     <Link
                       className="text-primary font-bold underline"
