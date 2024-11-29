@@ -1,13 +1,33 @@
 from django.contrib.auth import get_user_model
 from posts.models import Post
-from rest_framework import generics, serializers, status
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from utils import api_helpers
 
 from bookmarks.models import Bookmarks
 
+from ..serializers import BookmarksSerializer
+
 User = get_user_model()
+
+
+class BookmarksList(generics.ListAPIView):
+    serializer_class = BookmarksSerializer
+
+    def get_queryset(self):
+        base_response = Response({"authenticatd": False, "user_id": 0})
+        auth_info = api_helpers.check_authentication(self.request, base_response)
+
+        if not auth_info["authenticated"]:
+            return Response(
+                {"message": "You have to be logged in."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        user_id = auth_info["user_id"]
+        user_obj = User.objects.get(id=user_id)
+
+        return Bookmarks.objects.filter(user=user_obj).order_by("-id")
 
 
 class BookmarkPost(generics.CreateAPIView):

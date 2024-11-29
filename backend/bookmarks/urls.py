@@ -16,6 +16,7 @@ site_urls = [
 ]
 
 api_urls = [
+    path("api/list/", views.BookmarksList.as_view(), name="list_api_view"),
     path("api/create/<int:pk>", views.BookmarkPost.as_view(), name="create_api_view"),
     path(
         "api/delete/<int:pk>",
