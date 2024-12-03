@@ -30,6 +30,7 @@ export default function LoginPage() {
         "You have denied access to your account. Please, try again.",
       email_fetching:
         "An error occurred while fetching your e-mail. Please, try again.",
+      access_token: "Failed to obtain access token from Google.",
     };
 
     if (error) {

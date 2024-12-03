@@ -8,6 +8,7 @@ from django.urls import reverse
 from dotenv import load_dotenv
 from rest_framework import serializers, status
 from rest_framework.compat import requests
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -124,10 +125,14 @@ class GoogleLoginAPI(APIView):
         api_uri = reverse("account_login_google_api")
         redirect_uri = f"{domain}{api_uri}"
 
-        tokens = api_helpers.google_get_tokens(code=code, redirect_uri=redirect_uri)
-        user_data = api_helpers.google_get_user_info(
-            access_token=tokens["access_token"]
-        )
+        try:
+
+            tokens = api_helpers.google_get_tokens(code=code, redirect_uri=redirect_uri)
+            user_data = api_helpers.google_get_user_info(
+                access_token=tokens["access_token"]
+            )
+        except ValidationError:
+            return redirect(f"{login_url}?error=access_token")
 
         profile_data = {
             "email": user_data["email"],
