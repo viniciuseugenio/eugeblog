@@ -27,11 +27,12 @@ export default function TextArea() {
       <textarea
         ref={textArea}
         name="content"
+        id="content"
         value={value}
         placeholder="Add a comment..."
         onChange={handleChange}
         className="peer mb-2 w-full border-b border-[#AB886D] outline-none duration-300 focus:border-[#493628]"
-      ></textarea>
+      />
 
       <div className="invisible mb-0 flex justify-end gap-3 opacity-0 duration-300 peer-focus:visible peer-focus:mb-6 peer-focus:opacity-100">
         <button

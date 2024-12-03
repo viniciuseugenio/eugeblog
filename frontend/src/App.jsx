@@ -1,18 +1,14 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { loader as loadPosts } from "./components/Posts";
 import ContextWrapper, { loader as authLoader } from "./pages/ContextWrapper";
-import ErrorPage from "./pages/Error";
+import GenericError from "./pages/GenericError.jsx";
 import HomePage from "./pages/Home";
 import LoginPage, {
   action as loginAction,
   loader as loginLoader,
 } from "./pages/Login";
 import { action as logoutAction } from "./pages/Logout";
-import PostDetailsPage, {
-  action as createComment,
-  loader as loadPost,
-} from "./pages/PostDetails";
+import PostDetailsPage from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
@@ -26,18 +22,15 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <RootPage />,
-        errorElement: <ErrorPage />,
+        errorElement: <GenericError />,
         children: [
           {
             index: true,
             element: <HomePage />,
-            loader: loadPosts,
           },
           {
             path: "post/:id",
             element: <PostDetailsPage />,
-            loader: loadPost,
-            action: createComment,
           },
           {
             path: "privacy-policy",

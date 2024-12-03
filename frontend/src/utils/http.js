@@ -5,6 +5,47 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 export const queryClient = new QueryClient();
 
+export async function loadPosts(currentPage) {
+  let url = "http://localhost:8000/api/posts/";
+  if (currentPage > 1) {
+    url += `?page=${currentPage}`;
+  }
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    const error = new Error("Something went wrong while loading the posts.");
+    error.info = {
+      message: "We are very sorry for this, please, try again later.",
+    };
+    throw error;
+  }
+
+  const data = await response.json();
+
+  return {
+    posts: data.results,
+    pagination: data.pagination,
+  };
+}
+
+export async function loadPost(id) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/post/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Something went wrong while loading the post.");
+    }
+
+    return await response.json();
+  } catch {
+    throw new Error("An unexpected error occurred. Please, try again later.");
+  }
+}
+
 export async function fetchBookmarks() {
   const response = await fetch(`${VITE_BASE_BACKEND_URL}/bookmarks/api/list/`, {
     method: "GET",
@@ -80,5 +121,44 @@ export async function removeBookmark(postId, setIsBookmarked) {
   } catch (err) {
     console.log(err);
     toast.error("An unexpected error occurred. Please, try again.");
+  }
+}
+
+export async function createComment({ content, postId }) {
+  const response = await fetch(
+    `http://localhost:8000/api/post/${postId}/comments`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ comment: content }),
+      credentials: "include",
+    },
+  );
+
+  if (!response.ok) {
+    const error = new Error("Something went wrong while posting comment.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return await response.json();
+}
+
+export async function loadComments(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/post/${id}/comments`,
+    );
+
+    if (!response.ok) {
+      throw new Error("Something went wrong while loading comments.");
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch {
+    throw new Error("An unexpected error occurred. Please, try again later.");
   }
 }
