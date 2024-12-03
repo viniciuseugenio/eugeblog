@@ -8,10 +8,7 @@ import LoginPage, {
   loader as loginLoader,
 } from "./pages/Login";
 import { action as logoutAction } from "./pages/Logout";
-import PostDetailsPage, {
-  action as createComment,
-  loader as loadPost,
-} from "./pages/PostDetails";
+import PostDetailsPage from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
@@ -34,8 +31,6 @@ const router = createBrowserRouter([
           {
             path: "post/:id",
             element: <PostDetailsPage />,
-            loader: loadPost,
-            action: createComment,
           },
           {
             path: "privacy-policy",

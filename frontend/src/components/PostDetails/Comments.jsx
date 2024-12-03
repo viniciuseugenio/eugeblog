@@ -1,48 +1,108 @@
 import { CircularProgress } from "@mui/material";
-import { Suspense } from "react";
-import { Await, Form, Link } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { useAuth } from "../../store/auth-context.jsx";
+import { queryClient } from "../../utils/http.js";
 import Comment from "./Comment";
-import TextArea from "./TextArea";
+import CommentsCount from "./CommentsCount.jsx";
+import TextArea from "./TextArea.jsx";
+import { toast } from "sonner";
+import { loadComments, createComment } from "../../utils/http.js";
 
-export default function Comments({ comments, isAuthenticated, postId }) {
+export default function Comments({ postId }) {
+  const params = useParams();
+  const { isLogged } = useAuth();
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["comments", params.id],
+    queryFn: () => loadComments(params.id),
+  });
+
+  const { mutate, isPending: commentIsPending } = useMutation({
+    mutationFn: createComment,
+    onSuccess: () => {
+      toast.success("Comment posted successfully.");
+      queryClient.invalidateQueries(["comments", postId]);
+    },
+    onError: (error) => {
+      toast.error(
+        error.message ||
+          "An unexpected error occurred while creating your comment. Try again later.",
+      );
+    },
+  });
+
+  function handleCommentCreation(event) {
+    event.preventDefault();
+
+    const data = new FormData(event.target);
+    const content = data.get("content");
+
+    if (content.trim().length === 0) {
+      toast.error("Comment cannot be left empty.");
+      return;
+    }
+
+    mutate({ content, postId });
+  }
+
   return (
     <>
-      <Suspense fallback={<CircularProgress />}>
-        <Await resolve={comments}>
-          {(loadedComments) => (
+      {isError && (
+        <div className="flex items-center justify-center gap-1">
+          <span className="flex items-center justify-center text-xl text-red-500">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </span>
+          <h3>
+            {error.message || "Failed to load comments. Please, try again."}
+          </h3>
+        </div>
+      )}
+
+      {isPending && (
+        <>
+          <CommentsCount qty={0} postId={postId} />
+          <div className="text-center">
+            <CircularProgress />
+          </div>
+        </>
+      )}
+
+      {data && (
+        <>
+          <CommentsCount qty={data.length} postId={postId} />
+
+          {commentIsPending ? (
+            <div className="mb-3">
+              <CircularProgress />
+            </div>
+          ) : (
             <>
-              <div>
-                <h2 className="mb-4 text-3xl font-bold">
-                  {loadedComments.length} comments
-                </h2>
-
-                {isAuthenticated ? (
-                  <Form method="post">
-                    <TextArea />
-                  </Form>
-                ) : (
-                  <p className="mb-6">
-                    Any thoughts on this?{" "}
-                    <Link
-                      className="text-primary font-bold underline"
-                      to={`/login?next=/post/${postId}`}
-                    >
-                      Log in
-                    </Link>{" "}
-                    and come here to share them!
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-6">
-                {loadedComments.map((comment) => (
-                  <Comment key={comment.id} comment={comment} />
-                ))}
-              </div>
+              {isLogged ? (
+                <form onSubmit={handleCommentCreation} method="post">
+                  <TextArea />
+                </form>
+              ) : (
+                <p className="mb-6">
+                  Any thoughts on this?{" "}
+                  <Link
+                    className="text-primary font-bold underline"
+                    to={`/login?next=/post/${postId}`}
+                  >
+                    Log in
+                  </Link>{" "}
+                  and come here to share them!
+                </p>
+              )}
             </>
           )}
-        </Await>
-      </Suspense>
+          <div className="flex flex-col gap-6">
+            {data.map((comment) => (
+              <Comment key={comment.id} comment={comment} />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 }

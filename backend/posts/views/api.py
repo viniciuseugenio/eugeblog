@@ -1,3 +1,4 @@
+from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
 from rest_framework import generics, status
@@ -5,7 +6,6 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from utils import api_helpers
 
-from bookmarks.models import Bookmarks
 from ..models import Comment, Post
 from ..serializers import (
     CommentCreateSerializer,
