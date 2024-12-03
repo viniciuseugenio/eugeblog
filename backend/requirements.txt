@@ -14,6 +14,7 @@ django-cors-headers==4.6.0
 django-resized==1.0.2
 django-summernote==0.8.20.0
 djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
 djlint==1.35.2
 EditorConfig==0.12.4
 html-tag-names==0.1.2
