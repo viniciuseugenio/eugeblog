@@ -13,7 +13,7 @@ export default function BookmarksDropdown() {
     <div className="absolute right-0 top-14 bg-white shadow-xl">
       <div className="absolute -top-6 h-6 w-full bg-transparent" />
       <div className="absolute right-16 top-0 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" />
-      <div className="flex max-h-96 w-96 items-center justify-center overflow-y-scroll p-4">
+      <div className="flex w-96 items-center justify-center p-4">
         {isPending ? (
           <CircularProgress color="#493628" />
         ) : isError ? (
@@ -21,7 +21,7 @@ export default function BookmarksDropdown() {
             <span className="flex items-center justify-center text-xl">
               <ion-icon name="alert-circle-outline"></ion-icon>
             </span>
-            {error.info?.message}
+            {error.message}
           </p>
         ) : data.length > 0 ? (
           <ul className="flex flex-col gap-y-6">

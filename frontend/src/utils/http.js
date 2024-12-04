@@ -47,20 +47,24 @@ export async function loadPost(id) {
 }
 
 export async function fetchBookmarks() {
-  const response = await fetch(`${VITE_BASE_BACKEND_URL}/bookmarks/api/list/`, {
-    method: "GET",
-    credentials: "include",
-  });
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/bookmarks/api/list/`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    );
 
-  if (!response.ok) {
-    const error = new Error(response.error || "Failed to fetch bookmarks");
-    error.code = response.status;
-    error.info = await response.json();
-    throw error;
+    if (!response.ok) {
+      throw new Error(response.error || "Failed to fetch bookmarks");
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch {
+    throw new Error("An unexpected error occurred. Please, try again.");
   }
-
-  const data = await response.json();
-  return data.results;
 }
 
 export async function addBookmark(
