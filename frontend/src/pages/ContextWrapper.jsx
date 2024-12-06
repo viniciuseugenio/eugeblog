@@ -1,4 +1,9 @@
-import { Outlet, useLoaderData, useLocation } from "react-router-dom";
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { Toaster, toast } from "sonner";
 import AuthContextProvider from "../store/auth-context";
@@ -6,6 +11,7 @@ import AuthContextProvider from "../store/auth-context";
 export default function ContextWrapper() {
   const isAuthenticated = useLoaderData();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const notified = useRef(false);
 
@@ -23,8 +29,9 @@ export default function ContextWrapper() {
         toast.success(`You have successfully signed up with ${provider}!`);
       }
       notified.current = true;
+      navigate(location.pathname, { replace: true });
     }
-  }, [location]);
+  }, [location, navigate]);
 
   return (
     <AuthContextProvider initialAuthState={isAuthenticated}>
