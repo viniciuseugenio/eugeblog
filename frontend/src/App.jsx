@@ -7,7 +7,7 @@ import LoginPage, {
   action as loginAction,
   loader as loginLoader,
 } from "./pages/Login";
-import { action as logoutAction } from "./pages/Logout";
+import LogoutError, { action as logoutAction } from "./pages/Logout";
 import PostDetailsPage from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
@@ -47,6 +47,7 @@ const router = createBrowserRouter([
       {
         path: "/logout",
         action: logoutAction,
+        errorElement: <LogoutError />,
       },
       {
         path: "/signup",
