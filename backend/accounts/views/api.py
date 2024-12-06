@@ -72,12 +72,12 @@ class SignupAPI(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "User created!"}, status=status.HTTP_202_CREATED
+                {"message": "User created!"}, status=status.HTTP_201_CREATED
             )
 
         print(serializer.errors)
         return Response(
-            {"errors": serializer.errors}, status=status.HTTP_401_BAD_REQUEST
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
