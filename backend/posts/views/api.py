@@ -55,12 +55,18 @@ class PostDetails(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         post_pk = kwargs.get("pk")
-        postObj = Post.objects.get(pk=post_pk)
-        postSerialized = PostDetailsSerializer(postObj)
+        post_obj = Post.objects.filter(pk=post_pk, is_published=True).first()
+        post_serialized = PostDetailsSerializer(post_obj)
+
+        if not post_obj:
+            return Response(
+                {"error": "This post was not found or is not published."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         base_response = Response(
             {
-                "post": postSerialized.data,
+                "post": post_serialized.data,
                 "authenticated": False,
                 "has_modify_permission": False,
                 "is_bookmarked": False,
@@ -74,7 +80,7 @@ class PostDetails(generics.RetrieveAPIView):
         if user_id:
             user_obj = User.objects.get(pk=user_id)
             post_bookmarked = Bookmarks.objects.filter(
-                post=postObj, user=user_obj
+                post=post_obj, user=user_obj
             ).exists()
 
             if post_bookmarked:

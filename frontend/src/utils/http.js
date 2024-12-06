@@ -35,14 +35,17 @@ export async function loadPost(id) {
       method: "GET",
       credentials: "include",
     });
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error("Something went wrong while loading the post.");
+      throw new Error(data.error);
     }
 
-    return await response.json();
-  } catch {
-    throw new Error("An unexpected error occurred. Please, try again later.");
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.message || "An unexpected error occurred. Please, try again later.",
+    );
   }
 }
 
