@@ -6,7 +6,7 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 export const queryClient = new QueryClient();
 
 export async function loadPosts(currentPage) {
-  let url = "http://localhost:8000/api/posts/";
+  let url = `${VITE_BASE_BACKEND_URL}/api/posts/`;
   if (currentPage > 1) {
     url += `?page=${currentPage}`;
   }
@@ -31,7 +31,7 @@ export async function loadPosts(currentPage) {
 
 export async function loadPost(id) {
   try {
-    const response = await fetch(`http://localhost:8000/api/post/${id}`, {
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/post/${id}`, {
       method: "GET",
       credentials: "include",
     });
@@ -130,7 +130,7 @@ export async function removeBookmark(postId, setIsBookmarked) {
 
 export async function createComment({ content, postId }) {
   const response = await fetch(
-    `http://localhost:8000/api/post/${postId}/comments`,
+    `${VITE_BASE_BACKEND_URL}/api/post/${postId}/comments`,
     {
       method: "POST",
       headers: {
@@ -153,7 +153,7 @@ export async function createComment({ content, postId }) {
 export async function loadComments(id) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/post/${id}/comments`,
+      `${VITE_BASE_BACKEND_URL}/api/post/${id}/comments`,
     );
 
     if (!response.ok) {
