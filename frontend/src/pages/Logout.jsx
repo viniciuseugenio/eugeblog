@@ -45,13 +45,10 @@ export async function action({ request }) {
     const queryParams = new URLSearchParams(url.search);
     const next = queryParams.get("next") || "/";
 
-    const response = await fetch(
-      "http://localhost:8000/accounts/api/logouta/",
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
+    const response = await fetch("http://localhost:8000/accounts/api/logout/", {
+      method: "POST",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error("Something went wrong while logging out.");
