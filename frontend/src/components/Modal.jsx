@@ -1,4 +1,4 @@
-import { useSubmit } from "react-router-dom";
+import { useSubmit, useLocation } from "react-router-dom";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "../store/auth-context";
@@ -7,12 +7,19 @@ import { toast } from "sonner";
 const Modal = forwardRef(function Modal({ children, isLogout, url }, ref) {
   const { logout } = useAuth();
   const submit = useSubmit();
+  const location = useLocation();
 
   function handleConfirm() {
+    let newUrl = url;
+
     if (isLogout) {
       logout();
+
+      if (location.pathname !== "/") {
+        newUrl += `?next=${location.pathname}`;
+      }
     }
-    submit(null, { method: "POST", action: url });
+    submit(null, { method: "POST", action: newUrl });
     ref.current.close();
     toast.warning("You logged out successfuly.");
   }
