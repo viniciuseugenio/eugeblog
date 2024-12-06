@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Link, useSubmit } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IconHorizontal from "../assets/eugeblog-hori.svg";
 import { useAuth } from "../store/auth-context";
 import Dropdown from "./Dropdown";
@@ -8,8 +8,7 @@ import BookmarksDropdown from "./BookmarksDropdown";
 
 export default function MainHeader() {
   const modal = useRef();
-  const { isLogged, logout } = useAuth();
-  const submit = useSubmit();
+  const { isLogged } = useAuth();
 
   function handleLogout(event) {
     event.preventDefault();
@@ -29,7 +28,7 @@ export default function MainHeader() {
         </Link>
         <nav>
           <ul className="flex h-12 items-center justify-center gap-6 ">
-            {!isLogged && (
+            {!isLogged ? (
               <>
                 <li>
                   <Link
@@ -48,8 +47,7 @@ export default function MainHeader() {
                   </Link>
                 </li>
               </>
-            )}
-            {isLogged && (
+            ) : (
               <>
                 <li>
                   <form onSubmit={handleLogout}>
