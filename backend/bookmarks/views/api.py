@@ -27,11 +27,13 @@ class BookmarksList(generics.ListAPIView):
         user_id = auth_info["user_id"]
         user_obj = User.objects.get(id=user_id)
 
-        return Bookmarks.objects.filter(user=user_obj).order_by("-id")
+        return Bookmarks.objects.filter(
+            user=user_obj, post__is_published=True
+        ).order_by("-id")
 
 
 class BookmarkPost(generics.CreateAPIView):
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
         base_response = Response({"authenticatd": False, "user_id": 0})
         auth_info = api_helpers.check_authentication(request, base_response)
         auth_response = auth_info["response"]
@@ -44,6 +46,11 @@ class BookmarkPost(generics.CreateAPIView):
         user = User.objects.get(id=auth_info["user_id"])
         post_id = kwargs.get("pk")
         post_obj = Post.objects.get(id=post_id)
+
+        if post_obj.is_published is False:
+            auth_response.data["message"] = "This post is not published."
+            auth_response.status_code = 400
+            return auth_response
 
         if Bookmarks.objects.filter(user=user, post=post_obj).exists():
             auth_response.data["message"] = "Post already bookmarked."
@@ -72,6 +79,11 @@ class RemoveBookmark(generics.DestroyAPIView):
         user = User.objects.get(id=auth_info["user_id"])
         post_id = kwargs.get("pk")
         post_obj = Post.objects.get(id=post_id)
+
+        if post_obj.is_published is False:
+            auth_response.data["message"] = "This post is not published."
+            auth_response.status_code = status.HTTP_400_BAD_REQUEST
+            return auth_response
 
         if not Bookmarks.objects.filter(user=user, post=post_obj).exists():
             auth_response.data["message"] = "Post not bookmarked."
