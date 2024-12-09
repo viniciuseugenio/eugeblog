@@ -4,13 +4,14 @@ import PostItem from "./PostDetails/PostItem";
 import Pagination from "./Pagination";
 import { loadPosts } from "../utils/http.js";
 import BaseError from "./BaseError.jsx";
+import { useSearchParams } from "react-router-dom";
 
 export default function Posts() {
-  const currentUrl = new URL(window.location.href);
-  const page = currentUrl.searchParams.get("page") || 1;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page")) || 1;
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", page],
     queryFn: () => loadPosts(page),
     staleTime: 5000,
   });
@@ -34,7 +35,7 @@ export default function Posts() {
             ))}
           </div>
           {data.pagination.qty_pages > 1 && (
-            <Pagination pagination={data.pagination} />
+            <Pagination className="mt-12" pagination={data.pagination} />
           )}
         </>
       )}

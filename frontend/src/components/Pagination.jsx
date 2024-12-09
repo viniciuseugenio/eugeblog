@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { paginationRange } from "../utils/helpers";
+import PaginationIcon from "./PaginationIcon";
+import PageButton from "./PageButton";
 
-export default function Pagination({ pagination }) {
+export default function Pagination({
+  isBookmarks,
+  pagination,
+  handleNextPage,
+  handlePreviousPage,
+  handleSetPage,
+  className,
+  totalPagesDisplay = 10,
+}) {
+  let content;
   const {
     qty_pages: qtyPages,
     current_page: currentPage,
@@ -13,38 +24,80 @@ export default function Pagination({ pagination }) {
 
   const qtyPagesArr = Array.from({ length: qtyPages }, (_, i) => i + 1);
 
-  const pageRange = paginationRange(qtyPagesArr, currentPage, qtyPages);
+  const pageRange = paginationRange(
+    qtyPagesArr,
+    currentPage,
+    qtyPages,
+    totalPagesDisplay,
+  );
 
   const buttonClasses =
     "flex h-full items-center justify-center rounded border border-[#E4E0E1] px-3 py-1 duration-300 hover:bg-[#D6C0B3]";
 
-  return (
-    <div className="mt-12 flex grow gap-3">
-      {hasPrevious && (
-        <Link to={`?page=${previousPage}`}>
-          <span className={buttonClasses}>
-            <ion-icon name="chevron-back-outline"></ion-icon>
-          </span>
-        </Link>
-      )}
+  if (isBookmarks) {
+    content = (
+      <>
+        {hasPrevious && (
+          <button onClick={handlePreviousPage}>
+            <PaginationIcon isPrevious />
+          </button>
+        )}
 
-      {pageRange.map((page) => (
-        <Link key={page} to={`?page=${page}`}>
-          <span
-            className={`${buttonClasses} ${page === currentPage ? "bg-[#AB886D]" : ""}`}
+        {pageRange.map((page) => (
+          <button
+            key={page}
+            onClick={() => {
+              handleSetPage(page);
+            }}
           >
-            {page}
-          </span>
-        </Link>
-      ))}
+            <PageButton
+              key={page}
+              page={page}
+              buttonClasses={buttonClasses}
+              currentPage={currentPage}
+            />
+          </button>
+        ))}
 
-      {hasNext && (
-        <Link to={`?page=${nextPage}`}>
-          <span className={buttonClasses}>
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </span>
-        </Link>
-      )}
-    </div>
+        {hasNext && (
+          <button onClick={handleNextPage}>
+            <PaginationIcon />
+          </button>
+        )}
+      </>
+    );
+  }
+
+  if (!isBookmarks) {
+    content = (
+      <>
+        {hasPrevious && (
+          <Link to={`?page=${previousPage}`}>
+            <PaginationIcon isPrevious />
+          </Link>
+        )}
+
+        {pageRange.map((page) => (
+          <Link key={page} to={`?page=${page}`}>
+            <PageButton
+              key={page}
+              page={page}
+              buttonClasses={buttonClasses}
+              currentPage={currentPage}
+            />
+          </Link>
+        ))}
+
+        {hasNext && (
+          <Link to={`?page=${nextPage}`}>
+            <PaginationIcon />
+          </Link>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <div className={`${className ? className : ""} flex gap-3`}>{content}</div>
   );
 }

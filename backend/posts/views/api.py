@@ -2,9 +2,9 @@ from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
 from rest_framework import generics, status
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from utils import api_helpers
+from utils.make_pagination import BaseListPagination
 
 from ..models import Comment, Post
 from ..serializers import (
@@ -18,35 +18,10 @@ User = get_user_model()
 load_dotenv()
 
 
-class PostsListPagination(PageNumberPagination):
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "pagination": {
-                    "previous": self.get_previous_link(),
-                    "has_next": self.page.has_next(),
-                    "has_previous": self.page.has_previous(),
-                    "next_page": (
-                        self.page.next_page_number() if self.page.has_next() else None
-                    ),
-                    "previous_page": (
-                        self.page.previous_page_number()
-                        if self.page.has_previous()
-                        else None
-                    ),
-                    "qty_pages": self.page.paginator.num_pages,
-                    "current_page": self.page.number,
-                },
-                "count": self.page.paginator.count,
-                "results": data,
-            }
-        )
-
-
 class PostsList(generics.ListAPIView):
     queryset = Post.objects.filter(is_published=True).order_by("-id")
     serializer_class = PostListSerializer
-    pagination_class = PostsListPagination
+    pagination_class = BaseListPagination
 
 
 class PostDetails(generics.RetrieveAPIView):

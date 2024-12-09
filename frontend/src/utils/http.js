@@ -6,6 +6,8 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 export const queryClient = new QueryClient();
 
 export async function loadPosts(currentPage) {
+  console.log("executing query, page:", currentPage);
+
   let url = `${VITE_BASE_BACKEND_URL}/api/posts/`;
   if (currentPage > 1) {
     url += `?page=${currentPage}`;
@@ -49,22 +51,25 @@ export async function loadPost(id) {
   }
 }
 
-export async function fetchBookmarks() {
+export async function fetchBookmarks(page = 1) {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/bookmarks/api/list/`,
-      {
-        method: "GET",
-        credentials: "include",
-      },
-    );
+    let url = `${VITE_BASE_BACKEND_URL}/bookmarks/api/list`;
 
-    if (!response.ok) {
-      throw new Error(response.error || "Failed to fetch bookmarks");
+    if (page > 1) {
+      url += `?page=${page}`;
     }
 
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+    });
     const data = await response.json();
-    return data.results;
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch bookmarks");
+    }
+
+    return data;
   } catch {
     throw new Error("An unexpected error occurred. Please, try again.");
   }

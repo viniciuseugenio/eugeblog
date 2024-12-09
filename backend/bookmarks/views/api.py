@@ -3,6 +3,7 @@ from posts.models import Post
 from rest_framework import generics, status
 from rest_framework.response import Response
 from utils import api_helpers
+from utils.make_pagination import BaseListPagination
 
 from bookmarks.models import Bookmarks
 
@@ -11,8 +12,13 @@ from ..serializers import BookmarksSerializer
 User = get_user_model()
 
 
+class BookmarksListPagination(BaseListPagination):
+    page_size = 6
+
+
 class BookmarksList(generics.ListAPIView):
     serializer_class = BookmarksSerializer
+    pagination_class = BookmarksListPagination
 
     def get_queryset(self):
         base_response = Response({"authenticatd": False, "user_id": 0})
