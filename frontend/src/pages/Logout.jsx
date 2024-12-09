@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { redirect } from "react-router-dom";
 import BaseError from "../components/BaseError";
-import MainHeader from "../components/MainHeader";
+import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
 import { useAuth } from "../store/auth-context";
 import { useEffect, useRef } from "react";

@@ -1,4 +1,4 @@
-import MainHeader from "../components/MainHeader";
+import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
 
 import { Link } from "react-router-dom";
