@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import PostItem from "./PostDetails/PostItem";
-import Pagination from "./Pagination";
+import Pagination from "./Pagination/Pagination.jsx";
 import { loadPosts } from "../utils/http.js";
 import BaseError from "./BaseError.jsx";
 import { useSearchParams } from "react-router-dom";
 
 export default function Posts() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const page = parseInt(searchParams.get("page")) || 1;
 
   const { data, isPending, isError, error } = useQuery({
