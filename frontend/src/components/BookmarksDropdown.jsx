@@ -3,7 +3,7 @@ import { CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBookmarks } from "../utils/http";
 import BookmarkItem from "./BookmarkItem";
-import Pagination from "./Pagination";
+import Pagination from "./Pagination/Pagination";
 import { queryClient } from "../utils/http";
 
 export default function BookmarksDropdown() {

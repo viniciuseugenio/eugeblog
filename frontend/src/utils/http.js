@@ -6,8 +6,6 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 export const queryClient = new QueryClient();
 
 export async function loadPosts(currentPage) {
-  console.log("executing query, page:", currentPage);
-
   let url = `${VITE_BASE_BACKEND_URL}/api/posts/`;
   if (currentPage > 1) {
     url += `?page=${currentPage}`;
