@@ -4,17 +4,14 @@ export default function Dropdown({ children, DropdownContent }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-      className="relative h-fit w-fit rounded-lg bg-[#D6C0B3] px-4 py-2 duration-300 hover:text-[#5b4a3e]"
-    >
-      <div className="flex items-center justify-center gap-1 font-medium">
+    <div className="relative h-full w-full">
+      <button
+        aria-label="dropdown"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`${isOpen ? "bg-accent" : "bg-[#e2d3ca] hover:bg-[#decdc2]"} active:bg-accent h-full cursor-pointer rounded-lg px-4 py-2 duration-300 hover:text-black`}
+      >
         {children}
-        <ion-icon
-          name={isOpen ? "chevron-up-outline" : "chevron-down-outline"}
-        />
-      </div>
+      </button>
       {isOpen && <DropdownContent isOpen={isOpen} />}
     </div>
   );

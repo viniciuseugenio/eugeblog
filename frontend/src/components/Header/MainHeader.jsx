@@ -26,8 +26,8 @@ export default function MainHeader() {
         <Link to="/" className="flex items-center">
           <img src={IconHorizontal} alt="" className="w-32" />
         </Link>
-        <nav>
-          <ul className="flex h-12 items-center justify-center gap-6 ">
+        <nav className="flex items-center justify-center">
+          <ul className={`${isLogged ? "gap-2" : "gap-6"} flex justify-center`}>
             {!isLogged ? (
               <AuthHeader />
             ) : (
