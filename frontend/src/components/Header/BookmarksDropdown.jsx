@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBookmarks } from "../utils/http";
+import { fetchBookmarks } from "../../utils/http";
 import BookmarkItem from "./BookmarkItem";
-import Pagination from "./Pagination/Pagination";
-import { queryClient } from "../utils/http";
+import Pagination from "../Pagination/Pagination";
+import { queryClient } from "../../utils/http";
 
 export default function BookmarksDropdown() {
   let content;
@@ -82,8 +82,7 @@ export default function BookmarksDropdown() {
 
   return (
     <div className="absolute right-0 top-14 z-10 bg-white shadow-xl">
-      <div className="absolute -top-6 h-6 w-full bg-transparent" />
-      <div className="absolute right-16 top-0 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" />
+      <div className="absolute right-5 top-0 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" />
       {content}
     </div>
   );
