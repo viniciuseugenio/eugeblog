@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { redirect } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import BaseError from "../components/BaseError";
 import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
@@ -39,12 +38,8 @@ export default function LogoutError() {
   );
 }
 
-export async function action({ request }) {
+export async function action() {
   try {
-    const url = new URL(request.url);
-    const queryParams = new URLSearchParams(url.search);
-    const next = queryParams.get("next") || "/";
-
     const response = await fetch("http://localhost:8000/accounts/api/logout/", {
       method: "POST",
       credentials: "include",
@@ -54,7 +49,7 @@ export async function action({ request }) {
       throw new Error("Something went wrong while logging out.");
     }
 
-    return redirect(next);
+    return redirect("/");
   } catch {
     throw new Error("An unexpected error occurred. Please, try again later.");
   }
