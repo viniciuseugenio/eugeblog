@@ -11,6 +11,7 @@ class PostListSerializer(serializers.ModelSerializer):
             "title",
             "image",
             "excerpt",
+            "created_at",
         ]
 
     author = serializers.SerializerMethodField(method_name="get_author_full_name")
