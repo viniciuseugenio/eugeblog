@@ -60,7 +60,7 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name=_("Post"))
     author = models.ForeignKey(
-        User, null=True, on_delete=models.SET_NULL, verbose_name=_("Author")
+        User, null=True, on_delete=models.CASCADE, verbose_name=_("Author")
     )
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
