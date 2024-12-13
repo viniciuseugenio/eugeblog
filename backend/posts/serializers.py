@@ -7,10 +7,17 @@ class PostListSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             "id",
+            "author",
             "title",
             "image",
             "excerpt",
         ]
+
+    author = serializers.SerializerMethodField(method_name="get_author_full_name")
+
+    def get_author_full_name(self, obj):
+        author = obj.author
+        return f"{author.first_name} {author.last_name}"
 
 
 class CommentDetailsSerializer(serializers.ModelSerializer):

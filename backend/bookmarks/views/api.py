@@ -13,7 +13,7 @@ User = get_user_model()
 
 
 class BookmarksListPagination(BaseListPagination):
-    page_size = 6
+    page_size = 5
 
 
 class BookmarksList(generics.ListAPIView):

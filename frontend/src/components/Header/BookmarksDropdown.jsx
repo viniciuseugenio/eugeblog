@@ -81,7 +81,7 @@ export default function BookmarksDropdown() {
   }
 
   return (
-    <div className="absolute right-0 top-14 z-10 bg-white shadow-xl">
+    <div className="absolute right-0 top-14 z-10 rounded-md bg-white shadow-2xl">
       <div className="absolute right-5 top-0 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" />
       {content}
     </div>
