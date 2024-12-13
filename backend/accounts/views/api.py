@@ -75,7 +75,6 @@ class SignupAPI(APIView):
                 {"message": "User created!"}, status=status.HTTP_201_CREATED
             )
 
-        print(serializer.errors)
         return Response(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
