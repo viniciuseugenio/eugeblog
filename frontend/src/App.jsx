@@ -13,6 +13,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
 import { queryClient } from "./utils/http.js";
+import PostCreationPage from "./pages/PostCreation.jsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
           {
             path: "privacy-policy",
             element: <PrivacyPolicyPage />,
+          },
+          {
+            path: "post/create",
+            element: <PostCreationPage />,
           },
         ],
       },

@@ -9,7 +9,7 @@ export default function LoggedHeader({ handleLogout }) {
 
   return (
     <>
-      <Link className={liClasses}>
+      <Link to="/post/create/" className={liClasses}>
         <li>
           <IconSpan>
             <ion-icon name="add-outline"></ion-icon>

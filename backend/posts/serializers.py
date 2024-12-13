@@ -1,5 +1,19 @@
-from .models import Post, Comment
+from .models import Post, Comment, Category
 from rest_framework import serializers
+
+
+class AuthorFullnameField(serializers.Field):
+    def to_representation(self, value):
+        if value:
+            return f"{value.first_name} {value.last_name}"
+
+        return ""
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -14,29 +28,35 @@ class PostListSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
-    author = serializers.SerializerMethodField(method_name="get_author_full_name")
-
-    def get_author_full_name(self, obj):
-        author = obj.author
-        return f"{author.first_name} {author.last_name}"
+    author = AuthorFullnameField()
 
 
-class CommentDetailsSerializer(serializers.ModelSerializer):
+class PostCreationSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(read_only=True)
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), required=True
+    )
+
     class Meta:
-        model = Comment
-        fields = ["id", "author", "comment", "created_at"]
+        model = Post
+        fields = [
+            "id",
+            "author",
+            "image",
+            "category",
+            "title",
+            "excerpt",
+            "content",
+            "created_at",
+        ]
 
-    author = serializers.SerializerMethodField(method_name="get_author_full_name")
+    def validate_content(self, value):
+        if not value or len(value.strip()) < 1000:
+            raise serializers.ValidationError(
+                "This article is too short! It must have at least 1000 characters."
+            )
 
-    def get_author_full_name(self, obj):
-        author = obj.author
-        return f"{author.first_name} {author.last_name}"
-
-
-class CommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ["id", "comment"]
+        return value
 
 
 class PostDetailsSerializer(serializers.ModelSerializer):
@@ -54,8 +74,18 @@ class PostDetailsSerializer(serializers.ModelSerializer):
         ]
 
     category = serializers.StringRelatedField()
-    author = serializers.SerializerMethodField(method_name="get_author_full_name")
+    author = AuthorFullnameField()
 
-    def get_author_full_name(self, obj):
-        author = obj.author
-        return f"{author.first_name} {author.last_name}"
+
+class CommentDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "author", "comment", "created_at"]
+
+    author = AuthorFullnameField()
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "comment"]
