@@ -5,13 +5,15 @@ import { fetchBookmarks } from "../../utils/http";
 import BookmarkItem from "./BookmarkItem";
 import Pagination from "../Pagination/Pagination";
 import { queryClient } from "../../utils/http";
+import { useAuth } from "../../store/auth-context";
 
 export default function BookmarksDropdown() {
   let content;
   const [page, setPage] = useState(1);
+  const { userId } = useAuth();
 
   const { data, isError, isPending, error } = useQuery({
-    queryKey: ["bookmarks", page],
+    queryKey: ["bookmarks", { userId }, { page }],
     queryFn: () => fetchBookmarks(page),
   });
 
