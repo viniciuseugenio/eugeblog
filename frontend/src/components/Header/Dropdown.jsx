@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Dropdown({ children, DropdownContent }) {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" ref={dropdownRef}>
       <button
         aria-label="dropdown"
         onClick={() => setIsOpen((prev) => !prev)}
