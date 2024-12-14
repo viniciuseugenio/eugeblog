@@ -1,3 +1,4 @@
+from django.http.request import MultiPartParser
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
@@ -6,16 +7,23 @@ from rest_framework.response import Response
 from utils import api_helpers
 from utils.make_pagination import BaseListPagination
 
-from ..models import Comment, Post
+from ..models import Comment, Post, Category
 from ..serializers import (
     CommentCreateSerializer,
     CommentDetailsSerializer,
+    PostCreationSerializer,
     PostDetailsSerializer,
     PostListSerializer,
+    CategorySerializer,
 )
 
 User = get_user_model()
 load_dotenv()
+
+
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 class PostsList(generics.ListAPIView):
@@ -68,6 +76,52 @@ class PostDetails(generics.RetrieveAPIView):
                 )
             )
 
+        return auth_response
+
+
+class PostCreation(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostCreationSerializer
+
+    def post(self, request):
+        print(request.data)
+
+        # Check authentication and refresh tokens if necessary
+        auth_info = api_helpers.check_authentication(
+            request, Response({"authenticated": False})
+        )
+
+        # Handle unauthenticated user
+        if not auth_info.get("authenticated"):
+            return Response(
+                {"error": "You must be logged in to create a post."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        # Try to fetch user, in case of failure return 404 error
+        user_id = auth_info.get("user_id")
+        try:
+            user_obj = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "The user was not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        auth_response = auth_info.get("response")  # Response with fresh JWT tokens
+
+        # Validate and save the new post data
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(author=user_obj)
+            auth_response.data = serializer.data
+            auth_response.status_code = status.HTTP_201_CREATED
+            return auth_response
+
+        # Handle invalid data
+        auth_response.data = {"errors": serializer.errors}
+        auth_response.status_code = status.HTTP_400_BAD_REQUEST
         return auth_response
 
 

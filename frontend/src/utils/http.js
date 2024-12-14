@@ -49,6 +49,25 @@ export async function loadPost(id) {
   }
 }
 
+export async function createPost(postData) {
+  try {
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/post/create`, {
+      method: "POST",
+      credentials: "include",
+      body: postData,
+    });
+    const data = await response.json();
+
+    if (!response.ok && response.status !== 400) {
+      throw new Error("An unexpected error occurred. Please, try again later.");
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function fetchBookmarks(page = 1) {
   try {
     let url = `${VITE_BASE_BACKEND_URL}/bookmarks/api/list`;
@@ -170,5 +189,24 @@ export async function loadComments(id) {
     return data.results;
   } catch {
     throw new Error("An unexpected error occurred. Please, try again later.");
+  }
+}
+
+export async function fetchCategories() {
+  try {
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/categories/`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "It was not possible to load the categories.",
+      );
+    }
+
+    return data.results;
+  } catch (error) {
+    throw new Error(
+      error.message || "An unexpected error occurred. Please, try again later.",
+    );
   }
 }
