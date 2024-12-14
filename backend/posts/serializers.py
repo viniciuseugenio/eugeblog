@@ -26,6 +26,7 @@ class PostListSerializer(serializers.ModelSerializer):
             "image",
             "excerpt",
             "created_at",
+            "review_status",
         ]
 
     author = AuthorFullnameField()
@@ -48,6 +49,7 @@ class PostCreationSerializer(serializers.ModelSerializer):
             "excerpt",
             "content",
             "created_at",
+            "review_status",
         ]
 
     def validate_content(self, value):
@@ -71,6 +73,7 @@ class PostDetailsSerializer(serializers.ModelSerializer):
             "excerpt",
             "content",
             "created_at",
+            "review_status",
         ]
 
     category = serializers.StringRelatedField()
