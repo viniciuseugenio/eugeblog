@@ -23,11 +23,11 @@ User = get_user_model()
 
 class VerifyUser(APIView):
     def get(self, request):
-        base_response = Response({"authenticated": False})
+        base_response = Response({"authenticated": False, "user_id": None})
 
         auth_info = api_helpers.check_authentication(request, base_response)
-
         auth_response = auth_info.get("response")
+
         return auth_response
 
 

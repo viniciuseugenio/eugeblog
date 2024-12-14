@@ -72,12 +72,14 @@ def check_authentication(request, response):
     access_token = request.COOKIES.get("access_token")
 
     if access_token:
+        user_id = get_user_id(access_token)
         response.data["authenticated"] = True
+        response.data["user_id"] = user_id
 
         return {
             "response": response,
             "authenticated": True,
-            "user_id": get_user_id(access_token),
+            "user_id": user_id,
             "access_token": access_token,
         }
 
@@ -87,15 +89,18 @@ def check_authentication(request, response):
 
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
+            user_id = get_user_id(access_token)
 
             set_access_token(response, access_token, "on")
             set_refresh_token(response, refresh_token)
+
             response.data["authenticated"] = True
+            response.data["user_id"] = user_id
 
             return {
                 "response": response,
                 "authenticated": True,
-                "user_id": get_user_id(access_token),
+                "user_id": user_id,
                 "access_token": access_token,
             }
 

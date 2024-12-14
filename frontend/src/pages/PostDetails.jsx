@@ -34,7 +34,7 @@ export default function PostDetailsPage() {
       }
 
       if (data.authenticated && !isLogged) {
-        login();
+        login(data.user_id);
       }
     }
   }, [data, isLogged, login, logout]);

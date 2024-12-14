@@ -9,7 +9,7 @@ import { Toaster, toast } from "sonner";
 import AuthContextProvider from "../store/auth-context";
 
 export default function ContextWrapper() {
-  const isAuthenticated = useLoaderData();
+  const { authenticated, user_id: userId } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ export default function ContextWrapper() {
   }, [location, navigate]);
 
   return (
-    <AuthContextProvider initialAuthState={isAuthenticated}>
+    <AuthContextProvider initialAuthState={{ authenticated, userId }}>
       <Toaster position="top-right" closeButton richColors duration={10000} />
       <Outlet />
     </AuthContextProvider>
@@ -50,5 +50,5 @@ export async function loader() {
   );
 
   const data = await response.json();
-  return data.authenticated;
+  return data;
 }
