@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { createPost } from "../utils/http.js";
+import { createPost } from "../utils/http";
 
 export default function PostCreationPage() {
   const navigate = useNavigate();

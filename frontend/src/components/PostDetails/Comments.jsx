@@ -2,12 +2,11 @@ import { CircularProgress } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../store/auth-context.jsx";
-import { queryClient } from "../../utils/http.js";
 import Comment from "./Comment";
 import CommentsCount from "./CommentsCount.jsx";
 import TextArea from "./TextArea.jsx";
 import { toast } from "sonner";
-import { loadComments, createComment } from "../../utils/http.js";
+import { loadComments, createComment, queryClient } from "../../utils/http";
 
 export default function Comments({ postId }) {
   const params = useParams();

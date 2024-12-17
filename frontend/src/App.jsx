@@ -12,7 +12,7 @@ import PostDetailsPage from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
-import { queryClient } from "./utils/http.js";
+import { queryClient } from "./utils/http";
 import PostCreationPage from "./pages/PostCreation.jsx";
 
 const router = createBrowserRouter([

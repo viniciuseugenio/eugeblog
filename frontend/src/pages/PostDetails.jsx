@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useAuth } from "../store/auth-context";
 import PostDetailsBase from "../components/PostDetails/PostDetailsBase.jsx";
 import { CircularProgress } from "@mui/material";
-import { loadPost } from "../utils/http.js";
+import { loadPost } from "../utils/http";
 import BaseError from "../components/BaseError.jsx";
 import { toast } from "sonner";
 
