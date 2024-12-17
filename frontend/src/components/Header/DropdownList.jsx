@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DropdownListItem from "./DropdownListItem.jsx";
 import Pagination from "../Pagination/Pagination.jsx";
-import { queryClient } from "../../utils/http.js";
+import { queryClient } from "../../utils/http";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 
@@ -53,7 +53,7 @@ export default function DropdownList({ queryKey, queryFn }) {
     if (data.results.length > 0) {
       content = (
         <>
-          <ul className="flex min-h-[38rem] w-96 flex-grow flex-col gap-y-6 p-4">
+          <ul className="flex min-h-[38rem] w-[26rem] flex-grow flex-col gap-y-6 p-4">
             {data.results.map((item) => (
               <DropdownListItem
                 key={item.id}

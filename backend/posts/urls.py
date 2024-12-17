@@ -24,6 +24,9 @@ site_urls = [
 
 api_urls = [
     path("api/posts/", api_views.PostsList.as_view(), name="api_list"),
+    path(
+        "api/posts/user", api_views.UserPostsList.as_view(), name="api_post_list_user"
+    ),
     path("api/post/create", api_views.PostCreation.as_view(), name="api_create"),
     path("api/post/<int:pk>", api_views.PostDetails.as_view(), name="api_details"),
     path(

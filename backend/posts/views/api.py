@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from rest_framework import generics, status
 from rest_framework.response import Response
 from utils import api_helpers
-from utils.make_pagination import BaseListPagination
+from utils.make_pagination import BaseListPagination, BaseDropdownPagination
 
 from ..models import Comment, Post, Category
 from ..serializers import (
@@ -30,6 +30,18 @@ class PostsList(generics.ListAPIView):
     queryset = Post.objects.filter(is_published=True).order_by("-id")
     serializer_class = PostListSerializer
     pagination_class = BaseListPagination
+
+
+class UserPostsList(generics.ListAPIView):
+    serializer_class = PostListSerializer
+    pagination_class = BaseDropdownPagination
+
+    def get_queryset(self):
+        auth_info = api_helpers.check_authentication(self.request, Response({}))
+        user_id = auth_info.get("user_id")
+
+        qs = Post.objects.filter(author=user_id).order_by("-id")
+        return qs
 
 
 class PostDetails(generics.RetrieveAPIView):
@@ -105,7 +117,7 @@ class PostCreation(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(author=user_obj)
+            serializer.save(author=user_obj, review_status="P")
             auth_response.data = serializer.data
             auth_response.status_code = status.HTTP_201_CREATED
             return auth_response
