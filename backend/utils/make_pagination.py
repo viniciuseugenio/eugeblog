@@ -29,6 +29,10 @@ class BaseListPagination(PageNumberPagination):
         )
 
 
+class BaseDropdownPagination(BaseListPagination):
+    page_size = 5
+
+
 def make_pagination(page_range, cur_page, qty_pages=10):
     total_pages = len(page_range)
 
