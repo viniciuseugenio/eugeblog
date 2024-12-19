@@ -1,4 +1,4 @@
-from django.http.request import MultiPartParser
+from django.shortcuts import get_object_or_404
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
