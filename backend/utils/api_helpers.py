@@ -28,19 +28,14 @@ def get_user_id(token):
         return 0
 
 
-def check_if_is_allowed_to_edit(token, post_id):
-    try:
-        user_id = get_user_id(token)
-        user_obj = User.objects.get(pk=user_id)
-        post_obj = Post.objects.get(pk=post_id)
+def check_if_is_allowed_to_edit(user_id, post_id):
+    post_obj = Post.objects.get(pk=post_id)
+    user_obj = User.objects.get(pk=user_id)
 
-        is_post_reviewer = user_obj.groups.filter(name="post_reviewer").exists()
-        is_owner = post_obj.author.id == user_id
+    is_post_reviewer = user_obj.groups.filter(name="post_reviewer").exists()
+    is_owner = post_obj.author.id == user_id
 
-        return is_post_reviewer or is_owner
-
-    except (jwt.ExpiredSignatureError, jwt.DecodeError, jwt.InvalidTokenError):
-        return False
+    return is_post_reviewer or is_owner
 
 
 def set_access_token(response, access_token, max_age):
