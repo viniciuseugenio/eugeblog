@@ -36,16 +36,13 @@ class PostDetails(generics.RetrieveAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailsSerializer
 
-    def get(self, request, *args, **kwargs):
-        post_pk = kwargs.get("pk")
-        post_obj = Post.objects.filter(pk=post_pk, is_published=True).first()
-        post_serialized = PostDetailsSerializer(post_obj)
+    def get_object(self):
+        post_pk = self.kwargs.get("pk")
+        return get_object_or_404(Post, pk=post_pk, is_published=True)
 
-        if not post_obj:
-            return Response(
-                {"error": "This post was not found or is not published."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        post_serialized = self.serializer_class(post)
 
         base_response = Response(
             {
@@ -60,20 +57,14 @@ class PostDetails(generics.RetrieveAPIView):
         auth_response = auth_info.get("response")
         user_id = auth_info.get("user_id")
 
-        if user_id:
-            user_obj = User.objects.get(pk=user_id)
-            post_bookmarked = Bookmarks.objects.filter(
-                post=post_obj, user=user_obj
+        if auth_info["authenticated"] and user_id:
+            user = User.objects.get(pk=user_id)
+            auth_response.data["is_bookmarked"] = Bookmarks.objects.filter(
+                post=post, user=user
             ).exists()
 
-            if post_bookmarked:
-                auth_response.data["is_bookmarked"] = True
-
-        if auth_info["authenticated"]:
             auth_response.data["has_modify_permission"] = (
-                api_helpers.check_if_is_allowed_to_edit(
-                    auth_info.get("access_token"), post_pk
-                )
+                api_helpers.check_if_is_allowed_to_edit(user_id, post.pk)
             )
 
         return auth_response
