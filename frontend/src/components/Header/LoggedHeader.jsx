@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import UserPostsDropdown from "./UserPostsDropdown";
 import BookmarksDropdown from "./BookmarksDropdown";
 import Dropdown from "./Dropdown";
 import IconSpan from "./IconSpan";
@@ -16,6 +17,13 @@ export default function LoggedHeader({ handleLogout }) {
           </IconSpan>
         </li>
       </Link>
+      <li>
+        <Dropdown DropdownContent={UserPostsDropdown}>
+          <IconSpan>
+            <ion-icon name="file-tray-stacked-outline"></ion-icon>
+          </IconSpan>
+        </Dropdown>
+      </li>
       <li>
         <Dropdown DropdownContent={BookmarksDropdown}>
           <IconSpan>
