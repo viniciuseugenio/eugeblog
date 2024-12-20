@@ -8,13 +8,14 @@ import TextArea from "./TextArea.jsx";
 import { toast } from "sonner";
 import { loadComments, createComment, queryClient } from "../../utils/http";
 
-export default function Comments({ postId }) {
+export default function Comments() {
   const params = useParams();
+  const postId = params.id;
   const { isLogged } = useAuth();
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["comments", params.id],
-    queryFn: () => loadComments(params.id),
+    queryKey: ["comments", postId],
+    queryFn: () => loadComments(postId),
   });
 
   const { mutate, isPending: commentIsPending } = useMutation({
