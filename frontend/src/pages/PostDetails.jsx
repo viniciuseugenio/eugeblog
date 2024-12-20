@@ -1,4 +1,4 @@
-import PostDetailsBase from "./PostDetails.jsx";
+import PostDetailsBase from "../components/PostDetails/PostDetailsBase";
 import { useParams } from "react-router-dom";
 import { loadPost } from "../utils/http";
 
