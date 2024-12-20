@@ -8,6 +8,7 @@ import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
 import PostCreationPage from "./pages/PostCreation.jsx";
 import PostDetailsPage from "./pages/PostDetails";
+import PostReviewDetailsPage from "./pages/PostReviewDetails.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
           {
             path: "post/:id",
             element: <PostDetailsPage />,
+          },
+          {
+            path: "post/review/:id",
+            element: <PostReviewDetailsPage />,
           },
           {
             path: "privacy-policy",

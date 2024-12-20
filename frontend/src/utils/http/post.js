@@ -34,10 +34,34 @@ export async function loadPost(id) {
       method: "GET",
       credentials: "include",
     });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("This post was not found or is not published.");
+      }
+
+      throw new Error(UNEXPECTED_ERROR);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
+  }
+}
+
+export async function loadPostReview(id) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/post/review/${id}`,
+      {
+        credentials: "include",
+      },
+    );
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error);
+      throw new Error(data.detail);
     }
 
     return data;
