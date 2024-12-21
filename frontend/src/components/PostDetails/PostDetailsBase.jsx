@@ -9,7 +9,8 @@ import { toast } from "sonner";
 export const PostDetailsContext = createContext({
   isReview: null,
   postId: null,
-  hasModifyPermission: null,
+  isOwner: null,
+  isPostReviewer: null,
   isBookmarked: null,
 });
 
@@ -57,7 +58,8 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
     () => ({
       isReview,
       postId: data?.post.id,
-      hasModifyPermission: data?.has_modify_permission,
+      isOwner: data?.is_owner,
+      isReviewer: data?.is_reviewer,
       isBookmarked: data?.is_bookmarked,
     }),
     [isReview, data],
