@@ -20,3 +20,33 @@ urlpatterns = [
     ),
     path("posts/review/allow/<int:pk>", site_views.review_allow, name="review_allow"),
 ]
+<<<<<<< HEAD
+=======
+
+api_urls = [
+    path("api/posts/", api_views.PostsList.as_view(), name="api_list"),
+    path(
+        "api/posts/user", api_views.UserPostsList.as_view(), name="api_post_list_user"
+    ),
+    path("api/post/create", api_views.PostCreation.as_view(), name="api_create"),
+    path("api/post/<int:pk>", api_views.PostDetails.as_view(), name="api_details"),
+    path(
+        "api/post/review/<int:pk>",
+        api_views.PostReviewDetails.as_view(),
+        name="api_review_details",
+    ),
+    path(
+        "api/post/review/accept/<int:pk>",
+        api_views.PostReviewAccept.as_view(),
+        name="api_review_accept",
+    ),
+    path(
+        "api/post/<int:pk>/comments",
+        api_views.PostComments.as_view(),
+        name="api_comments",
+    ),
+    path("api/categories/", api_views.CategoryList.as_view(), name="api_categories"),
+]
+
+urlpatterns = site_urls + api_urls
+>>>>>>> 77a2eaa (feat: accept the review and publish the post)

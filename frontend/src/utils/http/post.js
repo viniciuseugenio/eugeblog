@@ -70,6 +70,24 @@ export async function loadPostReview(id) {
   }
 }
 
+export async function acceptPostReview(id) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/post/review/accept/${id}`,
+      { credentials: "include", method: "PATCH" },
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail);
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
+  }
+}
+
 export async function createPost(postData) {
   try {
     const response = await fetchWithToken(
