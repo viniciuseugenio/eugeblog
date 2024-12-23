@@ -3,9 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { acceptPostReview, deletePost } from "../../utils/http";
+import { acceptPostReview } from "../../utils/http";
 import BookmarkButtons from "./BookmarkButtons";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
+import DeleteBtn from "./DeleteBtn.jsx";
+import { queryClient } from "../../utils/http";
 
 export default function PostActions() {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ export default function PostActions() {
 
   const handleSuccess = (message) => {
     toast.success(message);
+    queryClient.invalidateQueries(["posts"]);
     navigate("/");
   };
 
@@ -33,17 +36,11 @@ export default function PostActions() {
     onError: handleError,
   });
 
-  const { mutate: deleteMutate, isPending: deleteIsPending } = useMutation({
-    mutationFn: deletePost,
-    onSucces: () => handleSuccess("This post was deleted successfully."),
-    onError: handleError,
-  });
-
   return (
     <>
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={acceptIsPending || deleteIsPending}
+        open={acceptIsPending}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -51,13 +48,12 @@ export default function PostActions() {
         {!isReview ? <BookmarkButtons /> : <div></div>}
         {(isOwner || isReviewer) && (
           <div className="flex gap-3">
-            <button
-              onClick={() => deleteMutate(postId)}
-              className={`${buttonClasses} text-red-600 hover:bg-red-200 hover:ring-red-300`}
-            >
-              <ion-icon name="trash-outline"></ion-icon>
-              <span>Delete</span>
-            </button>
+            <DeleteBtn
+              handleSuccess={handleSuccess}
+              handleError={handleError}
+              buttonClasses={buttonClasses}
+            />
+
             <button
               className={`${buttonClasses} text-blue-800 hover:bg-blue-100 hover:ring-blue-300`}
             >
