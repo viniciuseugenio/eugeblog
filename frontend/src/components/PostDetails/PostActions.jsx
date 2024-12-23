@@ -15,12 +15,23 @@ export default function PostActions() {
   const buttonClasses =
     "flex items-center justify-center gap-1 rounded-md px-4 py-1 duration-300 hover:shadow-md hover:ring-1";
 
-  const { mutate, isPending: acceptIsPending } = useMutation({
+  const handleSuccess = (message) => {
+    toast.success(message);
+    navigate("/");
+  };
+
+  const handleError = (error) => {
+    toast.error(
+      error.message || "An unexpected error occurred. Try again later.",
+    );
+  };
+
+  const { mutate: acceptMutate, isPending: acceptIsPending } = useMutation({
     mutationFn: acceptPostReview,
-    onSuccess: () => {
-      toast.success("This post was accepted and published successfully.");
-      navigate("/");
-    },
+    onSuccess: () =>
+      handleSuccess("This post was accepted and published successfully."),
+    onError: handleError,
+  });
 
     onError: (error) => {
       toast.error(
