@@ -12,10 +12,11 @@ export default function LogoutButton() {
 
   return (
     <>
-      <Modal ref={modal} isLogout title="Do you want to logout?">
+      <Modal ref={modal} title="Are you sure you want to logout?" isLogout>
         You will not be able to modify your posts nor view your bookmarks. You
         will have to login again.
       </Modal>
+
       <form className="h-full" onSubmit={handleLogout}>
         <button className="flex h-full items-center justify-center gap-2 py-2">
           <IconSpan>
