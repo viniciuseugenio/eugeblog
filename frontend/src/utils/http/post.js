@@ -50,6 +50,27 @@ export async function loadPost(id) {
   }
 }
 
+export async function deletePost(id) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/post/delete/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.detail);
+    }
+
+    return { detail: "Post deleted successfully." };
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
+  }
+}
+
 export async function loadPostReview(id) {
   try {
     const response = await fetch(

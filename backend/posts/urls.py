@@ -35,6 +35,7 @@ api_urls = [
         api_views.PostReviewDetails.as_view(),
         name="api_review_details",
     ),
+    path("api/post/delete/<int:pk>", api_views.PostDelete.as_view(), name="api_delete"),
     path(
         "api/post/review/accept/<int:pk>",
         api_views.PostReviewAccept.as_view(),

@@ -23,6 +23,46 @@ User = get_user_model()
 load_dotenv()
 
 
+class AuthenticateUserMixin:
+    def get_authenticated_user(self, request):
+        auth_info = api_helpers.check_authentication(request, Response({}))
+        user_id = auth_info.get("user_id")
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise PermissionDenied("Your user was not found. Please log in again.")
+
+        return user
+
+
+class IsOwnerOrPostReviewer(AuthenticateUserMixin, BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = self.get_authenticated_user(request)
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
+        is_owner = obj.author.id == user.id
+
+        if not is_owner and not is_reviewer:
+            raise PermissionDenied(
+                "You do not have permission to perform any action in this post."
+            )
+
+        return True
+
+
+class IsPostReviewer(AuthenticateUserMixin, BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = self.get_authenticated_user(request)
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
+
+        if not is_reviewer:
+            raise PermissionDenied(
+                "You do not have permission to perform any action in this post."
+            )
+
+        return True
+
+
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -141,24 +181,6 @@ class PostReviewDetails(generics.RetrieveAPIView):
         )
 
 
-class IsPostReviewer(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        auth_info = api_helpers.check_authentication(request, Response({}))
-        user_id = auth_info.get("user_id")
-
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            raise PermissionDenied("Your user was not found. Please log in again.")
-
-        is_reviewer = user.groups.filter(name="post_reviewer").exists()
-
-        if not is_reviewer:
-            raise PermissionDenied("You do not have permission to review this post.")
-
-        return True
-
-
 class PostReviewAccept(generics.UpdateAPIView):
     queryset = Post.objects.filter(is_published=False, review_status="P")
     serializer_class = PostCreationSerializer
@@ -232,3 +254,16 @@ class PostComments(generics.ListCreateAPIView):
         author = self.request.user
         post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
         serializer.save(author=author, post=post)
+
+
+class PostDelete(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostDetailsSerializer
+    permission_classes = [IsOwnerOrPostReviewer]
+
+    def get_object(self):
+        post_pk = self.kwargs.get("pk")
+        try:
+            return self.queryset.get(pk=post_pk)
+        except Post.DoesNotExist:
+            raise Http404("This post does not exist anymore.")

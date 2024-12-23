@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { acceptPostReview } from "../../utils/http";
+import { acceptPostReview, deletePost } from "../../utils/http";
 import BookmarkButtons from "./BookmarkButtons";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
@@ -33,29 +33,26 @@ export default function PostActions() {
     onError: handleError,
   });
 
-    onError: (error) => {
-      toast.error(
-        error.message ||
-          "An unexpected error occurred while accepting this post. Try again later.",
-      );
-      navigate("/");
-    },
+  const { mutate: deleteMutate, isPending: deleteIsPending } = useMutation({
+    mutationFn: deletePost,
+    onSucces: () => handleSuccess("This post was deleted successfully."),
+    onError: handleError,
   });
 
   return (
     <>
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={acceptIsPending}
+        open={acceptIsPending || deleteIsPending}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      ;
       <div className="mb-12 flex justify-between">
         {!isReview ? <BookmarkButtons /> : <div></div>}
         {(isOwner || isReviewer) && (
           <div className="flex gap-3">
             <button
+              onClick={() => deleteMutate(postId)}
               className={`${buttonClasses} text-red-600 hover:bg-red-200 hover:ring-red-300`}
             >
               <ion-icon name="trash-outline"></ion-icon>
@@ -69,7 +66,7 @@ export default function PostActions() {
             </button>
             {isReview && isReviewer && (
               <button
-                onClick={() => mutate(postId)}
+                onClick={() => acceptMutate(postId)}
                 className={`${buttonClasses} text-green-800 shadow-lg ring-1 ring-green-200 hover:bg-green-200 hover:ring-green-300`}
               >
                 <ion-icon name="checkmark-circle-outline"></ion-icon>
