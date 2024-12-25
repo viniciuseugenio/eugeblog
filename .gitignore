@@ -60,7 +60,6 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-**/migrations/
 **/posts_images/
 
 # Flask stuff:
@@ -168,5 +167,4 @@ cython_debug/
 .vscode
 
 # Ignoring node related because of cz-conventional-changelog
-package*.json
 node_modules
