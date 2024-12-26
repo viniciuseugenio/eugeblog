@@ -1,4 +1,4 @@
-import { Link, redirect } from "react-router-dom";
+import { Link, redirect } from "react-router";
 import BaseError from "../components/BaseError";
 import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";

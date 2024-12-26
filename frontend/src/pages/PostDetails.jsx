@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useAuth } from "../store/auth-context";
 import PostDetailsBase from "../components/PostDetails/PostDetailsBase.jsx";

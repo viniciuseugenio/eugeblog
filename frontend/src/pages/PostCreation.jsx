@@ -4,7 +4,7 @@ import Editor from "../components/PostCreation/Editor";
 import { useAuth } from "../store/auth-context";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { createPost } from "../utils/http";
 

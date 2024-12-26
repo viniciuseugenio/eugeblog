@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import {
   Form,
-  json,
   Link,
   redirect,
   useActionData,
   useNavigate,
   useNavigation,
-} from "react-router-dom";
+} from "react-router";
 import { toast } from "sonner";
 import horizontalLogo from "../assets/eugeblog-hori.svg";
 import Input from "../components/Input";
@@ -139,12 +138,15 @@ export async function action({ request }) {
 
     if (!response.ok) {
       const data = await response.json();
-      return json({ errors: data.errors }, { status: response.status });
+      return Response.json(
+        { errors: data.errors },
+        { status: response.status },
+      );
     }
 
     toast.success("Account created successfully! Please login to continue.");
     return redirect("/login");
   } catch (err) {
-    return json({ error: err.message }, { status: 500 });
+    return Response.json({ error: err.message }, { status: 500 });
   }
 }

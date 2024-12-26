@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import UserPostsDropdown from "./UserPostsDropdown";
 import BookmarksDropdown from "./BookmarksDropdown";
 import Dropdown from "./Dropdown";

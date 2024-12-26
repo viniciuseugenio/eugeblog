@@ -1,6 +1,6 @@
 import { CircularProgress } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { useAuth } from "../../store/auth-context.jsx";
 import Comment from "./Comment";
 import CommentsCount from "./CommentsCount.jsx";

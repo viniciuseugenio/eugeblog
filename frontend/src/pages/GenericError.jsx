@@ -1,7 +1,7 @@
 import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import BaseError from "../components/BaseError";
 
 export default function GenericError() {
