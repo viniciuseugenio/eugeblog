@@ -1,9 +1,4 @@
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, useLoaderData, useLocation, useNavigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { Toaster, toast } from "sonner";
 import AuthContextProvider from "../store/auth-context";

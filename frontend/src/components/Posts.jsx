@@ -4,7 +4,7 @@ import PostItem from "./PostDetails/PostItem";
 import Pagination from "./Pagination/Pagination.jsx";
 import { loadPosts } from "../utils/http";
 import BaseError from "./BaseError.jsx";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 export default function Posts() {
   const [searchParams, _] = useSearchParams();

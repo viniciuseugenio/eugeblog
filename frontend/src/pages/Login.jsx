@@ -1,12 +1,11 @@
 import {
   Form,
-  json,
   Link,
   redirect,
   useActionData,
   useNavigation,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
@@ -137,7 +136,7 @@ export async function action({ request }) {
       };
       console.log(response.status);
 
-      return json(
+      return Response.json(
         {
           error:
             errorMessage[response.status] ||
@@ -150,7 +149,7 @@ export async function action({ request }) {
     toast.success("Logged in successfully.");
     return redirect(nextPage);
   } catch {
-    return json(
+    return Response.json(
       { error: "An error occurred. Please, try again." },
       { status: 500 },
     );
