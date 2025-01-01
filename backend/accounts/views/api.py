@@ -1,8 +1,9 @@
 import os
 from urllib.parse import urlencode
 
+import jwt
 from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.urls import reverse
 from dotenv import load_dotenv
@@ -12,6 +13,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 from utils import api_helpers
 
 from ..serializers import UserSerializer
@@ -21,46 +27,79 @@ load_dotenv()
 User = get_user_model()
 
 
-class VerifyUser(APIView):
-    def get(self, request):
-        base_response = Response({"authenticated": False, "user_id": None})
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        auth_info = api_helpers.check_authentication(request, base_response)
-        auth_response = auth_info.get("response")
-
-        return auth_response
-
-
-class LoginAPI(APIView):
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        user = serializer.user
         remember = request.data.get("remember")
 
-        user = authenticate(request, email=email, password=password)
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
 
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
+        response = Response(
+            {"success": "You have successfully logged in!", "user_id": user.id},
+            status=status.HTTP_200_OK,
+        )
+        max_age = (settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] if remember else None,)
 
-            response = Response(
-                {"success": "You have successfully logged in!"},
-                status=status.HTTP_200_OK,
+        api_helpers.set_access_token(response, access_token, max_age)
+
+        if remember:
+            api_helpers.set_refresh_token(response, str(refresh))
+
+        return response
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response(
+                {"error": "No refresh token found in the request."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-            api_helpers.set_access_token(response, access_token, max_age=remember)
+        try:
+            refresh = RefreshToken(refresh_token)
+            new_access_token = str(refresh.access_token)
 
-            if remember:
-                api_helpers.set_refresh_token(response, str(refresh))
+            response = Response(
+                {"success": "Access token refreshed!"}, status=status.HTTP_200_OK
+            )
+            api_helpers.set_access_token(response, new_access_token, max_age=True)
 
             return response
 
-        else:
+        except Exception:
             return Response(
-                {
-                    "error": "The e-mail and password you provided did not match any of our records. Please, try again."
-                },
-                status=401,
+                {"detail": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class CustomTokenVerifyView(TokenVerifyView):
+    def post(self, request, *args, **kwargs):
+        token = request.COOKIES.get("access_token")
+
+        if not token:
+            return Response(
+                {"detail": "No access token found in the request."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            return Response(
+                {"detail": "Token is valid.", "user_id": user_id},
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception:
+            return Response(
+                {"detail": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 

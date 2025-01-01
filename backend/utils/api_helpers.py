@@ -68,15 +68,14 @@ def check_authentication(request, response):
 
     if access_token:
         user_id = get_user_id(access_token)
-        response.data["authenticated"] = True
-        response.data["user_id"] = user_id
+        response.data.update(
+            {
+                "authenticated": True,
+                "user_id": user_id,
+            }
+        )
 
-        return {
-            "response": response,
-            "authenticated": True,
-            "user_id": user_id,
-            "access_token": access_token,
-        }
+        return response
 
     if refresh_token:
         try:
@@ -84,25 +83,20 @@ def check_authentication(request, response):
 
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
+
             user_id = get_user_id(access_token)
 
             set_access_token(response, access_token, "on")
             set_refresh_token(response, refresh_token)
 
-            response.data["authenticated"] = True
-            response.data["user_id"] = user_id
+            response.data.update({"authenticated": True, "user_id": user_id})
 
-            return {
-                "response": response,
-                "authenticated": True,
-                "user_id": user_id,
-                "access_token": access_token,
-            }
+            return response
 
         except jwt.InvalidTokenError:
             pass
 
-    return {"response": response, "authenticated": False, "user_id": 0}
+    return response
 
 
 def google_get_tokens(code, redirect_uri):

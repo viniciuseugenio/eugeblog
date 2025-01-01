@@ -13,39 +13,21 @@ User = get_user_model()
 
 
 class BookmarksList(generics.ListAPIView):
+    queryset = Bookmarks.objects.filter(post__is_published=True).order_by("-id")
     serializer_class = BookmarksSerializer
     pagination_class = BaseDropdownPagination
+    permission_classes = [IsAuthenticatedUser]
 
     def get_queryset(self):
-        base_response = Response({"authenticatd": False, "user_id": 0})
-        auth_info = api_helpers.check_authentication(self.request, base_response)
-
-        if not auth_info["authenticated"]:
-            return Response(
-                {"message": "You have to be logged in."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        user_id = auth_info["user_id"]
-        user_obj = User.objects.get(id=user_id)
-
-        return Bookmarks.objects.filter(
-            user=user_obj, post__is_published=True
-        ).order_by("-id")
+        user = self.request.user
+        return Bookmarks.objects.filter(user=user)
 
 
 class BookmarkPost(generics.CreateAPIView):
-    def post(self, request, **kwargs):
-        base_response = Response({"authenticatd": False, "user_id": 0})
-        auth_info = api_helpers.check_authentication(request, base_response)
-        auth_response = auth_info["response"]
+    permission_classes = [IsAuthenticatedUser]
 
-        if not auth_info["authenticated"]:
-            auth_response.data["message"] = "You have to be logged in."
-            auth_response.status_code = status.HTTP_401_UNAUTHORIZED
-            return auth_response
-
-        user = User.objects.get(id=auth_info["user_id"])
+    def post(self, request, *args, **kwargs):
+        user = request.user
         post_id = kwargs.get("pk")
         post_obj = Post.objects.get(id=post_id)
 
@@ -68,17 +50,10 @@ class BookmarkPost(generics.CreateAPIView):
 
 
 class RemoveBookmark(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticatedUser]
+
     def delete(self, request, **kwargs):
-        base_response = Response({"authenticatd": False, "user_id": 0})
-        auth_info = api_helpers.check_authentication(request, base_response)
-        auth_response = auth_info["response"]
-
-        if not auth_info["authenticated"]:
-            auth_response.data["message"] = "You have to be logged in."
-            auth_response.status_code = status.HTTP_401_UNAUTHORIZED
-            return auth_response
-
-        user = User.objects.get(id=auth_info["user_id"])
+        user = request.user
         post_id = kwargs.get("pk")
         post_obj = Post.objects.get(id=post_id)
 
