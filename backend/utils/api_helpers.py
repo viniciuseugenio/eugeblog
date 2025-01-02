@@ -28,12 +28,9 @@ def get_user_id(token):
         return 0
 
 
-def check_if_is_allowed_to_edit(user_id, post_id):
-    post_obj = Post.objects.get(pk=post_id)
-    user_obj = User.objects.get(pk=user_id)
-
-    is_post_reviewer = user_obj.groups.filter(name="post_reviewer").exists()
-    is_owner = post_obj.author.id == user_id
+def check_if_is_allowed_to_edit(user, post):
+    is_post_reviewer = user.groups.filter(name="post_reviewer").exists()
+    is_owner = post.author.id == user
 
     return is_post_reviewer or is_owner
 
