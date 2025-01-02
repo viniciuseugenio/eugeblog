@@ -1,5 +1,7 @@
-const { VITE_BASE_BACKEND_URL } = import.meta.env;
 import { toast } from "sonner";
+import { fetchWithToken } from "./auth";
+
+const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 export async function fetchBookmarks(page = 1) {
   try {
@@ -9,12 +11,11 @@ export async function fetchBookmarks(page = 1) {
       url += `?page=${page}`;
     }
 
-    const response = await fetch(url, {
+    const response = await fetchWithToken(url, {
       method: "GET",
-      credentials: "include",
     });
-    const data = await response.json();
 
+    const data = await response.json();
     if (!response.ok) {
       throw new Error(data.error || "Failed to fetch bookmarks");
     }
@@ -37,11 +38,10 @@ export async function addBookmark(
   }
 
   try {
-    const response = await fetch(
-      `http://localhost:8000/bookmarks/api/create/${postId}`,
+    const response = await fetchWithToken(
+      `${VITE_BASE_BACKEND_URL}/bookmarks/api/create/${postId}`,
       {
         method: "POST",
-        credentials: "include",
       },
     );
     const data = await response.json();
@@ -62,11 +62,10 @@ export async function addBookmark(
 
 export async function removeBookmark(postId, setIsBookmarked) {
   try {
-    const response = await fetch(
-      `http://localhost:8000/bookmarks/api/delete/${postId}`,
+    const response = await fetchWithToken(
+      `${VITE_BASE_BACKEND_URL}/bookmarks/api/delete/${postId}`,
       {
-        method: "delete",
-        credentials: "include",
+        method: "DELETE",
       },
     );
     const data = await response.json();
