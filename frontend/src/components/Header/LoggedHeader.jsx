@@ -1,10 +1,11 @@
 import { Link } from "react-router";
-import UserPostsDropdown from "./UserPostsDropdown";
 import BookmarksDropdown from "./BookmarksDropdown";
 import Dropdown from "./Dropdown";
 import IconSpan from "./IconSpan";
+import LogoutButton from "./LogoutButton";
+import UserPostsDropdown from "./UserPostsDropdown";
 
-export default function LoggedHeader({ handleLogout }) {
+export default function LoggedHeader() {
   const liClasses =
     "active:bg-accent flex items-center justify-center rounded-lg bg-[#e2d3ca] px-4 duration-300 hover:bg-[#decdc2] hover:text-black";
 
@@ -32,14 +33,7 @@ export default function LoggedHeader({ handleLogout }) {
         </Dropdown>
       </li>
       <li className={liClasses}>
-        <form className="h-full" onSubmit={handleLogout}>
-          <button className="flex h-full items-center justify-center gap-2 py-2">
-            <IconSpan>
-              <ion-icon name="exit-outline"></ion-icon>
-            </IconSpan>
-            <span>Logout</span>
-          </button>
-        </form>
+        <LogoutButton />
       </li>
     </>
   );
