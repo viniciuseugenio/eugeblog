@@ -3,19 +3,20 @@ from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
 from rest_framework import generics, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from utils import api_helpers
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 from utils.permissions import IsAuthenticatedUser
 
-from ..models import Comment, Post, Category
+from ..models import Category, Comment, Post
 from ..serializers import (
+    CategorySerializer,
     CommentCreateSerializer,
     CommentDetailsSerializer,
     PostCreationSerializer,
     PostDetailsSerializer,
     PostListSerializer,
-    CategorySerializer,
 )
 
 User = get_user_model()
@@ -112,7 +113,12 @@ class PostCreation(generics.CreateAPIView):
 
 class PostComments(generics.ListCreateAPIView):
     serializer_class = CommentDetailsSerializer
-    permission_classes = [IsAuthenticatedUser]
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticatedUser()]
+
+        return [AllowAny()]
 
     def get_queryset(self):
         post_id = self.kwargs.get("pk")
