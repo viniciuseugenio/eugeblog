@@ -39,7 +39,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         access_token = refresh.access_token
 
         response = Response(
-            {"success": "You have successfully logged in!", "user_id": user.id},
+            {"detail": "You have successfully logged in!", "user_id": user.id},
             status=status.HTTP_200_OK,
         )
         max_age = (settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] if remember else None,)
@@ -58,7 +58,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         if not refresh_token:
             return Response(
-                {"error": "No refresh token found in the request."},
+                {"detail": "No refresh token found in the request."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -67,7 +67,7 @@ class CustomTokenRefreshView(TokenRefreshView):
             new_access_token = str(refresh.access_token)
 
             response = Response(
-                {"success": "Access token refreshed!"}, status=status.HTTP_200_OK
+                {"detail": "Access token refreshed!"}, status=status.HTTP_200_OK
             )
             api_helpers.set_access_token(response, new_access_token, max_age=True)
 
@@ -110,12 +110,10 @@ class SignupAPI(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {"message": "User created!"}, status=status.HTTP_201_CREATED
-            )
+            return Response({"detail": "User created!"}, status=status.HTTP_201_CREATED)
 
         return Response(
-            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -221,7 +219,7 @@ class GithubLoginAPI(APIView):
 
         if not primary_email:
             return Response(
-                {"error": "No primary e-mail found in GitHub account."},
+                {"detail": "No primary e-mail found in GitHub account."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
