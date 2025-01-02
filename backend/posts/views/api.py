@@ -1,13 +1,13 @@
-from django.shortcuts import get_object_or_404
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from utils import api_helpers
+from utils.api_helpers import TokenRefreshMixin
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
-from utils.permissions import IsAuthenticatedUser
 
 from ..models import Category, Comment, Post
 from ..serializers import (
@@ -37,7 +37,7 @@ class PostsList(generics.ListAPIView):
 class UserPostsList(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = BaseDropdownPagination
-    permission_classes = [IsAuthenticatedUser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -45,34 +45,32 @@ class UserPostsList(generics.ListAPIView):
         return qs
 
 
-class PostDetails(generics.RetrieveAPIView):
+class PostDetails(TokenRefreshMixin, generics.RetrieveAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailsSerializer
 
     def get_object(self):
         post_pk = self.kwargs.get("pk")
-        return get_object_or_404(Post, pk=post_pk, is_published=True)
-
-    def check_user_authentication(self, request):
-        auth_response = api_helpers.check_authentication(request, Response({}))
-        user_id = auth_response.data.get("user_id")
-        user = None
 
         try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            pass
-
-        return user, auth_response
+            return Post.objects.get(pk=post_pk)
+        except Post.DoesNotExist:
+            raise NotFound("This post does not exist or is not published.")
 
     def get(self, request, *args, **kwargs):
         post = self.get_object()
         post_serialized = self.serializer_class(post)
 
-        user, response = self.check_user_authentication(request)
+        user = request.user
+        response = Response({}, status=status.HTTP_200_OK)
+
+        # Use function from TokenRefreshMixin to set the tokens if there are any
+        if request.auth:
+            self.set_tokens(response, request.auth)
+
         response.data["post"] = post_serialized.data
 
-        if user:
+        if user.is_authenticated:
             is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
             has_modify_permission = api_helpers.can_edit_post(user, post)
 
@@ -86,14 +84,17 @@ class PostDetails(generics.RetrieveAPIView):
         return response
 
 
-class PostCreation(generics.CreateAPIView):
+class PostCreation(TokenRefreshMixin, generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreationSerializer
-    permission_classes = [IsAuthenticatedUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Use check_authentication() function to get the user_id
-        response = request.auth_response
+        response = Response({})
+
+        if request.auth:
+            self.set_tokens(response, request.auth)
+
         user = request.user
 
         # Validate and save the new post data
@@ -116,7 +117,7 @@ class PostComments(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == "POST":
-            return [IsAuthenticatedUser()]
+            return [IsAuthenticated()]
 
         return [AllowAny()]
 

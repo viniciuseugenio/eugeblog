@@ -2,8 +2,10 @@ from django.contrib.auth import get_user_model
 from posts.models import Post
 from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from utils.api_helpers import TokenRefreshMixin
 from utils.make_pagination import BaseDropdownPagination
-from utils.permissions import IsAuthenticatedUser
 
 from bookmarks.models import Bookmarks
 
@@ -16,15 +18,15 @@ class BookmarksList(generics.ListAPIView):
     queryset = Bookmarks.objects.filter(post__is_published=True).order_by("-id")
     serializer_class = BookmarksSerializer
     pagination_class = BaseDropdownPagination
-    permission_classes = [IsAuthenticatedUser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         return Bookmarks.objects.filter(user=user)
 
 
-class BookmarkPost(generics.CreateAPIView):
-    permission_classes = [IsAuthenticatedUser]
+class BookmarkPost(TokenRefreshMixin, generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -39,15 +41,19 @@ class BookmarkPost(generics.CreateAPIView):
 
         Bookmarks.objects.create(user=user, post=post_obj)
 
-        response = request.auth_response
+        response = Response({})
+
+        if request.auth:
+            self.set_tokens(response, request.auth)
+
         response.data["detail"] = "Post bookmarked successfully!"
         response.status_code = status.HTTP_201_CREATED
 
         return response
 
 
-class RemoveBookmark(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticatedUser]
+class RemoveBookmark(TokenRefreshMixin, generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, **kwargs):
         user = request.user
@@ -62,7 +68,11 @@ class RemoveBookmark(generics.DestroyAPIView):
 
         Bookmarks.objects.filter(user=user, post=post_obj).delete()
 
-        response = request.auth_response
+        response = Response({})
+
+        if request.auth:
+            self.set_tokens(response, request.auth)
+
         response.data["detail"] = "Post removed from bookmarks."
         response.status_code = status.HTTP_200_OK
 

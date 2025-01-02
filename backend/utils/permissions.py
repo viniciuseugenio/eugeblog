@@ -1,23 +1,27 @@
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import BasePermission
-from rest_framework.response import Response
-
-from . import api_helpers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
 
-class JWTAuthentication(BaseAuthentication):
+class JWTCustomAuthentication(BaseAuthentication):
     def authenticate(self, request):
         access_token = request.COOKIES.get("access_token")
+        refresh_token = request.COOKIES.get("refresh_token")
 
-        if not access_token:
-            return None
+        if access_token:
+            return self._authenticate_with_access_token(access_token)
 
+        if refresh_token:
+            return self._authenticate_with_refresh_token(refresh_token)
+
+        return (AnonymousUser(), None)
+
+    def _authenticate_with_access_token(self, access_token):
         try:
             payload = jwt.decode(
                 access_token, settings.SECRET_KEY, algorithms=["HS256"]
@@ -26,28 +30,18 @@ class JWTAuthentication(BaseAuthentication):
             return (user, None)
 
         except jwt.ExpiredSignatureError:
-            return AuthenticationFailed("The access token expired")
+            return (AnonymousUser(), None)
 
         except jwt.InvalidTokenError:
-            return AuthenticationFailed("Invalid access token")
+            return (AnonymousUser(), None)
 
-
-class IsAuthenticatedUser(BasePermission):
-    message = "You have to be logged in to take this action."
-
-    def has_permission(self, request, view):
-        response = api_helpers.check_authentication(request, Response({}))
-        request.auth_response = response
-
-        if not response.data.get("authenticated"):
-            return False
-
-        user_id = response.data.get("user_id")
-
+    def _authenticate_with_refresh_token(self, refresh_token):
         try:
-            user = User.objects.get(id=user_id)
-            request.user = user
-        except User.DoesNotExist:
-            return False
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
 
-        return True
+            user = User.objects.get(id=refresh.payload["user_id"])
+            return (user, [access_token, str(refresh)])
+
+        except jwt.InvalidTokenError:
+            return (AnonymousUser(), None)

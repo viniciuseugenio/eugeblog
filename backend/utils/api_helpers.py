@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from dotenv import load_dotenv
-from posts.models import Post
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -148,3 +147,12 @@ def create_account_and_jwt_tokens(
     set_refresh_token(response, str(refresh_obj))
 
     return response
+
+
+class TokenRefreshMixin:
+    """This mixin was created with the purpose of simplifying the process of setting new tokens in the response if needed"""
+
+    @staticmethod
+    def set_tokens(response, auth):
+        set_access_token(response, str(auth[0]), max_age=True)
+        set_refresh_token(response, str(auth[1]))
