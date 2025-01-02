@@ -1,9 +1,3 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { redirect, useNavigate } from "react-router";
-import { toast } from "sonner";
-import { useAuthContext } from "../../store/auth-context";
-import { queryClient } from ".";
-
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 async function refreshToken() {
@@ -48,11 +42,20 @@ export async function fetchWithToken(url, options, retryCount = 1) {
 export async function isUserAuthenticated() {
   const VERIFY_URL = `${VITE_BASE_BACKEND_URL}/api/token/verify/`;
 
+  async function verifyToken() {
+    try {
+      return await fetch(VERIFY_URL, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      throw error;
+    }
+  }
+
   try {
-    const response = await fetch(VERIFY_URL, {
-      method: "POST",
-      credentials: "include",
-    });
+    const response = await verifyToken();
 
     if (response.ok) {
       const data = await response.json();
@@ -62,10 +65,7 @@ export async function isUserAuthenticated() {
     const refreshed = await refreshToken();
 
     if (refreshed) {
-      const retryResponse = await fetch(VERIFY_URL, {
-        method: "POST",
-        credentials: "include",
-      });
+      const retryResponse = await verifyToken();
 
       if (retryResponse.ok) {
         const data = await retryResponse.json();
@@ -74,7 +74,8 @@ export async function isUserAuthenticated() {
     }
 
     return { isAuthenticated: false, userId: null };
-  } catch {
+  } catch (error) {
+    console.error("Error checking authentication:", error);
     return { isAuthenticated: false, userId: null };
   }
 }
