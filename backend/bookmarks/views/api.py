@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from posts.models import Post
 from rest_framework import generics, status
-from rest_framework.response import Response
-from utils import api_helpers
+from rest_framework.exceptions import ValidationError
 from utils.make_pagination import BaseDropdownPagination
+from utils.permissions import IsAuthenticatedUser
 
 from bookmarks.models import Bookmarks
 
@@ -32,21 +32,18 @@ class BookmarkPost(generics.CreateAPIView):
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:
-            auth_response.data["message"] = "This post is not published."
-            auth_response.status_code = 400
-            return auth_response
+            raise ValidationError("This post does not exist or is not published.")
 
         if Bookmarks.objects.filter(user=user, post=post_obj).exists():
-            auth_response.data["message"] = "Post already bookmarked."
-            auth_response.status_code = 400
-            return auth_response
+            raise ValidationError("This post is already bookmarked.")
 
         Bookmarks.objects.create(user=user, post=post_obj)
 
-        auth_response.data["message"] = "Post bookmarked successfully."
-        auth_response.status_code = 201
+        response = request.auth_response
+        response.data["detail"] = "Post bookmarked successfully!"
+        response.status_code = status.HTTP_201_CREATED
 
-        return auth_response
+        return response
 
 
 class RemoveBookmark(generics.DestroyAPIView):
@@ -58,18 +55,15 @@ class RemoveBookmark(generics.DestroyAPIView):
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:
-            auth_response.data["message"] = "This post is not published."
-            auth_response.status_code = status.HTTP_400_BAD_REQUEST
-            return auth_response
+            raise ValidationError("This post does not exist or is not published.")
 
         if not Bookmarks.objects.filter(user=user, post=post_obj).exists():
-            auth_response.data["message"] = "Post not bookmarked."
-            auth_response.status_code = status.HTTP_400_BAD_REQUEST
-            return auth_response
+            raise ValidationError("This post is not bookmarked.")
 
         Bookmarks.objects.filter(user=user, post=post_obj).delete()
 
-        auth_response.data["message"] = "Post removed from bookmarks."
-        auth_response.status_code = status.HTTP_200_OK
+        response = request.auth_response
+        response.data["detail"] = "Post removed from bookmarks."
+        response.status_code = status.HTTP_200_OK
 
-        return auth_response
+        return response
