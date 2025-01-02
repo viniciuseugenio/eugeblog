@@ -12,21 +12,20 @@ import horizontalLogo from "../assets/eugeblog-hori.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
-import { useAuthContext } from "../store/auth-context";
+import { useAuthCheck } from "../utils/hooks";
 
 export default function SignupPage() {
-  const { isLogged } = useAuthContext();
   const data = useActionData();
   const navigation = useNavigation();
   const navigate = useNavigate();
 
+  const { data: authData } = useAuthCheck();
+
   useEffect(() => {
-    if (isLogged) {
-      sessionStorage.setItem("type", "error");
-      sessionStorage.setItem("message", "You are already logged in");
-      return navigate("/");
+    if (authData?.isAuthenticated) {
+      navigate("/");
     }
-  }, [isLogged, navigate]);
+  }, [authData, navigate]);
 
   return (
     <div className="flex h-screen items-center justify-center">

@@ -12,12 +12,23 @@ import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useEffect, useRef } from "react";
+import { useAuthCheck } from "../utils/hooks";
+import { useNavigate } from "react-router";
 
 export default function LoginPage() {
   const data = useActionData();
   const navigation = useNavigation();
   const location = useLocation();
   const errorNotified = useRef(false);
+  const navigate = useNavigate();
+
+  const { data: authData } = useAuthCheck();
+
+  useEffect(() => {
+    if (authData?.isAuthenticated) {
+      navigate("/");
+    }
+  }, [authData, navigate]);
 
   useEffect(() => {
     if (errorNotified.current) return;
@@ -89,22 +100,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
-
-export async function loader() {
-  const response = await fetch(
-    "http://localhost:8000/accounts/api/verify-user/",
-    {
-      credentials: "include",
-    },
-  );
-  const data = await response.json();
-
-  if (data.authenticated) {
-    return redirect("/");
-  }
-
-  return data.authenticated;
 }
 
 export async function action({ request }) {
