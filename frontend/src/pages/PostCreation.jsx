@@ -1,7 +1,7 @@
 import PostCreationInput from "../components/PostCreation/Input";
 import ImageInput from "../components/PostCreation/ImageInput";
 import Editor from "../components/PostCreation/Editor";
-import { useAuth } from "../store/auth-context";
+import { useAuthContext } from "../store/auth-context";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
@@ -10,7 +10,7 @@ import { createPost } from "../utils/http";
 
 export default function PostCreationPage() {
   const navigate = useNavigate();
-  const { isLogged } = useAuth();
+  const { isLogged } = useAuthContext();
 
   useEffect(() => {
     if (!isLogged) {

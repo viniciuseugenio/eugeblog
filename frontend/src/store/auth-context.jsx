@@ -38,6 +38,6 @@ export default function AuthContextProvider({ children, initialAuthState }) {
   );
 }
 
-export function useAuth() {
+export function useAuthContext() {
   return useContext(AuthContext);
 }

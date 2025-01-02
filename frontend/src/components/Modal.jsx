@@ -1,11 +1,11 @@
 import { useSubmit, useLocation } from "react-router";
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
-import { useAuth } from "../store/auth-context";
+import { useAuthContext } from "../store/auth-context";
 import { toast } from "sonner";
 
 const Modal = forwardRef(function Modal({ children, isLogout, url }, ref) {
-  const { logout } = useAuth();
+  const { logout } = useAuthContext();
   const submit = useSubmit();
   const location = useLocation();
 

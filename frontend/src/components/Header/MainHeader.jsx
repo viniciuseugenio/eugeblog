@@ -1,14 +1,14 @@
 import { useRef } from "react";
 import { Link } from "react-router";
 import IconHorizontal from "../../assets/eugeblog-hori.svg";
-import { useAuth } from "../../store/auth-context";
+import { useAuthContext } from "../../store/auth-context";
 import Modal from "../Modal";
 import AuthHeader from "./AuthHeader";
 import LoggedHeader from "./LoggedHeader";
 
 export default function MainHeader() {
   const modal = useRef();
-  const { isLogged } = useAuth();
+  const { isLogged } = useAuthContext();
 
   function handleLogout(event) {
     event.preventDefault();

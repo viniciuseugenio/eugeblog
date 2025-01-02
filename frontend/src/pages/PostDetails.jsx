@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router";
 import { useEffect, useRef } from "react";
-import { useAuth } from "../store/auth-context";
+import { useAuthContext } from "../store/auth-context";
 import PostDetailsBase from "../components/PostDetails/PostDetailsBase.jsx";
 import { CircularProgress } from "@mui/material";
 import { loadPost } from "../utils/http";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function PostDetailsPage() {
   const params = useParams();
   const navigate = useNavigate();
-  const { login, logout, isLogged } = useAuth();
+  const { login, logout, isLogged } = useAuthContext();
   const hasNotifiedError = useRef(false);
 
   const { data, isPending, isError, error } = useQuery({

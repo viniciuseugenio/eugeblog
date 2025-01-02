@@ -1,9 +1,9 @@
 import { fetchBookmarks } from "../../utils/http";
-import { useAuth } from "../../store/auth-context";
+import { useAuthContext } from "../../store/auth-context";
 import DropdownList from "./DropdownList";
 
 export default function BookmarksDropdown() {
-  const { userId } = useAuth();
+  const { userId } = useAuthContext();
 
   return (
     <DropdownList

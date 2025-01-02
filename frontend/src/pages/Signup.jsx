@@ -12,10 +12,10 @@ import horizontalLogo from "../assets/eugeblog-hori.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
-import { useAuth } from "../store/auth-context";
+import { useAuthContext } from "../store/auth-context";
 
 export default function SignupPage() {
-  const { isLogged } = useAuth();
+  const { isLogged } = useAuthContext();
   const data = useActionData();
   const navigation = useNavigation();
   const navigate = useNavigate();

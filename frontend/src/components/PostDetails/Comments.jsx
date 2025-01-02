@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
-import { useAuth } from "../../store/auth-context.jsx";
+import { useAuthContext } from "../../store/auth-context.jsx";
 import Comment from "./Comment";
 import CommentsCount from "./CommentsCount.jsx";
 import TextArea from "./TextArea.jsx";
@@ -11,7 +11,7 @@ import { loadComments, createComment, queryClient } from "../../utils/http";
 export default function Comments() {
   const params = useParams();
   const postId = params.id;
-  const { isLogged } = useAuth();
+  const { isLogged } = useAuthContext();
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["comments", postId],

@@ -2,12 +2,12 @@ import { Link, redirect } from "react-router";
 import BaseError from "../components/BaseError";
 import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
-import { useAuth } from "../store/auth-context";
+import { useAuthContext } from "../store/auth-context";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 export default function LogoutError() {
-  const { login } = useAuth();
+  const { login } = useAuthContext();
 
   const notified = useRef(false);
 

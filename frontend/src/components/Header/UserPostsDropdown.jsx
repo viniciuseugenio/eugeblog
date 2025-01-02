@@ -1,9 +1,9 @@
-import { useAuth } from "../../store/auth-context";
+import { useAuthContext } from "../../store/auth-context";
 import { fetchUserPosts } from "../../utils/http";
 import DropdownList from "./DropdownList";
 
 export default function UserPostsDropdown() {
-  const { userId } = useAuth();
+  const { userId } = useAuthContext();
 
   return (
     <DropdownList

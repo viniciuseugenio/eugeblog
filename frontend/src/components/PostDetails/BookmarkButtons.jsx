@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../store/auth-context.jsx";
+import { useAuthContext } from "../../store/auth-context.jsx";
 import { addBookmark, removeBookmark } from "../../utils/http";
 
 export default function BookmarkButtons({ initialIsBookmarked, postId }) {
-  const { isLogged } = useAuth();
+  const { isLogged } = useAuthContext();
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const navigate = useNavigate();
 
