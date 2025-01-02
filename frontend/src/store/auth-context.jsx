@@ -8,13 +8,11 @@ const AuthContext = createContext({
 });
 
 export default function AuthContextProvider({ children, initialAuthState }) {
-  const [userId, setUserId] = useState(
-    initialAuthState ? initialAuthState.userId : null,
-  );
+  const [userId, setUserId] = useState(initialAuthState?.userId || null);
   const isLogged = !!userId;
 
   useEffect(() => {
-    setUserId(initialAuthState.userId);
+    setUserId(initialAuthState?.userId);
   }, [initialAuthState]);
 
   function login(userId) {
@@ -28,7 +26,6 @@ export default function AuthContextProvider({ children, initialAuthState }) {
   const authContext = {
     isLogged,
     userId,
-    setUserId,
     login,
     logout,
   };
