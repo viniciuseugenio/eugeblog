@@ -1,26 +1,21 @@
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigation,
-  useLocation,
-} from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
-import { useEffect, useRef } from "react";
+import { useAuthContext } from "../store/auth-context";
 import { useAuthCheck } from "../utils/hooks";
-import { useNavigate } from "react-router";
+import { loginUser } from "../utils/http";
+import { queryClient } from "../utils/http";
 
 export default function LoginPage() {
-  const data = useActionData();
-  const navigation = useNavigation();
   const location = useLocation();
   const errorNotified = useRef(false);
   const navigate = useNavigate();
+  const { login: loginContext } = useAuthContext();
 
   const { data: authData } = useAuthCheck();
 
@@ -29,6 +24,27 @@ export default function LoginPage() {
       navigate("/");
     }
   }, [authData, navigate]);
+
+  const {
+    mutate: login,
+    isError,
+    error,
+    isPending,
+  } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      toast.success(data.detail);
+      loginContext(data.user_id);
+      queryClient.invalidateQueries(["auth"]);
+      navigate("/");
+    },
+  });
+
+  function handleLoginSubmit(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    login(data);
+  }
 
   useEffect(() => {
     if (errorNotified.current) return;
@@ -60,10 +76,10 @@ export default function LoginPage() {
             Welcome to <span className="text-primary">Eugeblog</span>!
           </h1>
         </Link>
-        <Form method="POST">
-          {data && data.error && (
+        <form method="POST" onSubmit={handleLoginSubmit}>
+          {isError && (
             <div className="mb-4 text-center">
-              <p className="text-red-500">{data.error}</p>
+              <p className="text-red-500">{error.message}</p>
             </div>
           )}
           <Input type="email" name="email" id="id_email" label="E-mail" />
@@ -88,65 +104,16 @@ export default function LoginPage() {
             </div>
             <Link to="/forgot-password">Forgot password?</Link>
           </div>
-          <PrimaryButton text="Login" state={navigation.state} />
+          <PrimaryButton type="submit" text="Login" isPending={isPending} />
           <div className="mb-6 mt-3">
             <span className="mr-1">Don&apos;t have an account?</span>
             <Link to="/signup" className="text-primary underline">
               Sign up
             </Link>
           </div>
-        </Form>
+        </form>
         <SocialLogin page="login" />
       </div>
     </div>
   );
-}
-
-export async function action({ request }) {
-  const currentUrl = new URL(request.url);
-  const nextPage = currentUrl.searchParams.get("next") || "/";
-
-  const formData = await request.formData();
-
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const remember = formData.get("remember");
-
-  try {
-    const response = await fetch("http://localhost:8000/accounts/api/login/", {
-      method: "POST",
-      body: JSON.stringify({ email, password, remember }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      const errorMessage = {
-        400: data.error || "Please provide both email and password.",
-        401: "The e-mail and password you provided did not match any of our records. Please, try again.",
-        500: "An error occurred. Please, try again.",
-      };
-      console.log(response.status);
-
-      return Response.json(
-        {
-          error:
-            errorMessage[response.status] ||
-            "An error occurred. Please, try again.",
-        },
-        { status: response.status },
-      );
-    }
-
-    toast.success("Logged in successfully.");
-    return redirect(nextPage);
-  } catch {
-    return Response.json(
-      { error: "An error occurred. Please, try again." },
-      { status: 500 },
-    );
-  }
 }

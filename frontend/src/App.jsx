@@ -5,7 +5,7 @@ import { RouterProvider } from "react-router/dom";
 import ContextWrapper from "./pages/ContextWrapper";
 import GenericError from "./pages/GenericError.jsx";
 import HomePage from "./pages/Home";
-import LoginPage, { action as loginAction } from "./pages/Login";
+import LoginPage from "./pages/Login";
 import PostCreationPage from "./pages/PostCreation.jsx";
 import PostDetailsPage from "./pages/PostDetails";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
@@ -44,7 +44,6 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
-        action: loginAction,
       },
       {
         path: "/signup",
