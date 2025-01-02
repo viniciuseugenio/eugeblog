@@ -28,7 +28,7 @@ def get_user_id(token):
         return 0
 
 
-def check_if_is_allowed_to_edit(user, post):
+def can_edit_post(user, post):
     is_post_reviewer = user.groups.filter(name="post_reviewer").exists()
     is_owner = post.author.id == user
 

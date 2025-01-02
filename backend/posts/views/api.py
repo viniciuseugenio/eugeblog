@@ -73,7 +73,7 @@ class PostDetails(generics.RetrieveAPIView):
 
         if user:
             is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
-            has_modify_permission = api_helpers.check_if_is_allowed_to_edit(user, post)
+            has_modify_permission = api_helpers.can_edit_post(user, post)
 
             response.data.update(
                 {
