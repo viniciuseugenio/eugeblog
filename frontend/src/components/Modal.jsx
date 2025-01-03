@@ -5,7 +5,14 @@ import { toast } from "sonner";
 import { useLogout } from "../utils/hooks";
 
 const Modal = forwardRef(function Modal(
-  { children, title, isLogout, url, icon = "close-circle-outline" },
+  {
+    children,
+    title,
+    isLogout,
+    url,
+    icon = "close-circle-outline",
+    iconColor = "bg-red-600",
+  },
   ref,
 ) {
   const submit = useSubmit();
@@ -29,7 +36,7 @@ const Modal = forwardRef(function Modal(
       ref={ref}
       className="max-w-2xl flex-col items-center justify-center px-12 py-8 text-center backdrop-opacity-100"
     >
-      <span className="text-7xl text-red-600">
+      <span className={`${iconColor} text-7xl`}>
         <ion-icon name={icon} />
       </span>
       <h2 className="text-primary mb-6 text-4xl">{title}</h2>
