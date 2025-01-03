@@ -6,7 +6,6 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from utils import api_helpers
-from utils.api_helpers import TokenRefreshMixin
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 
 from ..models import Category, Comment, Post
@@ -45,7 +44,7 @@ class UserPostsList(generics.ListAPIView):
         return qs
 
 
-class PostDetails(TokenRefreshMixin, generics.RetrieveAPIView):
+class PostDetails(generics.RetrieveAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailsSerializer
 
@@ -63,11 +62,6 @@ class PostDetails(TokenRefreshMixin, generics.RetrieveAPIView):
 
         user = request.user
         response = Response({}, status=status.HTTP_200_OK)
-
-        # Use function from TokenRefreshMixin to set the tokens if there are any
-        if request.auth:
-            self.set_tokens(response, request.auth)
-
         response.data["post"] = post_serialized.data
 
         if user.is_authenticated:
@@ -84,17 +78,13 @@ class PostDetails(TokenRefreshMixin, generics.RetrieveAPIView):
         return response
 
 
-class PostCreation(TokenRefreshMixin, generics.CreateAPIView):
+class PostCreation(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreationSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         response = Response({})
-
-        if request.auth:
-            self.set_tokens(response, request.auth)
-
         user = request.user
 
         # Validate and save the new post data

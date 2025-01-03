@@ -14,20 +14,20 @@ class JWTCustomAuthentication(BaseAuthentication):
         refresh_token = request.COOKIES.get("refresh_token")
 
         if access_token:
-            return self._authenticate_with_access_token(access_token)
+            return self._authenticate_with_access_token(access_token, refresh_token)
 
         if refresh_token:
             return self._authenticate_with_refresh_token(refresh_token)
 
         return (AnonymousUser(), None)
 
-    def _authenticate_with_access_token(self, access_token):
+    def _authenticate_with_access_token(self, access_token, refresh_token):
         try:
             payload = jwt.decode(
                 access_token, settings.SECRET_KEY, algorithms=["HS256"]
             )
             user = User.objects.get(id=payload.get("user_id"))
-            return (user, None)
+            return (user, {"access": access_token, "refresh": refresh_token})
 
         except jwt.ExpiredSignatureError:
             return (AnonymousUser(), None)
@@ -41,7 +41,7 @@ class JWTCustomAuthentication(BaseAuthentication):
             access_token = str(refresh.access_token)
 
             user = User.objects.get(id=refresh.payload["user_id"])
-            return (user, [access_token, str(refresh)])
+            return (user, {"access": access_token, "refresh": str(refresh)})
 
         except jwt.InvalidTokenError:
             return (AnonymousUser(), None)

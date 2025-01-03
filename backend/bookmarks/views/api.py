@@ -4,7 +4,6 @@ from rest_framework import generics, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from utils.api_helpers import TokenRefreshMixin
 from utils.make_pagination import BaseDropdownPagination
 
 from bookmarks.models import Bookmarks
@@ -25,7 +24,7 @@ class BookmarksList(generics.ListAPIView):
         return Bookmarks.objects.filter(user=user)
 
 
-class BookmarkPost(TokenRefreshMixin, generics.CreateAPIView):
+class BookmarkPost(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -42,17 +41,13 @@ class BookmarkPost(TokenRefreshMixin, generics.CreateAPIView):
         Bookmarks.objects.create(user=user, post=post_obj)
 
         response = Response({})
-
-        if request.auth:
-            self.set_tokens(response, request.auth)
-
         response.data["detail"] = "Post bookmarked successfully!"
         response.status_code = status.HTTP_201_CREATED
 
         return response
 
 
-class RemoveBookmark(TokenRefreshMixin, generics.DestroyAPIView):
+class RemoveBookmark(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, **kwargs):
@@ -69,10 +64,6 @@ class RemoveBookmark(TokenRefreshMixin, generics.DestroyAPIView):
         Bookmarks.objects.filter(user=user, post=post_obj).delete()
 
         response = Response({})
-
-        if request.auth:
-            self.set_tokens(response, request.auth)
-
         response.data["detail"] = "Post removed from bookmarks."
         response.status_code = status.HTTP_200_OK
 
