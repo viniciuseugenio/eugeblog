@@ -1,3 +1,5 @@
+import { fetchWithToken } from "./auth";
+
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 const UNEXPECTED_ERROR =
   "An unexpected error occurred. Please, try again later.";
@@ -46,11 +48,13 @@ export async function loadPost(id) {
 
 export async function createPost(postData) {
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/post/create`, {
-      method: "POST",
-      credentials: "include",
-      body: postData,
-    });
+    const response = await fetchWithToken(
+      `${VITE_BASE_BACKEND_URL}/api/post/create`,
+      {
+        method: "POST",
+        body: postData,
+      },
+    );
     const data = await response.json();
 
     if (!response.ok && response.status !== 400) {
@@ -64,7 +68,7 @@ export async function createPost(postData) {
 }
 
 export async function createComment({ content, postId }) {
-  const response = await fetch(
+  const response = await fetchWithToken(
     `${VITE_BASE_BACKEND_URL}/api/post/${postId}/comments`,
     {
       method: "POST",
@@ -72,7 +76,6 @@ export async function createComment({ content, postId }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ comment: content }),
-      credentials: "include",
     },
   );
 
@@ -127,9 +130,7 @@ export async function fetchUserPosts(page) {
       url += `?page=${page}`;
     }
 
-    const response = await fetch(url, {
-      credentials: "include",
-    });
+    const response = await fetchWithToken(url, {});
 
     if (!response.ok) {
       let errorMessage = "Something went wrong while loading your posts.";

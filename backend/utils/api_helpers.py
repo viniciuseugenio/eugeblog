@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from dotenv import load_dotenv
-from posts.models import Post
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -28,12 +27,9 @@ def get_user_id(token):
         return 0
 
 
-def check_if_is_allowed_to_edit(user_id, post_id):
-    post_obj = Post.objects.get(pk=post_id)
-    user_obj = User.objects.get(pk=user_id)
-
-    is_post_reviewer = user_obj.groups.filter(name="post_reviewer").exists()
-    is_owner = post_obj.author.id == user_id
+def can_edit_post(user, post):
+    is_post_reviewer = user.groups.filter(name="post_reviewer").exists()
+    is_owner = post.author.id == user
 
     return is_post_reviewer or is_owner
 
@@ -68,15 +64,14 @@ def check_authentication(request, response):
 
     if access_token:
         user_id = get_user_id(access_token)
-        response.data["authenticated"] = True
-        response.data["user_id"] = user_id
+        response.data.update(
+            {
+                "authenticated": True,
+                "user_id": user_id,
+            }
+        )
 
-        return {
-            "response": response,
-            "authenticated": True,
-            "user_id": user_id,
-            "access_token": access_token,
-        }
+        return response
 
     if refresh_token:
         try:
@@ -84,25 +79,20 @@ def check_authentication(request, response):
 
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
+
             user_id = get_user_id(access_token)
 
             set_access_token(response, access_token, "on")
             set_refresh_token(response, refresh_token)
 
-            response.data["authenticated"] = True
-            response.data["user_id"] = user_id
+            response.data.update({"authenticated": True, "user_id": user_id})
 
-            return {
-                "response": response,
-                "authenticated": True,
-                "user_id": user_id,
-                "access_token": access_token,
-            }
+            return response
 
         except jwt.InvalidTokenError:
             pass
 
-    return {"response": response, "authenticated": False, "user_id": 0}
+    return response
 
 
 def google_get_tokens(code, redirect_uri):

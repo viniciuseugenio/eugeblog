@@ -1,20 +1,21 @@
-from django.shortcuts import get_object_or_404
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
 from rest_framework import generics, status
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from utils import api_helpers
-from utils.make_pagination import BaseListPagination, BaseDropdownPagination
+from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 
-from ..models import Comment, Post, Category
+from ..models import Category, Comment, Post
 from ..serializers import (
+    CategorySerializer,
     CommentCreateSerializer,
     CommentDetailsSerializer,
     PostCreationSerializer,
     PostDetailsSerializer,
     PostListSerializer,
-    CategorySerializer,
 )
 
 User = get_user_model()
@@ -35,12 +36,11 @@ class PostsList(generics.ListAPIView):
 class UserPostsList(generics.ListAPIView):
     serializer_class = PostListSerializer
     pagination_class = BaseDropdownPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        auth_info = api_helpers.check_authentication(self.request, Response({}))
-        user_id = auth_info.get("user_id")
-
-        qs = Post.objects.filter(author=user_id).order_by("-id")
+        user = self.request.user
+        qs = Post.objects.filter(author=user).order_by("-id")
         return qs
 
 
@@ -50,98 +50,66 @@ class PostDetails(generics.RetrieveAPIView):
 
     def get_object(self):
         post_pk = self.kwargs.get("pk")
-        return get_object_or_404(Post, pk=post_pk, is_published=True)
+
+        try:
+            return Post.objects.get(pk=post_pk)
+        except Post.DoesNotExist:
+            raise NotFound("This post does not exist or is not published.")
 
     def get(self, request, *args, **kwargs):
         post = self.get_object()
         post_serialized = self.serializer_class(post)
 
-        base_response = Response(
-            {
-                "post": post_serialized.data,
-                "authenticated": False,
-                "has_modify_permission": False,
-                "is_bookmarked": False,
-            }
-        )
+        user = request.user
+        response = Response({}, status=status.HTTP_200_OK)
+        response.data["post"] = post_serialized.data
 
-        auth_info = api_helpers.check_authentication(request, base_response)
-        auth_response = auth_info.get("response")
-        user_id = auth_info.get("user_id")
+        if user.is_authenticated:
+            is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
+            has_modify_permission = api_helpers.can_edit_post(user, post)
 
-        if auth_info["authenticated"] and user_id:
-            user = User.objects.get(pk=user_id)
-            auth_response.data["is_bookmarked"] = Bookmarks.objects.filter(
-                post=post, user=user
-            ).exists()
-
-            auth_response.data["has_modify_permission"] = (
-                api_helpers.check_if_is_allowed_to_edit(user_id, post.pk)
+            response.data.update(
+                {
+                    "is_bookmarked": is_bookmarked,
+                    "has_modify_permission": has_modify_permission,
+                }
             )
 
-        return auth_response
+        return response
 
 
 class PostCreation(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreationSerializer
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print(request.data)
-
-        # Check authentication and refresh tokens if necessary
-        auth_info = api_helpers.check_authentication(
-            request, Response({"authenticated": False})
-        )
-
-        # Handle unauthenticated user
-        if not auth_info.get("authenticated"):
-            return Response(
-                {"error": "You must be logged in to create a post."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        # Try to fetch user, in case of failure return 404 error
-        user_id = auth_info.get("user_id")
-        try:
-            user_obj = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return Response(
-                {"error": "The user was not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        auth_response = auth_info.get("response")  # Response with fresh JWT tokens
+        response = Response({})
+        user = request.user
 
         # Validate and save the new post data
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(author=user_obj, review_status="P")
-            auth_response.data = serializer.data
-            auth_response.status_code = status.HTTP_201_CREATED
-            return auth_response
+            serializer.save(author=user, review_status="P")
+            response.data = serializer.data
+            response.status_code = status.HTTP_201_CREATED
+            return response
 
         # Handle invalid data
-        auth_response.data = {"errors": serializer.errors}
-        auth_response.status_code = status.HTTP_400_BAD_REQUEST
-        return auth_response
+        response.data = {"errors": serializer.errors}
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return response
 
 
 class PostComments(generics.ListCreateAPIView):
     serializer_class = CommentDetailsSerializer
 
-    def post(self, request, *args, **kwargs):
-        auth_info = api_helpers.check_authentication(request, Response({}))
-        user_id = auth_info.get("user_id")
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticated()]
 
-        if user_id == 0:
-            return Response(
-                {"error": "You must be logged in to post a comment."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        return super().post(request, *args, **kwargs)
+        return [AllowAny()]
 
     def get_queryset(self):
         post_id = self.kwargs.get("pk")
@@ -154,8 +122,6 @@ class PostComments(generics.ListCreateAPIView):
         return CommentDetailsSerializer
 
     def perform_create(self, serializer):
-        auth_info = api_helpers.check_authentication(self.request, Response({}))
-        user_id = auth_info.get("user_id")
-        author = User.objects.get(pk=user_id)
+        author = self.request.user
         post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
         serializer.save(author=author, post=post)
