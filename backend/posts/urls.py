@@ -1,10 +1,9 @@
 from django.urls import path
 from .views import site as site_views
-from .views import api as api_views
 
 app_name = "posts"
 
-site_urls = [
+urlpatterns = [
     path("", site_views.PostsList.as_view(), name="list_view"),
     path(
         "posts/details/<int:pk>", site_views.PostDetails.as_view(), name="details_view"
@@ -21,20 +20,3 @@ site_urls = [
     ),
     path("posts/review/allow/<int:pk>", site_views.review_allow, name="review_allow"),
 ]
-
-api_urls = [
-    path("api/posts/", api_views.PostsList.as_view(), name="api_list"),
-    path(
-        "api/posts/user", api_views.UserPostsList.as_view(), name="api_post_list_user"
-    ),
-    path("api/post/create", api_views.PostCreation.as_view(), name="api_create"),
-    path("api/post/<int:pk>", api_views.PostDetails.as_view(), name="api_details"),
-    path(
-        "api/post/<int:pk>/comments",
-        api_views.PostComments.as_view(),
-        name="api_comments",
-    ),
-    path("api/categories/", api_views.CategoryList.as_view(), name="api_categories"),
-]
-
-urlpatterns = site_urls + api_urls

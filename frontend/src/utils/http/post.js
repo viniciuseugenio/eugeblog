@@ -30,7 +30,7 @@ export async function loadPosts(currentPage) {
 
 export async function loadPost(id) {
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/post/${id}`, {
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/posts/${id}/`, {
       method: "GET",
       credentials: "include",
     });
@@ -49,7 +49,7 @@ export async function loadPost(id) {
 export async function createPost(postData) {
   try {
     const response = await fetchWithToken(
-      `${VITE_BASE_BACKEND_URL}/api/post/create`,
+      `${VITE_BASE_BACKEND_URL}/api/posts/`,
       {
         method: "POST",
         body: postData,
@@ -69,7 +69,7 @@ export async function createPost(postData) {
 
 export async function createComment({ content, postId }) {
   const response = await fetchWithToken(
-    `${VITE_BASE_BACKEND_URL}/api/post/${postId}/comments`,
+    `${VITE_BASE_BACKEND_URL}/api/posts/${postId}/comments/`,
     {
       method: "POST",
       headers: {
@@ -88,10 +88,10 @@ export async function createComment({ content, postId }) {
   return await response.json();
 }
 
-export async function loadComments(id) {
+export async function loadComments(postId) {
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/post/${id}/comments`,
+      `${VITE_BASE_BACKEND_URL}/api/posts/${postId}/comments/`,
     );
 
     if (!response.ok) {
@@ -107,7 +107,9 @@ export async function loadComments(id) {
 
 export async function fetchCategories() {
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/categories/`);
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/posts/categories/`,
+    );
     const data = await response.json();
 
     if (!response.ok) {
@@ -124,7 +126,7 @@ export async function fetchCategories() {
 
 export async function fetchUserPosts(page) {
   try {
-    let url = `${VITE_BASE_BACKEND_URL}/api/posts/user`;
+    let url = `${VITE_BASE_BACKEND_URL}/api/posts/user/`;
 
     if (page > 1) {
       url += `?page=${page}`;

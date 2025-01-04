@@ -28,6 +28,7 @@ from accounts.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("posts.urls")),
+    path("api/posts/", include("posts.api.urls")),
     path("bookmarks/", include("bookmarks.urls")),
     path("accounts/", include("allauth.urls")),  # URLs from django-allauth
     path("accounts/", include("accounts.urls")),  # Additional URLs
