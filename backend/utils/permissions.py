@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.permissions import BasePermission
+from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
@@ -45,3 +47,31 @@ class JWTCustomAuthentication(BaseAuthentication):
 
         except jwt.InvalidTokenError:
             return (AnonymousUser(), None)
+
+
+class IsOwnerOrPostReviewer(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
+        is_owner = obj.author.id == user.id
+
+        if not is_owner and not is_reviewer:
+            raise PermissionDenied(
+                "You do not have permission to perform any action in this post."
+            )
+
+        return True
+
+
+class IsPostReviewer(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
+
+        if not is_reviewer:
+            raise PermissionDenied(
+                "You do not have permission to perform any action in this post."
+            )
+
+        return True

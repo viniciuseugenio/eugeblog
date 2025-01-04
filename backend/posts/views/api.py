@@ -3,11 +3,12 @@ from django.contrib.auth import get_user_model
 from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import generics, status
-from rest_framework.exceptions import NotFound, PermissionDenied
-from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from utils import api_helpers
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
+from utils.permissions import IsOwnerOrPostReviewer, IsPostReviewer
 
 from ..models import Category, Comment, Post
 from ..api.serializers import (
@@ -21,46 +22,6 @@ from ..api.serializers import (
 
 User = get_user_model()
 load_dotenv()
-
-
-class AuthenticateUserMixin:
-    def get_authenticated_user(self, request):
-        auth_info = api_helpers.check_authentication(request, Response({}))
-        user_id = auth_info.get("user_id")
-
-        try:
-            user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            raise PermissionDenied("Your user was not found. Please log in again.")
-
-        return user
-
-
-class IsOwnerOrPostReviewer(AuthenticateUserMixin, BasePermission):
-    def has_object_permission(self, request, view, obj):
-        user = self.get_authenticated_user(request)
-        is_reviewer = user.groups.filter(name="post_reviewer").exists()
-        is_owner = obj.author.id == user.id
-
-        if not is_owner and not is_reviewer:
-            raise PermissionDenied(
-                "You do not have permission to perform any action in this post."
-            )
-
-        return True
-
-
-class IsPostReviewer(AuthenticateUserMixin, BasePermission):
-    def has_object_permission(self, request, view, obj):
-        user = self.get_authenticated_user(request)
-        is_reviewer = user.groups.filter(name="post_reviewer").exists()
-
-        if not is_reviewer:
-            raise PermissionDenied(
-                "You do not have permission to perform any action in this post."
-            )
-
-        return True
 
 
 class CategoryList(generics.ListAPIView):
