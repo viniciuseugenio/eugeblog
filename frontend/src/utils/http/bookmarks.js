@@ -5,7 +5,7 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 export async function fetchBookmarks(page = 1) {
   try {
-    let url = `${VITE_BASE_BACKEND_URL}/bookmarks/api/list`;
+    let url = `${VITE_BASE_BACKEND_URL}/api/bookmarks/`;
 
     if (page > 1) {
       url += `?page=${page}`;
@@ -39,21 +39,26 @@ export async function addBookmark(
 
   try {
     const response = await fetchWithToken(
-      `${VITE_BASE_BACKEND_URL}/bookmarks/api/create/${postId}`,
+      `${VITE_BASE_BACKEND_URL}/api/bookmarks/`,
       {
         method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
       },
     );
     const data = await response.json();
 
     if (!response.ok) {
       toast.error(
-        data.message || "Something went wrong while bookmarking the post.",
+        data.detail || "Something went wrong while bookmarking the post.",
       );
       return;
     }
 
-    toast.success(data.message);
+    toast.success(data.detail);
     setIsBookmarked(true);
   } catch {
     toast.error("An unexpected error occurred. Please, try again.");
@@ -63,7 +68,7 @@ export async function addBookmark(
 export async function removeBookmark(postId, setIsBookmarked) {
   try {
     const response = await fetchWithToken(
-      `${VITE_BASE_BACKEND_URL}/bookmarks/api/delete/${postId}`,
+      `${VITE_BASE_BACKEND_URL}/api/bookmarks/${postId}/`,
       {
         method: "DELETE",
       },
@@ -72,15 +77,14 @@ export async function removeBookmark(postId, setIsBookmarked) {
 
     if (!response.ok) {
       toast.error(
-        data.message || "Something went wrong while removing the bookmark.",
+        data.detail || "Something went wrong while removing the bookmark.",
       );
       return;
     }
 
-    toast.warning(data.message);
+    toast.warning(data.detail);
     setIsBookmarked(false);
   } catch (err) {
-    console.log(err);
     toast.error("An unexpected error occurred. Please, try again.");
   }
 }

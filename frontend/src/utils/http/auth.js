@@ -124,7 +124,7 @@ export async function signUser(formData) {
 
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/accounts/api/signup/`,
+      `${VITE_BASE_BACKEND_URL}/api/accounts/signup/`,
       {
         method: "POST",
         headers: {
@@ -148,7 +148,7 @@ export async function signUser(formData) {
 export async function performLogout() {
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/accounts/api/logout/`,
+      `${VITE_BASE_BACKEND_URL}/api/accounts/logout/`,
       {
         method: "POST",
         credentials: "include",

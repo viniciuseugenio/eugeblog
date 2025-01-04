@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Bookmarks
-from posts.serializers import PostListSerializer
+from ..models import Bookmarks
+from posts.api.serializers import PostListSerializer
 
 
 class BookmarksSerializer(serializers.ModelSerializer):

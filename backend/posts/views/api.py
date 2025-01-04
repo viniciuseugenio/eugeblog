@@ -8,8 +8,7 @@ from rest_framework.response import Response
 from utils import api_helpers
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 
-from ..models import Category, Comment, Post
-from ..serializers import (
+from ..api.serializers import (
     CategorySerializer,
     CommentCreateSerializer,
     CommentDetailsSerializer,
@@ -17,6 +16,7 @@ from ..serializers import (
     PostDetailsSerializer,
     PostListSerializer,
 )
+from ..models import Category, Comment, Post
 
 User = get_user_model()
 load_dotenv()
@@ -27,10 +27,40 @@ class CategoryList(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
-class PostsList(generics.ListAPIView):
-    queryset = Post.objects.filter(is_published=True).order_by("-id")
-    serializer_class = PostListSerializer
+class PostListCreateView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
     pagination_class = BaseListPagination
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return PostCreationSerializer
+
+        return PostListSerializer
+
+    def get_queryset(self):
+        if self.request.method == "POST":
+            return super().get_queryset()
+
+        return Post.objects.filter(is_published=True).order_by("-id")
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticated()]
+
+        return [AllowAny()]
+
+    def post(self, request):
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(author=user, review_status="P")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # Handle invalid data
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class UserPostsList(generics.ListAPIView):
@@ -44,7 +74,7 @@ class UserPostsList(generics.ListAPIView):
         return qs
 
 
-class PostDetails(generics.RetrieveAPIView):
+class PostDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailsSerializer
 
@@ -56,50 +86,26 @@ class PostDetails(generics.RetrieveAPIView):
         except Post.DoesNotExist:
             raise NotFound("This post does not exist or is not published.")
 
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         post = self.get_object()
         post_serialized = self.serializer_class(post)
 
         user = request.user
-        response = Response({}, status=status.HTTP_200_OK)
-        response.data["post"] = post_serialized.data
+        is_bookmarked = False
+        has_modify_permission = False
 
         if user.is_authenticated:
             is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
             has_modify_permission = api_helpers.can_edit_post(user, post)
 
-            response.data.update(
-                {
-                    "is_bookmarked": is_bookmarked,
-                    "has_modify_permission": has_modify_permission,
-                }
-            )
-
-        return response
-
-
-class PostCreation(generics.CreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostCreationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        response = Response({})
-        user = request.user
-
-        # Validate and save the new post data
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save(author=user, review_status="P")
-            response.data = serializer.data
-            response.status_code = status.HTTP_201_CREATED
-            return response
-
-        # Handle invalid data
-        response.data = {"errors": serializer.errors}
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return response
+        return Response(
+            {
+                "post": post_serialized.data,
+                "is_bookmarked": is_bookmarked,
+                "has_modify_permission": has_modify_permission,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class PostComments(generics.ListCreateAPIView):

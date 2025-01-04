@@ -11,16 +11,4 @@ urlpatterns = [
         views.TermsOfService.as_view(),
         name="account_terms_service",
     ),
-    path(
-        "api/google/login/",
-        views.GoogleLoginAPI.as_view(),
-        name="account_login_google_api",
-    ),
-    path(
-        "api/github/login/",
-        views.GithubLoginAPI.as_view(),
-        name="account_login_github_api",
-    ),
-    path("api/signup/", views.SignupAPI.as_view(), name="signup_api"),
-    path("api/logout/", views.LogoutAPI.as_view(), name="logout_api"),
 ]

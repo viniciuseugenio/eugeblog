@@ -32,6 +32,11 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),  # URLs from django-allauth
     path("accounts/", include("accounts.urls")),  # Additional URLs
     path("summernote/", include("django_summernote.urls")),
+    # API endpoints
+    path("api/posts/", include("posts.api.urls")),
+    path("api/bookmarks/", include("bookmarks.api.urls")),
+    path("api/accounts/", include("accounts.api.urls")),
+    # JWT authentication
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", CustomTokenVerifyView.as_view(), name="token_verify"),

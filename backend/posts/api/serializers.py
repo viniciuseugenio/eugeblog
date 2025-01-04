@@ -1,4 +1,4 @@
-from .models import Post, Comment, Category
+from posts.models import Post, Comment, Category
 from rest_framework import serializers
 
 
@@ -16,27 +16,9 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
-class PostListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = [
-            "id",
-            "author",
-            "title",
-            "image",
-            "excerpt",
-            "created_at",
-            "review_status",
-        ]
-
-    author = AuthorFullnameField()
-
-
-class PostCreationSerializer(serializers.ModelSerializer):
+class PostBaseSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
-    category = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), required=True
-    )
+    author = AuthorFullnameField()
 
     class Meta:
         model = Post
@@ -47,10 +29,23 @@ class PostCreationSerializer(serializers.ModelSerializer):
             "category",
             "title",
             "excerpt",
-            "content",
             "created_at",
             "review_status",
+            "content",
         ]
+
+
+class PostListSerializer(PostBaseSerializer):
+    pass
+
+
+class PostCreationSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), required=True
+    )
+
+    class Meta(PostBaseSerializer.Meta):
+        fields = PostBaseSerializer.Meta.fields
 
     def validate_content(self, value):
         if not value or len(value.strip()) < 1000:
@@ -61,23 +56,11 @@ class PostCreationSerializer(serializers.ModelSerializer):
         return value
 
 
-class PostDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = [
-            "id",
-            "author",
-            "image",
-            "category",
-            "title",
-            "excerpt",
-            "content",
-            "created_at",
-            "review_status",
-        ]
-
+class PostDetailsSerializer(PostBaseSerializer):
     category = serializers.StringRelatedField()
-    author = AuthorFullnameField()
+
+    class Meta(PostBaseSerializer.Meta):
+        fields = PostBaseSerializer.Meta.fields
 
 
 class CommentDetailsSerializer(serializers.ModelSerializer):

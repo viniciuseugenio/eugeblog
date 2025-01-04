@@ -20,7 +20,7 @@ from rest_framework_simplejwt.views import (
 )
 from utils import api_helpers
 
-from ..serializers import UserSerializer
+from ..api.serializers import UserSerializer
 
 load_dotenv()
 
@@ -103,7 +103,7 @@ class CustomTokenVerifyView(TokenVerifyView):
             )
 
 
-class SignupAPI(APIView):
+class Signup(APIView):
     def post(self, request):
         request.data["agree"] = "off" if request.data.get("agree") is None else "on"
         serializer = UserSerializer(data=request.data)
@@ -117,9 +117,8 @@ class SignupAPI(APIView):
         )
 
 
-class LogoutAPI(APIView):
+class Logout(APIView):
     def post(self, request):
-
         response = Response(
             {"detail": "You have successfully logged out!"}, status=status.HTTP_200_OK
         )
@@ -127,10 +126,13 @@ class LogoutAPI(APIView):
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
 
+        # Set request as None so the middleware don't set the cookies back
+        request.auth = None
+
         return response
 
 
-class GoogleLoginAPI(APIView):
+class GoogleLogin(APIView):
     class InputSerializer(serializers.Serializer):
         code = serializers.CharField(required=False)
         error = serializers.CharField(required=False)
@@ -151,14 +153,14 @@ class GoogleLoginAPI(APIView):
         code = validated_data.get("code")
         error = validated_data.get("error")
 
-        login_url = f"{settings.BASE_FRONTEND_URL}/login"
+        login_url = f"{settings.BASE_FRONTEND_URL}/login/"
 
         if error or not code:
             params = urlencode({"error": error})
             return redirect(f"{login_url}?{params}")
 
         domain = settings.BASE_BACKEND_URL
-        api_uri = reverse("account_login_google_api")
+        api_uri = reverse("accounts:login_google")
         redirect_uri = f"{domain}{api_uri}"
 
         try:
@@ -181,7 +183,7 @@ class GoogleLoginAPI(APIView):
         )
 
 
-class GithubLoginAPI(APIView):
+class GithubLogin(APIView):
     def get(self, request, *args, **kwargs):
         next_url = request.GET.get("state")
 
