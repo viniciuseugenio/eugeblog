@@ -8,12 +8,12 @@ from utils.make_pagination import BaseDropdownPagination
 
 from bookmarks.models import Bookmarks
 
-from ..serializers import BookmarksSerializer
+from ..api.serializers import BookmarksSerializer
 
 User = get_user_model()
 
 
-class BookmarksList(generics.ListAPIView):
+class BookmarksListCreate(generics.ListCreateAPIView):
     queryset = Bookmarks.objects.filter(post__is_published=True).order_by("-id")
     serializer_class = BookmarksSerializer
     pagination_class = BaseDropdownPagination
@@ -23,13 +23,9 @@ class BookmarksList(generics.ListAPIView):
         user = self.request.user
         return Bookmarks.objects.filter(user=user)
 
-
-class BookmarkPost(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         user = request.user
-        post_id = kwargs.get("pk")
+        post_id = request.data.get("postId")
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:
@@ -40,11 +36,9 @@ class BookmarkPost(generics.CreateAPIView):
 
         Bookmarks.objects.create(user=user, post=post_obj)
 
-        response = Response({})
-        response.data["detail"] = "Post bookmarked successfully!"
-        response.status_code = status.HTTP_201_CREATED
-
-        return response
+        return Response(
+            {"detail": "Post bookmarked successfully!"}, status=status.HTTP_201_CREATED
+        )
 
 
 class RemoveBookmark(generics.DestroyAPIView):
@@ -61,10 +55,8 @@ class RemoveBookmark(generics.DestroyAPIView):
         if not Bookmarks.objects.filter(user=user, post=post_obj).exists():
             raise ValidationError("This post is not bookmarked.")
 
-        Bookmarks.objects.filter(user=user, post=post_obj).delete()
+        Bookmarks.objects.get(user=user, post=post_obj).delete()
 
-        response = Response({})
-        response.data["detail"] = "Post removed from bookmarks."
-        response.status_code = status.HTTP_200_OK
-
-        return response
+        return Response(
+            {"detail": "Post removed from bookmarks."}, status=status.HTTP_200_OK
+        )
