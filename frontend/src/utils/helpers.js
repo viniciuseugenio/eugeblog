@@ -33,7 +33,7 @@ export function paginationRange(
 export function openGoogleLoginPage() {
   const next_url = new URLSearchParams(window.location.search).get("next");
   const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-  const redirectUri = "accounts/api/google/login/";
+  const redirectUri = "api/accounts/login/google/";
 
   const scope = [
     "https://www.googleapis.com/auth/userinfo.email",
