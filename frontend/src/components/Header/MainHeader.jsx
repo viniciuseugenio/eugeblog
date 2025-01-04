@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import IconHorizontal from "../../assets/eugeblog-hori.svg";
 import { useAuthContext } from "../../store/auth-context";
 import AuthHeader from "./AuthHeader";

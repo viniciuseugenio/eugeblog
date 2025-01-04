@@ -1,5 +1,5 @@
 import PostDetailsBase from "../components/PostDetails/PostDetailsBase";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { loadPost } from "../utils/http";
 
 export default function PostDetailsPage() {
