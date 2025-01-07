@@ -17,6 +17,7 @@ from ..api.serializers import (
     PostDetailsSerializer,
     PostListSerializer,
 )
+from ..models import Category, Comment, Post
 
 User = get_user_model()
 load_dotenv()
@@ -92,17 +93,20 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
 
         user = request.user
         is_bookmarked = False
-        has_modify_permission = False
+        is_owner = False
+        is_reviewer = False
 
         if user.is_authenticated:
             is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
-            has_modify_permission = api_helpers.can_edit_post(user, post)
+            is_owner = post.author == user
+            is_reviewer = user.groups.filter(name="post_reviewer").exists()
 
         return Response(
             {
                 "post": post_serialized.data,
                 "is_bookmarked": is_bookmarked,
-                "has_modify_permission": has_modify_permission,
+                "is_owner": is_owner,
+                "is_reviewer": is_reviewer,
             }
         )
 
