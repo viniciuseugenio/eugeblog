@@ -52,13 +52,10 @@ export async function loadPost(id) {
 
 export async function deletePost(id) {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/post/delete/${id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/posts/${id}/`, {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const data = await response.json();
@@ -74,7 +71,7 @@ export async function deletePost(id) {
 export async function loadPostReview(id) {
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/post/review/${id}`,
+      `${VITE_BASE_BACKEND_URL}/api/posts/review/${id}/`,
       {
         credentials: "include",
       },
@@ -94,7 +91,7 @@ export async function loadPostReview(id) {
 export async function acceptPostReview(id) {
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/post/review/accept/${id}`,
+      `${VITE_BASE_BACKEND_URL}/api/posts/review/${id}/`,
       { credentials: "include", method: "PATCH" },
     );
     const data = await response.json();

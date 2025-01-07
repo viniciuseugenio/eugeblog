@@ -6,6 +6,7 @@ app_name = "api"
 urlpatterns = [
     path("", api.PostListCreateView.as_view(), name="list_create"),
     path("<int:pk>/", api.PostDetails.as_view(), name="api_details"),
+    path("review/<int:pk>/", api.PostReviewDetails.as_view(), name="api_review"),
     path("user/", api.UserPostsList.as_view(), name="api_post_list_user"),
     path(
         "<int:pk>/comments/",
