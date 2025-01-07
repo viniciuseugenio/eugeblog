@@ -6,11 +6,9 @@ from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from utils import api_helpers
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
-from utils.permissions import IsOwnerOrPostReviewer, IsPostReviewer
+from utils.permissions import IsOwnerOrPostReviewer
 
-from ..models import Category, Comment, Post
 from ..api.serializers import (
     CategorySerializer,
     CommentCreateSerializer,
@@ -109,10 +107,10 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
         )
 
 
-class PostReviewDetails(generics.RetrieveAPIView):
+class PostReviewDetails(generics.RetrieveUpdateAPIView):
     queryset = Post.objects.filter(is_published=False, review_status="P")
     serializer_class = PostDetailsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrPostReviewer]
 
     def get_object(self):
         post_pk = self.kwargs.get("pk")
@@ -121,51 +119,37 @@ class PostReviewDetails(generics.RetrieveAPIView):
         except Post.DoesNotExist:
             raise Http404("This post does not exist or was already reviewed.")
 
-    def has_permission(self, user, post):
-        is_owner = post.author.id == user.id
-        is_allowed = user.groups.filter(name="post_reviewer").exists()
-        return is_allowed or is_owner
-
-    def get(self, request, *args, **kwargs):
-        post = self.get_object()
-        post_serialized = self.serializer_class(post)
-
-        user = request.user
-        has_permission = self.has_permission(user, post)
-
-        return Response(
-            {
-                "post": post_serialized.data,
-                "has_modify_permission": has_permission,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-
-class PostReviewAccept(generics.UpdateAPIView):
-    queryset = Post.objects.filter(is_published=False, review_status="P")
-    serializer_class = PostCreationSerializer
-    permission_classes = [IsPostReviewer]
-
-    def get_object(self):
-        post_pk = self.kwargs.get("pk")
-        try:
-            return self.queryset.get(pk=post_pk)
-        except Post.DoesNotExist:
-            raise Http404("This post does not exist or was already reviewed.")
-
-    def perform_update(self, serializer, instance):
+    def perform_update(self, instance):
         instance.review_status = "A"
         instance.is_published = True
         instance.save()
 
-    def update(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.check_object_permissions(request, instance)
-        self.perform_update(None, instance)
-
+        self.perform_update(instance)
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        post = self.get_object()
+        post_serialized = self.serializer_class(post)
+
+        user = request.user
+        is_owner = False
+        is_reviewer = False
+
+        if user.is_authenticated:
+            is_owner = post.author.id == user.id
+            is_reviewer = user.groups.filter(name="post_reviewer").exists()
+
+        return Response(
+            {
+                "post": post_serialized.data,
+                "is_owner": is_owner,
+                "is_reviewer": is_reviewer,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class PostCreation(generics.CreateAPIView):
