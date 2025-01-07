@@ -4,6 +4,19 @@ import { useSubmit } from "react-router";
 import { toast } from "sonner";
 import { useLogout } from "../utils/hooks";
 
+/**
+ * Modal component that renders a dialog to confirm an important action. Portal is used to render the dialog in the root element.
+ *
+ * @param {React.ReactNode} props.children - The explanation text to be displayed inside the modal.
+ * @param {string} props.title - The title of the modal.
+ * @param {function} props.mutateFn - The function to be called when the confirm button is clicked.
+ * @param {string} [props.icon="close-circle-outline"] - The name of the icon to be displayed in the modal.
+ * @param {string} props.iconColor - The color class for the icon.
+ * @param {string} props.confirmBtnClasses - The CSS classes for the confirm button. You must pass on the bg-color and text-color.
+ * @param {React.Ref} ref - The reference to the dialog element.
+ *
+ * @returns {React.ReactPortal} A React Portal containing the modal dialog.
+ */
 const Modal = forwardRef(function Modal(
   {
     children,
