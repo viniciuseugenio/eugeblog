@@ -1,9 +1,11 @@
 import { useRef } from "react";
 import Modal from "../Modal";
 import IconSpan from "./IconSpan";
+import { useLogout } from "../../utils/hooks";
 
 export default function LogoutButton() {
   const modal = useRef();
+  const { mutate } = useLogout();
 
   function handleLogout(event) {
     event.preventDefault();
@@ -12,7 +14,13 @@ export default function LogoutButton() {
 
   return (
     <>
-      <Modal ref={modal} title="Are you sure you want to logout?" isLogout>
+      <Modal
+        ref={modal}
+        mutateFn={mutate}
+        title="Are you sure you want to logout?"
+        iconColor="text-red-600"
+        confirmBtnClasses="bg-red-200 text-red-950 ring-1 ring-red-300 hover:bg-red-300 hover:shadow-xl"
+      >
         You will not be able to modify your posts nor view your bookmarks. You
         will have to login again.
       </Modal>
