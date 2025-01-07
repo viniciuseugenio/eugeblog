@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useNavigate } from "react-router-dom";
-import { createContext, useEffect, useMemo } from "react";
-import { useAuth } from "../../store/auth-context.jsx";
-import PostDetails from "./PostDetails.jsx";
 import { CircularProgress } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { createContext, useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
+import { useAuthCheck } from "../../utils/hooks.js";
+import PostDetails from "./PostDetails.jsx";
 
 export const PostDetailsContext = createContext({
   isReview: null,
@@ -14,45 +14,21 @@ export const PostDetailsContext = createContext({
   isBookmarked: null,
 });
 
-function usePostDetails(queryKey, fetchFn, isReview) {
+export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
+  // Check if user is authenticated
+  useAuthCheck();
+
   const navigate = useNavigate();
   const params = useParams();
-  const { login, logout, isLogged } = useAuth();
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: queryKey,
     queryFn: () => fetchFn(params.id),
-  });
-
-  useEffect(() => {
-    if (isError && error) {
+    onError: (error) => {
       toast.error(error.message, { id: "details-error" });
       navigate("/");
-    }
-  }, [isError, error, navigate]);
-
-  useEffect(() => {
-    if (data) {
-      if (!data.authenticated && isLogged) logout();
-      if (data.authenticated && !isLogged) login(data.user_id);
-
-      if (data.post?.id && isReview) {
-        toast.info(
-          "You are reviewing this post. Be very careful with what you do.",
-          {
-            id: "review-info",
-            duration: 5000,
-          },
-        );
-      }
-    }
-  }, [data, isLogged, login, logout, isReview]);
-
-  return { data, isPending, isError, error };
-}
-
-export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
-  const { data, isPending } = usePostDetails(queryKey, fetchFn, isReview);
+    },
+  });
 
   const contextValue = useMemo(
     () => ({
