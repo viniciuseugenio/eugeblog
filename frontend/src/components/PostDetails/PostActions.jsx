@@ -1,26 +1,31 @@
+import { useContext } from "react";
+import ApproveBtn from "./ApproveBtn.jsx";
 import BookmarkButtons from "./BookmarkButtons";
+import DeleteBtn from "./DeleteBtn.jsx";
+import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
-export default function PostActions({
-  canModify,
-  postId,
-  initialIsBookmarked,
-}) {
+export default function PostActions() {
+  const { isReview, isOwner, isReviewer } = useContext(PostDetailsContext);
+
+  const buttonClasses =
+    "flex items-center justify-center gap-1 rounded-md px-4 py-1 duration-300 hover:shadow-md hover:ring-1";
+
   return (
     <div className="mb-12 flex justify-between">
-      <BookmarkButtons
-        initialIsBookmarked={initialIsBookmarked}
-        postId={postId}
-      />
-      {canModify && (
+      {!isReview ? <BookmarkButtons /> : <div></div>}
+      {(isOwner || isReviewer) && (
         <div className="flex gap-3">
-          <button className="text-light flex items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 py-1 duration-300 hover:bg-blue-700">
+          <DeleteBtn buttonClasses={buttonClasses} />
+
+          <button
+            className={`${buttonClasses} text-blue-800 hover:bg-blue-100 hover:ring-blue-300`}
+          >
             <ion-icon name="create-outline"></ion-icon>
             <span>Edit</span>
           </button>
-          <button className="text-light flex items-center justify-center gap-1 rounded-lg bg-red-500 px-4 py-1 duration-300 hover:bg-red-600">
-            <ion-icon name="trash-outline"></ion-icon>
-            <span>Delete</span>
-          </button>
+          {isReview && isReviewer && (
+            <ApproveBtn buttonClasses={buttonClasses} />
+          )}
         </div>
       )}
     </div>

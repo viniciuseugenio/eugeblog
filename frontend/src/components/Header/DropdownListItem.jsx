@@ -13,6 +13,7 @@ function PostMeta({ reviewStatus }) {
 }
 
 export default function DropdownListItem({ post, isArchived }) {
+  let url = `/post/${post.id}`;
   const reviewStatus = post.review_status;
 
   let postMeta = (
@@ -23,13 +24,14 @@ export default function DropdownListItem({ post, isArchived }) {
     postMeta = <PostMeta reviewStatus={reviewStatus} />;
   }
 
+  if (reviewStatus === "P") {
+    url = `/post/review/${post.id}`;
+  }
+
   return (
     <>
       <li>
-        <Link
-          to={`/post/${post.id}`}
-          className="hover:text-secondary flex gap-3 duration-300"
-        >
+        <Link to={url} className="hover:text-secondary flex gap-3 duration-300">
           <img src={post.image} className="w-24 rounded-md" alt={post.title} />
           <div className="flex flex-col justify-center">
             <span className="break-words font-medium">{post.title}</span>

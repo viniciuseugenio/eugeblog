@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "../../utils/http";
 
 export default function SelectCategory({ name, id }) {
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });

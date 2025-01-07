@@ -1,6 +1,6 @@
 import SelectCategory from "./SelectCategory.jsx";
 
-export default function PostCreationInput({
+export default function PostFormInput({
   label,
   required,
   name,
