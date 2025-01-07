@@ -30,7 +30,7 @@ class JWTCustomAuthentication(BaseAuthentication):
             return (user, {"access": access_token, "refresh": refresh_token})
 
         except jwt.ExpiredSignatureError:
-            return (AnonymousUser(), None)
+            return self._authenticate_with_refresh_token(refresh_token)
 
         except jwt.InvalidTokenError:
             return (AnonymousUser(), None)
