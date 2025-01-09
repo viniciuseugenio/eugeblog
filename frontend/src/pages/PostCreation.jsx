@@ -38,7 +38,7 @@ export default function PostCreationPage() {
 
   return (
     <PostFormBase
-      data={data}
+      mutationData={data}
       isError={isError}
       isPending={isPending}
       mutate={mutate}

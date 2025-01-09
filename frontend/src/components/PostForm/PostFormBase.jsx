@@ -3,8 +3,9 @@ import Editor from "./Editor";
 import ImageInput from "./ImageInput";
 
 export default function PostFormBase({
-  data,
-  isError,
+  queryData,
+  mutationData,
+  postId,
   isPending,
   mutate,
   title,
@@ -33,29 +34,43 @@ export default function PostFormBase({
           className="grid grid-cols-2 gap-6"
         >
           <PostFormInput
+            key={queryData?.post?.title}
             label="Title"
             name="title"
             id="id_title"
-            errors={isError && data.errors.title}
+            data={queryData?.post?.title}
+            errors={mutationData?.errors?.title}
             required
           />
           <PostFormInput
+            key={queryData?.post?.excerpt}
             label="Excerpt"
             name="excerpt"
             id="id_excerpt"
-            errors={isError && data.errors.excerpt}
+            data={queryData?.post?.excerpt}
+            errors={mutationData?.errors?.excerpt}
             required
           />
-          <Editor errors={isError && data.errors.content} />
+          <Editor
+            key={queryData?.post?.content}
+            data={queryData?.post?.content}
+            errors={mutationData?.errors?.content}
+          />
           <PostFormInput
+            key={queryData?.post?.category}
             label="Category"
             name="category"
             id="id_category"
             type="select"
-            errors={isError && data.errors.category}
+            data={queryData?.post?.category}
+            errors={mutationData?.errors?.category}
             required
           />
-          <ImageInput errors={isError && data.errors.image} />
+          <ImageInput
+            key={queryData?.post?.image}
+            data={queryData?.post?.image}
+            errors={mutationData?.errors?.image}
+          />
 
           <div className="col-span-2 flex gap-3 justify-self-end">
             <button
