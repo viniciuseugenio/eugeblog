@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login";
 import PostCreationPage from "./pages/PostCreation.jsx";
 import PostDetailsPage from "./pages/PostDetails";
 import PostReviewDetailsPage from "./pages/PostReviewDetails.jsx";
+import PostEditPage from "./pages/PostEdit.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage, { action as signupAction } from "./pages/Signup";
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
           {
             path: "post/create",
             element: <PostCreationPage />,
+          },
+          {
+            path: "post/edit/:id",
+            element: <PostEditPage />,
           },
         ],
       },

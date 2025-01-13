@@ -50,6 +50,32 @@ export async function loadPost(id) {
   }
 }
 
+export async function editPost({ postId, formData }) {
+  if (Array.from(formData.entries()).length === 0) {
+    return { detail: "No changes were made." };
+  }
+
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/posts/${postId}/`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        body: formData,
+      },
+    );
+    const data = await response.json();
+
+    if (!response.ok && response.status !== 400) {
+      throw new Error(UNEXPECTED_ERROR);
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
+  }
+}
+
 export async function deletePost(id) {
   try {
     const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/posts/${id}/`, {

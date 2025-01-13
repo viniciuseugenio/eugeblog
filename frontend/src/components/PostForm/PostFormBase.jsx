@@ -15,9 +15,28 @@ export default function PostFormBase({
     event.preventDefault();
 
     const form = event.target;
-    const formData = new FormData(form);
+    const formData = new FormData(form); // Collects all form data
+    const changedData = new FormData(); // Store only changed data
 
-    mutate(formData);
+    const image = formData.get("image");
+    if (image instanceof File && image.name) {
+      changedData.append("image", image);
+    }
+
+    for (const [key, value] of formData.entries()) {
+      if (!value || !queryData?.post[key]) continue;
+
+      if (key === "category") {
+        const categoryId = Number(value);
+        if (!isNaN(categoryId) && categoryId !== queryData?.post.category.id) {
+          changedData.append(key, categoryId);
+        }
+      } else if (key !== "image" && queryData?.post[key] !== value) {
+        changedData.append(key, value);
+      }
+    }
+
+    postId ? mutate({ postId, formData: changedData }) : mutate(formData);
   }
 
   return (
