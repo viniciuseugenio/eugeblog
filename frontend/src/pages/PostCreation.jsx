@@ -11,7 +11,7 @@ export default function PostCreationPage() {
   const { data: authData } = useAuthCheck();
 
   useEffect(() => {
-    if (!authData.isAuthenticated) {
+    if (authData && !authData.isAuthenticated) {
       toast.error("You must be logged in to create a post.", {
         id: "login-required",
       });
