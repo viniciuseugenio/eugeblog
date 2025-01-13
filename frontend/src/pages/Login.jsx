@@ -41,6 +41,17 @@ export default function LoginPage() {
   function handleLoginSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
+
+    const email = data.get("email");
+    const password = data.get("password");
+
+    if (!email || !password) {
+      toast.error("Please, fill in the e-mail and the password fields.", {
+        id: "login-error",
+      });
+      return;
+    }
+
     login(data);
   }
 
