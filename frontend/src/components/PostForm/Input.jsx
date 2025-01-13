@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SelectCategory from "./SelectCategory.jsx";
 
 export default function PostFormInput({
@@ -7,11 +8,16 @@ export default function PostFormInput({
   id,
   type,
   errors,
+  data,
 }) {
+  const [inputValue, setInputValue] = useState(data || "");
+
   let inputElement = (
     <input
       name={name}
       id={id}
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
       className="text-md ring-accent rounded-md p-2 outline-none ring-1 duration-300 focus:ring-2"
       type={type ? type : "text"}
       required={required}
@@ -19,7 +25,14 @@ export default function PostFormInput({
   );
 
   if (type === "select") {
-    inputElement = <SelectCategory name={name} id={id} />;
+    inputElement = (
+      <SelectCategory
+        key={inputValue?.id}
+        value={inputValue?.id}
+        name={name}
+        id={id}
+      />
+    );
   }
 
   return (

@@ -1,8 +1,8 @@
 import IconSpan from "../Header/IconSpan";
 import { useState } from "react";
 
-export default function ImageInput({ errors }) {
-  const [image, setImage] = useState();
+export default function ImageInput({ data, errors }) {
+  const [image, setImage] = useState(data);
 
   function getFile(event) {
     const file = event.target.files[0];

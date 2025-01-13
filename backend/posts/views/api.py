@@ -77,7 +77,12 @@ class UserPostsList(generics.ListAPIView):
 
 class PostDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.filter(is_published=True)
-    serializer_class = PostDetailsSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == "PATCH":
+            return PostCreationSerializer
+
+        return PostDetailsSerializer
 
     def get_object(self):
         post_pk = self.kwargs.get("pk")
@@ -89,7 +94,7 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         post = self.get_object()
-        post_serialized = self.serializer_class(post)
+        post_serialized = self.get_serializer(post)
 
         user = request.user
         is_bookmarked = False
@@ -108,6 +113,24 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
                 "is_owner": is_owner,
                 "is_reviewer": is_reviewer,
             }
+        )
+
+    def partial_update(self, request, *args, **kwargs):
+        if not request.data:
+            return Response({"detail": "No changes were made."})
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"detail": "This post was successfully updated!"},
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -136,7 +159,7 @@ class PostReviewDetails(generics.RetrieveUpdateAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         post = self.get_object()
-        post_serialized = self.serializer_class(post)
+        post_serialized = self.get_serializer(post)
 
         user = request.user
         is_owner = False

@@ -32,7 +32,7 @@ export default function PostDetails({ post }) {
 
           <PostMeta>
             <ion-icon name="pricetag-outline" />
-            <span>{post.category}</span>
+            <span>{post.category.name}</span>
           </PostMeta>
         </div>
 

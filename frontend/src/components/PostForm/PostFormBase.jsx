@@ -3,8 +3,9 @@ import Editor from "./Editor";
 import ImageInput from "./ImageInput";
 
 export default function PostFormBase({
-  data,
-  isError,
+  queryData,
+  mutationData,
+  postId,
   isPending,
   mutate,
   title,
@@ -14,9 +15,28 @@ export default function PostFormBase({
     event.preventDefault();
 
     const form = event.target;
-    const formData = new FormData(form);
+    const formData = new FormData(form); // Collects all form data
+    const changedData = new FormData(); // Store only changed data
 
-    mutate(formData);
+    const image = formData.get("image");
+    if (image instanceof File && image.name) {
+      changedData.append("image", image);
+    }
+
+    for (const [key, value] of formData.entries()) {
+      if (!value || !queryData?.post[key]) continue;
+
+      if (key === "category") {
+        const categoryId = Number(value);
+        if (!isNaN(categoryId) && categoryId !== queryData?.post.category.id) {
+          changedData.append(key, categoryId);
+        }
+      } else if (key !== "image" && queryData?.post[key] !== value) {
+        changedData.append(key, value);
+      }
+    }
+
+    postId ? mutate({ postId, formData: changedData }) : mutate(formData);
   }
 
   return (
@@ -33,29 +53,43 @@ export default function PostFormBase({
           className="grid grid-cols-2 gap-6"
         >
           <PostFormInput
+            key={queryData?.post?.title}
             label="Title"
             name="title"
             id="id_title"
-            errors={isError && data.errors.title}
+            data={queryData?.post?.title}
+            errors={mutationData?.errors?.title}
             required
           />
           <PostFormInput
+            key={queryData?.post?.excerpt}
             label="Excerpt"
             name="excerpt"
             id="id_excerpt"
-            errors={isError && data.errors.excerpt}
+            data={queryData?.post?.excerpt}
+            errors={mutationData?.errors?.excerpt}
             required
           />
-          <Editor errors={isError && data.errors.content} />
+          <Editor
+            key={queryData?.post?.content}
+            data={queryData?.post?.content}
+            errors={mutationData?.errors?.content}
+          />
           <PostFormInput
+            key={queryData?.post?.category}
             label="Category"
             name="category"
             id="id_category"
             type="select"
-            errors={isError && data.errors.category}
+            data={queryData?.post?.category}
+            errors={mutationData?.errors?.category}
             required
           />
-          <ImageInput errors={isError && data.errors.image} />
+          <ImageInput
+            key={queryData?.post?.image}
+            data={queryData?.post?.image}
+            errors={mutationData?.errors?.image}
+          />
 
           <div className="col-span-2 flex gap-3 justify-self-end">
             <button

@@ -57,7 +57,7 @@ class PostCreationSerializer(serializers.ModelSerializer):
 
 
 class PostDetailsSerializer(PostBaseSerializer):
-    category = serializers.StringRelatedField()
+    category = CategorySerializer()
 
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields
