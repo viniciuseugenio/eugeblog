@@ -187,30 +187,6 @@ class PostReviewDetails(generics.RetrieveUpdateAPIView):
         )
 
 
-class PostCreation(generics.CreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostCreationSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        response = Response({})
-        user = request.user
-
-        # Validate and save the new post data
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save(author=user, review_status="P")
-            response.data = serializer.data
-            response.status_code = status.HTTP_201_CREATED
-            return response
-
-        # Handle invalid data
-        response.data = {"errors": serializer.errors}
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return response
-
-
 class PostComments(generics.ListCreateAPIView):
     serializer_class = CommentDetailsSerializer
 
