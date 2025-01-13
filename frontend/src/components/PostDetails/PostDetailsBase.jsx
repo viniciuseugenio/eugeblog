@@ -21,14 +21,15 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, isError, error } = useQuery({
     queryKey: queryKey,
     queryFn: () => fetchFn(params.id),
-    onError: (error) => {
-      toast.error(error.message, { id: "details-error" });
-      navigate("/");
-    },
   });
+
+  if (isError) {
+    toast.error(error.message, { id: "details-error" });
+    navigate("/");
+  }
 
   const contextValue = useMemo(
     () => ({
