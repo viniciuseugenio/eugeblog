@@ -7,13 +7,12 @@ import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
 export default function PostDetails({ post }) {
   const createdAt = formatDate(post.created_at);
-  const image = `http://localhost:8000${post.image}`;
   const { isReview } = useContext(PostDetailsContext);
 
   return (
     <>
       <div className="flex flex-col items-center">
-        <img src={image} className="mb-8 w-[52rem]" alt="" />
+        <img src={post.image} className="mb-8 w-[52rem]" alt="" />
 
         <h1 className="mb-6 max-w-2xl text-center text-4xl font-bold">
           {post.title}
