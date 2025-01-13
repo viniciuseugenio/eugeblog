@@ -84,6 +84,14 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
 
         return PostDetailsSerializer
 
+    def get_permissions(self):
+        method_permissions = {
+            "DELETE": [IsOwnerOrPostReviewer()],
+            "PATCH": [IsOwnerOrPostReviewer()],
+        }
+
+        return method_permissions.get(self.request.method, [AllowAny()])
+
     def get_object(self):
         post_pk = self.kwargs.get("pk")
 
@@ -226,16 +234,3 @@ class PostComments(generics.ListCreateAPIView):
         author = self.request.user
         post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
         serializer.save(author=author, post=post)
-
-
-class PostDelete(generics.DestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostDetailsSerializer
-    permission_classes = [IsOwnerOrPostReviewer]
-
-    def get_object(self):
-        post_pk = self.kwargs.get("pk")
-        try:
-            return self.queryset.get(pk=post_pk)
-        except Post.DoesNotExist:
-            raise Http404("This post does not exist anymore.")
