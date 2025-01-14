@@ -1,7 +1,6 @@
 import os
 from urllib.parse import urlencode
 
-import jwt
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -19,19 +18,6 @@ GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 
-def get_user_id(token):
-    try:
-        decoded = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=["HS256"])
-        return decoded.get("user_id")
-    except (jwt.DecodeError, jwt.InvalidTokenError):
-        return 0
-
-
-def can_edit_post(user, post):
-    is_post_reviewer = user.groups.filter(name="post_reviewer").exists()
-    is_owner = post.author.id == user
-
-    return is_post_reviewer or is_owner
 
 
 def set_access_token(response, access_token, max_age):
@@ -56,43 +42,6 @@ def set_refresh_token(response, refresh_token):
         secure=False,  # TODO: Change to True in production
         max_age=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
     )
-
-
-def check_authentication(request, response):
-    refresh_token = request.COOKIES.get("refresh_token")
-    access_token = request.COOKIES.get("access_token")
-
-    if access_token:
-        user_id = get_user_id(access_token)
-        response.data.update(
-            {
-                "authenticated": True,
-                "user_id": user_id,
-            }
-        )
-
-        return response
-
-    if refresh_token:
-        try:
-            refresh = RefreshToken(refresh_token)
-
-            access_token = str(refresh.access_token)
-            refresh_token = str(refresh)
-
-            user_id = get_user_id(access_token)
-
-            set_access_token(response, access_token, "on")
-            set_refresh_token(response, refresh_token)
-
-            response.data.update({"authenticated": True, "user_id": user_id})
-
-            return response
-
-        except jwt.InvalidTokenError:
-            pass
-
-    return response
 
 
 def google_get_tokens(code, redirect_uri):
