@@ -1,5 +1,3 @@
-import { fetchWithToken } from "./auth";
-
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 export async function fetchBookmarks(page = 1) {
@@ -10,8 +8,9 @@ export async function fetchBookmarks(page = 1) {
       url += `?page=${page}`;
     }
 
-    const response = await fetchWithToken(url, {
+    const response = await fetch(url, {
       method: "GET",
+      credentials: "include",
     });
 
     const data = await response.json();

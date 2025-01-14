@@ -10,65 +10,44 @@ async function refreshToken() {
       },
     );
 
-    if (!response.ok) {
-      return false;
-    } else {
-      return true;
-    }
-  } catch {
+    return response.ok;
+  } catch (error) {
+    console.error("Error refreshing token", error);
     return false;
   }
 }
 
-export async function fetchWithToken(url, options, retryCount = 1) {
-  const response = await fetch(url, {
-    ...options,
-    credentials: "include",
-  });
+async function verifyToken() {
+  try {
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/token/verify/`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  if (response.status === 401 && retryCount > 0) {
-    const refreshed = await refreshToken();
-
-    if (!refreshed) {
-      throw new Error("You are not authorized to access this resource.");
+    if (!response.ok) {
+      return null;
     }
 
-    return fetchWithToken(url, options, retryCount - 1);
+    return await response.json();
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    throw error;
   }
-
-  return response;
 }
 
 export async function isUserAuthenticated() {
-  const VERIFY_URL = `${VITE_BASE_BACKEND_URL}/api/token/verify/`;
-
-  async function verifyToken() {
-    try {
-      return await fetch(VERIFY_URL, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (error) {
-      console.error("Error verifying token:", error);
-      throw error;
-    }
-  }
-
   try {
-    const response = await verifyToken();
+    let data = await verifyToken();
 
-    if (response.ok) {
-      const data = await response.json();
+    if (data) {
       return { isAuthenticated: true, userId: data.user_id };
     }
 
     const refreshed = await refreshToken();
 
     if (refreshed) {
-      const retryResponse = await verifyToken();
-
-      if (retryResponse.ok) {
-        const data = await retryResponse.json();
+      data = await verifyToken();
+      if (data) {
         return { isAuthenticated: true, userId: data.user_id };
       }
     }
