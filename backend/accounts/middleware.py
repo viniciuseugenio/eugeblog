@@ -8,13 +8,12 @@ class SetTokenMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        if request.path.startswith("/api"):
-            if request.auth and request.user.is_authenticated:
-                access_token = request.auth.get("access")
-                refresh_token = request.auth.get("refresh")
+        if hasattr(request, "auth") and request.auth and request.user.is_authenticated:
+            access_token = request.auth.get("access")
+            refresh_token = request.auth.get("refresh")
 
-                if access_token and refresh_token:
-                    api_helpers.set_access_token(response, access_token, "on")
-                    api_helpers.set_refresh_token(response, refresh_token)
+            if access_token and refresh_token:
+                api_helpers.set_access_token(response, access_token, "on")
+                api_helpers.set_refresh_token(response, refresh_token)
 
         return response
