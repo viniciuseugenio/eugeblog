@@ -1,5 +1,7 @@
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
+const UNEXPECTED_ERROR = "An unexpected error occurred. Please, try again.";
+
 export async function fetchBookmarks(page = 1) {
   try {
     let url = `${VITE_BASE_BACKEND_URL}/api/bookmarks/`;
@@ -14,13 +16,14 @@ export async function fetchBookmarks(page = 1) {
     });
 
     const data = await response.json();
+
     if (!response.ok) {
-      throw new Error(data.error || "Failed to fetch bookmarks");
+      throw new Error(data.detail);
     }
 
     return data;
-  } catch {
-    throw new Error("An unexpected error occurred. Please, try again.");
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
   }
 }
 
@@ -42,9 +45,7 @@ export async function addBookmark(postId) {
 
     return data;
   } catch (error) {
-    throw new Error(
-      error.message || "An unexpected error occurred. Please, try again.",
-    );
+    throw new Error(error.message || UNEXPECTED_ERROR);
   }
 }
 
@@ -65,8 +66,6 @@ export async function removeBookmark(postId) {
 
     return data;
   } catch (error) {
-    throw new Error(
-      error.message || "Something went wrong while removing the bookmark.",
-    );
+    throw new Error(error.message || UNEXPECTED_ERROR);
   }
 }
