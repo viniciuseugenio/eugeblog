@@ -19,6 +19,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class PostBaseSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     author = AuthorFullnameField()
+    category = CategorySerializer()
 
     class Meta:
         model = Post
