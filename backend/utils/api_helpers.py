@@ -18,9 +18,18 @@ GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 
-
-
 def set_access_token(response, access_token, max_age):
+    """
+    Sets an access token as an HTTP-only cookie on the response.
+
+    Parameters:
+    - response (HttpResponse): The HTTP response object to set the cookie on.
+    - access_token (str): The access token to store in the cookie.
+    - max_age (str): If set to None, the cookie will expire when the browser is closed.
+
+    Notes:
+    - The 'secure' attribute is set to False for development. Change to True in production.
+    """
     max_age = (
         settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] if max_age is not None else max_age
     )
