@@ -21,7 +21,11 @@ class BookmarksListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Bookmarks.objects.filter(user=user)
+
+        qs = super().get_queryset()
+        qs = qs.filter(user=user)
+
+        return qs
 
     def create(self, request, *args, **kwargs):
         user = request.user
