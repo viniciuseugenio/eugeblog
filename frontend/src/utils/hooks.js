@@ -91,3 +91,19 @@ export function useAuthCheck() {
     },
   });
 }
+
+/**
+ * Redirects to the login page if the user is not authenticated.
+ * @param {string} message - The message to display to the user.
+ * @param {string} [url="/login"] - The URL to redirect to.
+ * @returns {void}
+ */
+export function useAuthRedirect(message, url = "/login") {
+  const { data: authData } = useAuthCheck();
+  const navigate = useNavigate();
+
+  if (!authData?.isAuthenticated) {
+    toast.info(message);
+    navigate(url);
+  }
+}
