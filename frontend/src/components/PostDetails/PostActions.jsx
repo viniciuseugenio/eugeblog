@@ -14,9 +14,9 @@ export default function PostActions() {
 
   return (
     <div className="mb-12 flex justify-between">
-      {!isReview ? <BookmarkButtons /> : <div></div>}
+      {!isReview && <BookmarkButtons key={postId} />}
       {(isOwner || isReviewer) && (
-        <div className="flex gap-3">
+        <div className={`flex gap-3 ${isReview && "w-full justify-end"}`}>
           <DeleteBtn buttonClasses={buttonClasses} />
 
           <Link

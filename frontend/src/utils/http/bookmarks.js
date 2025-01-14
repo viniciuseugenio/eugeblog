@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import { fetchWithToken } from "./auth";
 
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
@@ -26,65 +25,49 @@ export async function fetchBookmarks(page = 1) {
   }
 }
 
-export async function addBookmark(
-  postId,
-  isAuthenticated,
-  navigate,
-  setIsBookmarked,
-) {
-  if (!isAuthenticated) {
-    toast.info("You need to login to bookmark the post.");
-    return navigate(`/login?next=/post/${postId}`);
-  }
-
+export async function addBookmark(postId) {
   try {
-    const response = await fetchWithToken(
-      `${VITE_BASE_BACKEND_URL}/api/bookmarks/`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postId }),
+    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/bookmarks/`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ postId }),
+    });
     const data = await response.json();
 
     if (!response.ok) {
-      toast.error(
-        data.detail || "Something went wrong while bookmarking the post.",
-      );
-      return;
+      throw new Error(data.detail);
     }
 
-    toast.success(data.detail);
-    setIsBookmarked(true);
-  } catch {
-    toast.error("An unexpected error occurred. Please, try again.");
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.message || "An unexpected error occurred. Please, try again.",
+    );
   }
 }
 
-export async function removeBookmark(postId, setIsBookmarked) {
+export async function removeBookmark(postId) {
   try {
-    const response = await fetchWithToken(
+    const response = await fetch(
       `${VITE_BASE_BACKEND_URL}/api/bookmarks/${postId}/`,
       {
+        credentials: "include",
         method: "DELETE",
       },
     );
     const data = await response.json();
 
     if (!response.ok) {
-      toast.error(
-        data.detail || "Something went wrong while removing the bookmark.",
-      );
-      return;
+      throw new Error(data.detail);
     }
 
-    toast.warning(data.detail);
-    setIsBookmarked(false);
-  } catch (err) {
-    toast.error("An unexpected error occurred. Please, try again.");
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.message || "Something went wrong while removing the bookmark.",
+    );
   }
 }

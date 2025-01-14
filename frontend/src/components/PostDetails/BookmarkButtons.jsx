@@ -1,42 +1,14 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { useAuthContext } from "../../store/auth-context.jsx";
-import { addBookmark, removeBookmark } from "../../utils/http";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import AddBookmarkBtn from "./AddBookmarkBtn.jsx";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
+import RemoveBookmarkBtn from "./RemoveBookmarkBtn.jsx";
 
 export default function BookmarkButtons() {
   const { postId, isBookmarked: initialIsBookmarked } =
     useContext(PostDetailsContext);
-  const { isLogged } = useAuthContext();
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    setIsBookmarked(initialIsBookmarked);
-  }, [initialIsBookmarked, postId]);
+  const Button = isBookmarked ? RemoveBookmarkBtn : AddBookmarkBtn;
 
-  return (
-    <>
-      {!isBookmarked ? (
-        <button
-          onClick={() =>
-            addBookmark(postId, isLogged, navigate, setIsBookmarked)
-          }
-          className="flex items-center  gap-1 text-base duration-300 hover:text-[#5b4a3e]"
-        >
-          <ion-icon name="bookmark-outline"></ion-icon>
-          <span>Bookmark</span>
-        </button>
-      ) : (
-        <button
-          onClick={() => removeBookmark(postId, setIsBookmarked)}
-          className="flex items-center  gap-1 text-base duration-300 hover:text-red-600"
-        >
-          <ion-icon name="bookmark"></ion-icon>
-          <span>Remove bookmark</span>
-        </button>
-      )}
-    </>
-  );
+  return <Button postId={postId} setIsBookmarked={setIsBookmarked} />;
 }
