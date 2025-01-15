@@ -12,7 +12,7 @@ import PostEditPage from "./pages/PostEdit.jsx";
 import PostReviewDetailsPage from "./pages/PostReviewDetails.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
-import SignupPage, { action as signupAction } from "./pages/Signup";
+import SignupPage from "./pages/Signup";
 import { queryClient } from "./utils/http";
 
 const router = createBrowserRouter([
@@ -59,7 +59,6 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupPage />,
-        action: signupAction,
       },
     ],
   },

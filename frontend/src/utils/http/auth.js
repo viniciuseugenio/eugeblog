@@ -92,15 +92,6 @@ export async function loginUser(formData) {
 }
 
 export async function signUser(formData) {
-  const form = {
-    email: formData.get("email"),
-    first_name: formData.get("first_name"),
-    last_name: formData.get("last_name"),
-    password: formData.get("password"),
-    confirm_password: formData.get("confirm_password"),
-    agree: formData.get("agree"),
-  };
-
   try {
     const response = await fetch(
       `${VITE_BASE_BACKEND_URL}/api/accounts/signup/`,
@@ -109,7 +100,7 @@ export async function signUser(formData) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       },
     );
     const data = await response.json();

@@ -1,22 +1,15 @@
-import { useEffect } from "react";
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigate,
-  useNavigation,
-} from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import horizontalLogo from "../assets/eugeblog-hori.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useAuthCheck } from "../utils/hooks";
+import { signUser } from "../utils/http";
 
 export default function SignupPage() {
-  const data = useActionData();
-  const navigation = useNavigation();
   const navigate = useNavigate();
 
   const { data: authData } = useAuthCheck();
@@ -27,6 +20,35 @@ export default function SignupPage() {
     }
   }, [authData, navigate]);
 
+  const { mutate, data, isPending } = useMutation({
+    mutationFn: signUser,
+    onSuccess: (data) => {
+      if (!data.errors) {
+        toast.success("Sign-up successful! Please log in to continue.", {
+          id: "signup-success",
+        });
+        navigate("/login");
+      }
+    },
+  });
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const form = {
+      email: formData.get("email"),
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      password: formData.get("password"),
+      confirm_password: formData.get("confirm_password"),
+      agree: formData.get("agree"),
+    };
+
+    mutate(form);
+  }
+
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex h-4/6 w-2/6 flex-col items-center justify-center p-14 shadow-2xl">
@@ -35,7 +57,11 @@ export default function SignupPage() {
           <img src={horizontalLogo} className="w-48" alt="" />
         </Link>
 
-        <Form method="POST" className="mb-6 grid grid-cols-2 gap-x-3">
+        <form
+          method="POST"
+          onSubmit={handleSubmit}
+          className="mb-6 grid grid-cols-2 gap-x-3"
+        >
           <Input
             type="email"
             id="id_email"
@@ -98,7 +124,7 @@ export default function SignupPage() {
           <PrimaryButton
             text="Sign Up"
             className="col-span-2"
-            state={navigation.state}
+            isPending={isPending}
           />
 
           <p className="mt-3">
@@ -107,45 +133,9 @@ export default function SignupPage() {
               Log in
             </Link>
           </p>
-        </Form>
+        </form>
         <SocialLogin page="sign up" />
       </div>
     </div>
   );
-}
-
-export async function action({ request }) {
-  const formData = await request.formData();
-
-  const data = {
-    email: formData.get("email"),
-    first_name: formData.get("first_name"),
-    last_name: formData.get("last_name"),
-    password: formData.get("password"),
-    confirm_password: formData.get("confirm_password"),
-    agree: formData.get("agree"),
-  };
-
-  try {
-    const response = await fetch("http://localhost:8000/accounts/api/signup/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      return Response.json(
-        { errors: data.errors },
-        { status: response.status },
-      );
-    }
-
-    toast.success("Account created successfully! Please login to continue.");
-    return redirect("/login");
-  } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
-  }
 }
