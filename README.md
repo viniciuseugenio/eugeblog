@@ -19,13 +19,13 @@ This project is currently in development. I still pretend to enhance and add a l
 - [x] Dynamic pagination in bookmarks dropdown and main page.
 - [x] Custom authentication with JWT tokens.
 - [x] Post creation with rich-text editor (react-quill) for more beautiful posts.
-- [ ] Functionality to edit the post (already coming)
+- [x] Functionality to edit the post
 - [ ] Page for posts reviewers to see posts that are pending.
 - [ ] Functionality to search for posts.
 - [ ] Functionality to delete or edit comments.
 - [ ] Password reset functionality.
 - [ ] Implement responsiveness.
-- [ ] Coverage with test, both in back-end as well as in the front-end.
+- [ ] Coverage with test, in both back-end and front-end.
 - [ ] Deploy the application.
 
 If you have a suggestion of a new feature to implement, contact me. It will be a pleasure to see your side and develop it!
