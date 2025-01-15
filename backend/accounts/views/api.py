@@ -113,7 +113,7 @@ class Signup(APIView):
             return Response({"detail": "User created!"}, status=status.HTTP_201_CREATED)
 
         return Response(
-            {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
