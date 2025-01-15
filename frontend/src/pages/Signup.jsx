@@ -8,19 +8,25 @@ import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useAuthCheck } from "../utils/hooks";
 import { signUser } from "../utils/http";
+import { validateSignupData } from "../utils/validators";
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const [clientSide, setClientSide] = useState({ errors: {} });
 
   const { data: authData } = useAuthCheck();
 
   useEffect(() => {
-    if (authData?.isAuthenticated) {
+    if (authData && authData?.isAuthenticated) {
       navigate("/");
     }
   }, [authData, navigate]);
 
-  const { mutate, data, isPending } = useMutation({
+  const {
+    mutate,
+    data: serverSide,
+    isPending,
+  } = useMutation({
     mutationFn: signUser,
     onSuccess: (data) => {
       if (!data.errors) {
@@ -35,6 +41,8 @@ export default function SignupPage() {
   function handleSubmit(event) {
     event.preventDefault();
 
+    setClientSide({ errors: {} });
+
     const formData = new FormData(event.target);
 
     const form = {
@@ -46,8 +54,15 @@ export default function SignupPage() {
       agree: formData.get("agree"),
     };
 
+    const errors = validateSignupData(form);
+    setClientSide((prev) => ({ errors: { ...prev.errors, ...errors } }));
+
+    if (Object.keys(errors).length > 0) return;
     mutate(form);
   }
+
+  const getError = (fieldName) =>
+    serverSide?.errors?.[fieldName] || clientSide.errors?.[fieldName];
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -68,35 +83,40 @@ export default function SignupPage() {
             name="email"
             label="E-mail"
             className="col-span-2"
-            error={data?.errors?.email}
+            error={getError("email")}
+            setClientSide={setClientSide}
           />
           <Input
             type="text"
             id="id_first_name"
             name="first_name"
             label="First name"
-            error={data?.errors?.first_name}
+            error={getError("first_name")}
+            setClientSide={setClientSide}
           />
           <Input
             type="text"
             id="id_last_name"
             name="last_name"
             label="Last name"
-            error={data?.errors?.last_name}
+            error={getError("last_name")}
+            setClientSide={setClientSide}
           />
           <Input
             type="password"
             id="id_password"
             name="password"
             label="Password"
-            error={data?.errors?.password}
+            error={getError("password")}
+            setClientSide={setClientSide}
           />
           <Input
             type="password"
             id="id_confirm_password"
             name="confirm_password"
             label="Confirm password"
-            error={data?.errors?.confirm_password}
+            error={getError("confirm_password")}
+            setClientSide={setClientSide}
           />
 
           <div className="col-span-2 mb-6">
@@ -116,8 +136,8 @@ export default function SignupPage() {
                 terms and conditions
               </Link>
             </label>
-            {data?.errors?.agree && (
-              <span className="text-red-600">{data.errors.agree}</span>
+            {getError("agree") && (
+              <span className="text-red-600">{getError("agree")}</span>
             )}
           </div>
 
