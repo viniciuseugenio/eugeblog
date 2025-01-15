@@ -32,16 +32,12 @@ export async function loadPost(id) {
       method: "GET",
       credentials: "include",
     });
+    const data = await response.json();
 
     if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("This post was not found or is not published.");
-      }
-
-      throw new Error(UNEXPECTED_ERROR);
+      throw new Error(data.detail);
     }
 
-    const data = await response.json();
     return data;
   } catch (error) {
     throw new Error(error.message || UNEXPECTED_ERROR);
@@ -65,7 +61,7 @@ export async function editPost({ postId, formData }) {
     const data = await response.json();
 
     if (!response.ok && response.status !== 400) {
-      throw new Error(UNEXPECTED_ERROR);
+      throw new Error(data.detail);
     }
 
     return data;
@@ -220,14 +216,7 @@ export async function fetchUserPosts(page) {
     });
 
     if (!response.ok) {
-      let errorMessage = "Something went wrong while loading your posts.";
-
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.error || errorMessage;
-      } catch {}
-
-      throw new Error(errorMessage);
+      throw new Error("Something went wrong while loading your posts.");
     }
 
     return await response.json();
