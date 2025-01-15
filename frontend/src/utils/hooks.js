@@ -78,18 +78,23 @@ export function useLogout() {
 export function useAuthCheck() {
   const { login, logout } = useAuthContext();
 
-  return useQuery({
+  const query = useQuery({
     queryFn: isUserAuthenticated,
     queryKey: ["authCheck"],
     staleTime: 5 * 60 * 1000,
-    onSuccess: (data) => {
-      if (data.isAuthenticated) {
-        login(data.userId);
+  });
+
+  useEffect(() => {
+    if (query.isSuccess && query.data) {
+      if (query.data.isAuthenticated) {
+        login(query.data.userId);
       } else {
         logout();
       }
-    },
-  });
+    }
+  }, [query.isSuccess, query.data, login, logout]);
+
+  return query;
 }
 
 /**
