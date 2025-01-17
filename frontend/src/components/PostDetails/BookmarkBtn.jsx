@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useAuthCheck } from "../../utils/hooks";
+import Tooltip from "../Tooltip";
 
 export default function BookmarkBtn({
   postId,
@@ -36,12 +37,16 @@ export default function BookmarkBtn({
   }
 
   return (
-    <button
-      onClick={handleClick}
-      className="flex items-center  gap-1 text-base duration-300 hover:text-[#5b4a3e]"
-    >
-      <ion-icon name={icon}></ion-icon>
-      <span>{text}</span>
-    </button>
+    <div className="group relative flex items-center justify-center">
+      <button
+        onClick={handleClick}
+        className="flex items-center gap-1 rounded-full text-xl duration-300  ease-out hover:scale-125 hover:text-[#5b4a3e]"
+        aria-label="Bookmark"
+      >
+        <ion-icon name={icon}></ion-icon>
+      </button>
+
+      <Tooltip text={text} topPosition="-top-11" />
+    </div>
   );
 }

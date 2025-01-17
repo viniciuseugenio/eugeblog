@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import Tooltip from "../Tooltip";
 
-export default function Dropdown({ children, DropdownContent }) {
+export default function Dropdown({ children, tooltipText, DropdownContent }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -16,7 +17,10 @@ export default function Dropdown({ children, DropdownContent }) {
   }, []);
 
   return (
-    <div className="relative h-full w-full" ref={dropdownRef}>
+    <div
+      className={`group relative h-full w-full ${isOpen ? "open" : ""}`}
+      ref={dropdownRef}
+    >
       <button
         aria-label="dropdown"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -24,6 +28,9 @@ export default function Dropdown({ children, DropdownContent }) {
       >
         {children}
       </button>
+
+      <Tooltip text={tooltipText} topPosition="top-11" />
+
       {isOpen && (
         <div className="absolute right-0 top-14 z-10 rounded-md bg-white shadow-2xl">
           <div className="absolute right-5 top-0 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" />

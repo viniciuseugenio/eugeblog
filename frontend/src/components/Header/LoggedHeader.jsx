@@ -4,6 +4,7 @@ import Dropdown from "./Dropdown";
 import IconSpan from "./IconSpan";
 import LogoutButton from "./LogoutButton";
 import UserPostsDropdown from "./UserPostsDropdown";
+import Tooltip from "../Tooltip";
 
 export default function LoggedHeader() {
   const liClasses =
@@ -11,22 +12,23 @@ export default function LoggedHeader() {
 
   return (
     <>
-      <Link to="/post/create/" className={liClasses}>
+      <Link to="/post/create/" className={`${liClasses} group relative`}>
         <li>
           <IconSpan>
             <ion-icon name="add-outline"></ion-icon>
           </IconSpan>
         </li>
+        <Tooltip text="Create a post" topPosition="top-11" />
       </Link>
       <li>
-        <Dropdown DropdownContent={UserPostsDropdown}>
+        <Dropdown tooltipText="Your posts" DropdownContent={UserPostsDropdown}>
           <IconSpan>
             <ion-icon name="file-tray-stacked-outline"></ion-icon>
           </IconSpan>
         </Dropdown>
       </li>
       <li>
-        <Dropdown DropdownContent={BookmarksDropdown}>
+        <Dropdown tooltipText="Bookmarks" DropdownContent={BookmarksDropdown}>
           <IconSpan>
             <ion-icon name="bookmarks-outline"></ion-icon>
           </IconSpan>
