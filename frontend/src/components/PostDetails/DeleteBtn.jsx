@@ -30,7 +30,7 @@ export default function DeleteBtn({ buttonClasses }) {
         title="Are you sure of this?"
         icon="alert-circle-outline"
         iconColor="text-red-600"
-        confirmBtnClasses="ring-300 bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:ring-red-400 hover:bg-red-300"
+        confirmBtnClasses="bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:bg-red-300 hover:ring-red-400"
         mutateFn={() => mutate(postId)}
       >
         This action is irreversible. After deletion, you will not be able to
@@ -39,7 +39,7 @@ export default function DeleteBtn({ buttonClasses }) {
 
       <button
         onClick={() => modal.current.showModal()}
-        className={`${buttonClasses} text-red-600 hover:bg-red-200 hover:ring-red-300`}
+        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:scale-105 hover:bg-red-200 hover:ring-red-300`}
       >
         <ion-icon name="trash-outline"></ion-icon>
         <span>Delete</span>

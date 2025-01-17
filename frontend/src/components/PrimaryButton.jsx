@@ -4,9 +4,11 @@ export default function PrimaryButton({ text, type, className, isPending }) {
   return (
     <button
       type={type}
-      className={`font-inherit bg-primary flex w-full items-center justify-center rounded-md py-1 text-lg text-white duration-300 hover:bg-[#3a2b20] ${className}`}
+      className={`font-inherit bg-primary group flex w-full items-center justify-center rounded-lg py-2 text-white shadow-md shadow-neutral-400 duration-300 hover:bg-[#5b4a3e] ${className}`}
     >
-      {isPending ? <CircularProgress size={28} color="inherit" /> : `${text}`}
+      <span className="duration-300 ease-out group-hover:scale-110">
+        {isPending ? <CircularProgress size={28} color="inherit" /> : `${text}`}
+      </span>
     </button>
   );
 }

@@ -90,12 +90,20 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
-            <Link to="/forgot-password">Forgot password?</Link>
+            <Link
+              className="hover:text-secondary text-link underline decoration-inherit duration-300 ease-out"
+              to="/forgot-password"
+            >
+              Forgot password?
+            </Link>
           </div>
-          <PrimaryButton type="submit" text="Login" isPending={isPending} />
+          <PrimaryButton type="submit" text="Log In" isPending={isPending} />
           <div className="mb-6 mt-3">
             <span className="mr-1">Don&apos;t have an account?</span>
-            <Link to="/signup" className="text-primary underline">
+            <Link
+              to="/signup"
+              className="hover:text-secondary text-link underline decoration-inherit duration-300 ease-out"
+            >
               Sign up
             </Link>
           </div>

@@ -8,6 +8,7 @@ export default {
         secondary: "#AB886D",
         accent: "#D6C0B3",
         light: "#E4E0E1",
+        link: "#5b4a3e",
       },
     },
   },

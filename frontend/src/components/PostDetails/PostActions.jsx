@@ -21,7 +21,7 @@ export default function PostActions() {
 
           <Link
             to={`/post/edit/${postId}/`}
-            className={`${buttonClasses} text-blue-800 hover:bg-blue-100 hover:ring-blue-300`}
+            className={`${buttonClasses} text-blue-800 ring-1 ring-blue-300 hover:scale-105 hover:bg-blue-100 hover:ring-blue-300`}
           >
             <ion-icon name="create-outline"></ion-icon>
             <span>Edit</span>

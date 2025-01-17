@@ -131,7 +131,7 @@ export default function SignupPage() {
               <span>I agree with the</span>
               <Link
                 to="/privacy-policy"
-                className="text-primary ml-1 underline"
+                className="text-link hover:text-secondary ml-1 underline decoration-inherit duration-300 ease-out"
               >
                 terms and conditions
               </Link>
@@ -149,7 +149,10 @@ export default function SignupPage() {
 
           <p className="mt-3">
             Don&apos;t have an account?{" "}
-            <Link to="/login" className="text-primary underline">
+            <Link
+              to="/login"
+              className="text-link hover:text-secondary underline decoration-inherit duration-300 ease-out"
+            >
               Log in
             </Link>
           </p>

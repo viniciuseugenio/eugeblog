@@ -1,6 +1,7 @@
 import PostFormInput from "./Input";
 import Editor from "./Editor";
 import ImageInput from "./ImageInput";
+import PrimaryButton from "../PrimaryButton";
 
 export default function PostFormBase({
   queryData,
@@ -93,18 +94,21 @@ export default function PostFormBase({
 
           <div className="col-span-2 flex gap-3 justify-self-end">
             <button
+              onClick={() => window.history.back()}
               type="reset"
-              className="rounded-md px-8 py-2 text-red-600 ring-1 ring-inset ring-red-600 duration-300 hover:text-red-300 hover:ring-red-300"
+              className="group flex rounded-md px-8 py-2 text-red-800 ring-1 ring-inset ring-red-300 duration-300 hover:bg-red-200 hover:ring-red-300"
             >
-              Cancel
+              <span className="duration-300 ease-out group-hover:scale-110">
+                Cancel
+              </span>
             </button>
-            <button
+
+            <PrimaryButton
+              text="Send Post"
+              isPending={isPending}
+              className="px-8"
               type="submit"
-              className="bg-primary text-light ring-primary grow-0 rounded-md px-8 py-2 duration-300 hover:bg-[#5b4a3e] active:ring-1"
-              disabled={isPending}
-            >
-              {isPending ? "Sending..." : "Send post"}
-            </button>
+            />
           </div>
         </form>
       </div>
