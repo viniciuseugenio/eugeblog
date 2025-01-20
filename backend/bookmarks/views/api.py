@@ -1,7 +1,8 @@
+from time import sleep
 from django.contrib.auth import get_user_model
 from posts.models import Post
 from rest_framework import generics, status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from utils.make_pagination import BaseDropdownPagination
@@ -33,10 +34,12 @@ class BookmarksListCreate(generics.ListCreateAPIView):
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:
-            raise ValidationError("This post does not exist or is not published.")
+            raise APIException(
+                "This post does not exist or is not published.", code=404
+            )
 
         if Bookmarks.objects.filter(user=user, post=post_obj).exists():
-            raise ValidationError("This post is already bookmarked.")
+            raise APIException("This post is already bookmarked.", code=400)
 
         Bookmarks.objects.create(user=user, post=post_obj)
 
@@ -54,10 +57,12 @@ class RemoveBookmark(generics.DestroyAPIView):
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:
-            raise ValidationError("This post does not exist or is not published.")
+            raise APIException(
+                "This post does not exist or is not published.", code=404
+            )
 
         if not Bookmarks.objects.filter(user=user, post=post_obj).exists():
-            raise ValidationError("This post is not bookmarked.")
+            raise APIException("This post is not bookmarked.", code=400)
 
         Bookmarks.objects.get(user=user, post=post_obj).delete()
 
