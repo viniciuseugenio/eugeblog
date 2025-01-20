@@ -1,11 +1,15 @@
+import time
+
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 from utils.permissions import IsOwnerOrPostReviewer
 
@@ -42,7 +46,13 @@ class PostListCreateView(generics.ListCreateAPIView):
         if self.request.method == "POST":
             return super().get_queryset()
 
-        return Post.objects.filter(is_published=True).order_by("-id")
+        qs = Post.objects.filter(is_published=True).order_by("-id")
+        search = self.request.query_params.get("q")
+
+        if search:
+            qs = qs.filter(Q(title__icontains=search) | Q(excerpt__icontains=search))
+
+        return qs
 
     def get_permissions(self):
         if self.request.method == "POST":

@@ -3,6 +3,7 @@ import { Link } from "react-router";
 export default function PageButton({
   page,
   onClick,
+  link,
   buttonClasses,
   currentPage,
 }) {
@@ -19,7 +20,7 @@ export default function PageButton({
       {onClick ? (
         <button onClick={() => onClick(page)}>{pageIcon}</button>
       ) : (
-        <Link to={`?page=${page}`}>{pageIcon}</Link>
+        <Link to={link}>{pageIcon}</Link>
       )}
     </>
   );

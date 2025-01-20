@@ -11,6 +11,7 @@ export default function Pagination({
   handleSetPage,
   className = "",
   totalPagesDisplay = 10,
+  search,
 }) {
   const {
     qty_pages: qtyPages,
@@ -35,6 +36,8 @@ export default function Pagination({
   const buttonClasses =
     "flex items-center justify-center rounded px-3 py-1 text-black duration-300 hover:bg-[#E4E0E1]";
 
+  const pageLink = search ? `?q=${search}&page=` : "?page=";
+
   return (
     <ul className={`${className} flex gap-3`}>
       {hasPrevious && (
@@ -42,7 +45,7 @@ export default function Pagination({
           onClick={handlePreviousPage}
           icon={<PaginationIcon isPrevious />}
           styling={buttonClasses}
-          link={`?page=${previousPage}`}
+          link={`${pageLink}${previousPage}`}
         />
       )}
 
@@ -52,6 +55,7 @@ export default function Pagination({
           page={page}
           buttonClasses={buttonClasses}
           currentPage={currentPage}
+          link={`${pageLink}${page}`}
           onClick={handleSetPage}
         />
       ))}
@@ -61,7 +65,7 @@ export default function Pagination({
           onClick={handleNextPage}
           icon={<PaginationIcon />}
           styling={buttonClasses}
-          link={`?page=${nextPage}`}
+          link={`${pageLink}${nextPage}`}
         />
       )}
     </ul>

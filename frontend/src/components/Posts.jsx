@@ -7,27 +7,36 @@ import BaseError from "./BaseError.jsx";
 import { useSearchParams } from "react-router";
 
 export default function Posts() {
-  const [searchParams, _] = useSearchParams();
-  const page = parseInt(searchParams.get("page")) || 1;
+  let content;
+
+  const [searchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page")) || 1;
+  const search = searchParams.get("q");
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["posts", page],
-    queryFn: () => loadPosts(page),
+    queryKey: ["posts", { currentPage, search }],
+    queryFn: () => loadPosts({ currentPage, search }),
     staleTime: 5000,
   });
 
-  return (
-    <div className="mx-24 my-12 flex flex-grow flex-col items-center justify-center">
-      {isError && (
-        <BaseError title={error.message}>
-          <p>
-            {error.info?.message ||
-              "We are very sorry for this, please, try again later."}
-          </p>
-        </BaseError>
-      )}
-      {isPending && <CircularProgress color="#493628" />}
-      {data && (
+  if (isError) {
+    content = (
+      <BaseError title={error.message}>
+        <p>
+          {error.info?.message ||
+            "We are very sorry for this, please, try again later."}
+        </p>
+      </BaseError>
+    );
+  }
+
+  if (isPending) {
+    content = <CircularProgress color="#493628" />;
+  }
+
+  if (data) {
+    if (data.posts.length >= 1) {
+      content = (
         <>
           <div className="grid grid-cols-4 gap-x-44 gap-y-16 self-center">
             {data.posts.map((post) => (
@@ -35,10 +44,32 @@ export default function Posts() {
             ))}
           </div>
           {data.pagination.qty_pages > 1 && (
-            <Pagination className="mt-12" pagination={data.pagination} />
+            <Pagination
+              className="mt-12"
+              pagination={data.pagination}
+              search={search}
+            />
           )}
         </>
-      )}
+      );
+    } else {
+      const errorText = {
+        title: search ? "No results were found." : "No posts available.",
+        message: search
+          ? "We couldn't find any posts matching your search. Try adjusting your search terms or explore other topics."
+          : "It looks like there aren't any posts available. Please, try again later.",
+      };
+      content = (
+        <BaseError title={errorText.title}>
+          <p>{errorText.message}</p>
+        </BaseError>
+      );
+    }
+  }
+
+  return (
+    <div className="mx-24 my-12 flex flex-grow flex-col items-center justify-center">
+      {content}
     </div>
   );
 }

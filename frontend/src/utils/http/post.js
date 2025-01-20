@@ -2,10 +2,15 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 const UNEXPECTED_ERROR =
   "An unexpected error occurred. Please, try again later.";
 
-export async function loadPosts(currentPage) {
+export async function loadPosts({ currentPage, search }) {
   let url = `${VITE_BASE_BACKEND_URL}/api/posts/`;
+
   if (currentPage > 1) {
     url += `?page=${currentPage}`;
+  }
+
+  if (search) {
+    url += `${currentPage > 1 ? "&" : "?"}q=${search}`;
   }
 
   const response = await fetch(url);
