@@ -38,7 +38,7 @@ export default function Posts() {
     if (data.posts.length >= 1) {
       content = (
         <>
-          <div className="grid grid-cols-4 gap-x-44 gap-y-16 self-center">
+          <div className="grid grid-cols-1 gap-x-28 gap-y-16 self-center md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {data.posts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}
