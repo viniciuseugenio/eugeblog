@@ -31,17 +31,13 @@ export default function DropdownList({ queryKey, queryFn }) {
   }
 
   if (isPending) {
-    content = (
-      <div className="flex w-96 items-center justify-center p-4">
-        <CircularProgress color="#493628" />
-      </div>
-    );
+    content = <CircularProgress color="#493628" />;
   }
 
   if (isError) {
     content = (
-      <p className="flex w-96 items-center justify-center gap-2 p-4 text-red-500">
-        <span className="flex items-center justify-center text-xl">
+      <p className="p-3 text-center text-red-500">
+        <span className="flex items-center justify-center text-2xl">
           <ion-icon name="alert-circle-outline"></ion-icon>
         </span>
         {error.message}
@@ -53,7 +49,7 @@ export default function DropdownList({ queryKey, queryFn }) {
     if (data.results.length > 0) {
       content = (
         <>
-          <ul className="flex min-h-[38rem] w-[26rem] flex-grow flex-col gap-y-6 p-4">
+          <ul className="flex flex-grow flex-col gap-y-6 p-4">
             {data.results.map((item) => (
               <DropdownListItem
                 key={item.id}
@@ -77,12 +73,14 @@ export default function DropdownList({ queryKey, queryFn }) {
           )}
         </>
       );
-    }
-
-    if (data.results.length === 0) {
+    } else {
       content = <p className="w-96 p-4 text-center">No bookmarks available.</p>;
     }
   }
 
-  return <>{content}</>;
+  return (
+    <div className="flex min-h-[42rem] min-w-[26rem] flex-col items-center justify-center">
+      {content}
+    </div>
+  );
 }
