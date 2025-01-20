@@ -10,6 +10,12 @@ export default {
         light: "#E4E0E1",
         link: "#5b4a3e",
       },
+      screens: {
+        md: "650px",
+        lg: "950px",
+        xl: "1300px",
+        "2xl": "1600px",
+      },
     },
   },
   plugins: [],
