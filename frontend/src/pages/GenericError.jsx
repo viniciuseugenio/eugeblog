@@ -1,21 +1,20 @@
+import { useAuthCheck } from "../utils/hooks";
+import { useRouteError } from "react-router";
+
+import BaseError from "../components/BaseError";
 import MainHeader from "../components/Header/MainHeader";
 import Footer from "../components/Footer";
 
-import { Link } from "react-router";
-import BaseError from "../components/BaseError";
-
 export default function GenericError() {
+  useAuthCheck();
+  const error = useRouteError();
+
   return (
     <>
       <MainHeader />
-      <BaseError title="Ops! We couldn't find this page, sorry!">
-        <p>
-          However, you can get back to the{" "}
-          <Link to="/" className="text-[#AB886D]">
-            home page
-          </Link>
-          !
-        </p>
+      <BaseError title="Page not found" status={404}>
+        Sorry, we couldn&apos;t find the page you were looking for.{" "}
+        {error.message !== "error is null" && <>{error.message}</>}
       </BaseError>
       <Footer />
     </>

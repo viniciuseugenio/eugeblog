@@ -50,6 +50,7 @@ const router = createBrowserRouter([
             path: "post/edit/:id",
             element: <PostEditPage />,
           },
+          { path: "*", element: <GenericError /> },
         ],
       },
       {

@@ -27,8 +27,7 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
   });
 
   if (isError) {
-    toast.error(error.message, { id: "details-error" });
-    navigate("/");
+    throw new Error(error.message);
   }
 
   const contextValue = useMemo(
@@ -44,7 +43,7 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
 
   return (
     <PostDetailsContext.Provider value={contextValue}>
-      <div className="flex flex-col items-center py-24">
+      <div className="flex flex-grow flex-col items-center justify-center py-24">
         <div className="max-w-[52rem]">
           {isPending && <CircularProgress size="3rem" color="#493628" />}
           {data && <PostDetails post={data.post} />}
