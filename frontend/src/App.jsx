@@ -19,12 +19,12 @@ const router = createBrowserRouter([
   {
     element: <ContextWrapper />,
     hydrateFallbackElement: <CircularProgress />,
-    errorElement: <GenericError />,
+    errorElement: <GenericError layout={true} />,
     children: [
       {
         path: "/",
         element: <RootPage />,
-        errorElement: <GenericError />,
+        errorElement: <GenericError layout={true} />,
         children: [
           {
             index: true,
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
             path: "post/edit/:id",
             element: <PostEditPage />,
           },
-          { path: "*", element: <GenericError /> },
+          { path: "*", element: <GenericError layout={false} /> },
         ],
       },
       {
