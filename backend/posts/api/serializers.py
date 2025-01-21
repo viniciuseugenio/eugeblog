@@ -57,19 +57,20 @@ class PostCreationSerializer(serializers.ModelSerializer):
         return value
 
 
-class PostDetailsSerializer(PostBaseSerializer):
-    category = CategorySerializer()
-
-    class Meta(PostBaseSerializer.Meta):
-        fields = PostBaseSerializer.Meta.fields
-
-
 class CommentDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "author", "comment", "created_at"]
 
     author = AuthorFullnameField()
+
+
+class PostDetailsSerializer(PostBaseSerializer):
+    category = CategorySerializer()
+    comments = CommentDetailsSerializer(many=True)
+
+    class Meta(PostBaseSerializer.Meta):
+        fields = PostBaseSerializer.Meta.fields + ["comments"]
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):

@@ -86,7 +86,7 @@ class UserPostsList(generics.ListAPIView):
 
 
 class PostDetails(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.filter(is_published=True)
+    queryset = Post.objects.filter(is_published=True).prefetch_related("comments")
 
     def get_serializer_class(self):
         if self.request.method == "PATCH":
