@@ -12,7 +12,9 @@ export default function Comment({ comment }) {
         <span className="font-semibold">{comment.author}</span>
         &mdash; {createdAt}
       </div>
-      <p className="self-start">{comment.comment}</p>
+      <p className="max-w-3xl self-start hyphens-auto break-words">
+        {comment.content}
+      </p>
     </div>
   );
 }
