@@ -1,8 +1,6 @@
-import time
-
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import generics, status
@@ -86,7 +84,9 @@ class UserPostsList(generics.ListAPIView):
 
 
 class PostDetails(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.filter(is_published=True).prefetch_related("comments")
+    queryset = Post.objects.filter(is_published=True).prefetch_related(
+        Prefetch("comments", queryset=Comment.objects.order_by("-id"))
+    )
 
     def get_serializer_class(self):
         if self.request.method == "PATCH":
@@ -106,7 +106,7 @@ class PostDetails(generics.RetrieveUpdateDestroyAPIView):
         post_pk = self.kwargs.get("pk")
 
         try:
-            return Post.objects.get(pk=post_pk)
+            return self.get_queryset().get(pk=post_pk)
         except Post.DoesNotExist:
             raise NotFound("This post does not exist or is not published.")
 
