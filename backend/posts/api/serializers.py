@@ -60,7 +60,7 @@ class PostCreationSerializer(serializers.ModelSerializer):
 class CommentDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "author", "comment", "created_at"]
+        fields = ["id", "author", "content", "created_at"]
 
     author = AuthorFullnameField()
 
@@ -76,4 +76,4 @@ class PostDetailsSerializer(PostBaseSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "comment"]
+        fields = ["id", "content"]

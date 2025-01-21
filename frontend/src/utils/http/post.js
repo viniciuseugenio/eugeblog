@@ -159,7 +159,7 @@ export async function createComment({ content, postId }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ comment: content }),
+      body: JSON.stringify({ content: content }),
     },
   );
 
