@@ -102,3 +102,18 @@ CORS_ALLOWED_ORIGINS = [
 
 BASE_FRONTEND_URL = "http://localhost:5173"
 BASE_BACKEND_URL = "http://localhost:8000"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 9,
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]

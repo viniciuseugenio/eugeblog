@@ -1,5 +1,7 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from collections import defaultdict
 
 User = get_user_model()
 
@@ -31,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         confirm_password = attrs.get("confirm_password")
         agree = attrs.get("agree")
 
-        errors_list = serializers.defaultdict(list)
+        errors_list = defaultdict(list)
 
         if agree == "off":
             errors_list["agree"].append("You must agree to the terms and conditions.")
@@ -44,10 +46,15 @@ class UserSerializer(serializers.ModelSerializer):
         if password != confirm_password:
             errors_list["confirm_password"].append("Passwords do not match.")
 
+        try:
+            validate_password(password)
+        except serializers.DjangoValidationError as e:
+            errors_list["password"].extend(e.messages)
+
         if errors_list:
             raise serializers.ValidationError(errors_list)
 
-        return super().validate(attrs)
+        return attrs
 
     def create(self, validated_data):
         validated_data.pop("confirm_password")
