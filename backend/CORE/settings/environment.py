@@ -103,6 +103,13 @@ CORS_ALLOWED_ORIGINS = [
 BASE_FRONTEND_URL = "http://localhost:5173"
 BASE_BACKEND_URL = "http://localhost:8000"
 
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
