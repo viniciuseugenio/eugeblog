@@ -66,7 +66,7 @@ export default function SignupPage() {
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <div className="flex h-4/6 w-2/6 flex-col items-center justify-center p-14 shadow-2xl">
+      <div className="min-h-4/6 flex w-2/6 flex-col items-center justify-center p-14 shadow-2xl">
         <Link to="/" className="mb-6 flex items-center justify-center gap-1">
           <h1 className="text-2xl font-medium">Get started with</h1>
           <img src={horizontalLogo} className="w-48" alt="" />
