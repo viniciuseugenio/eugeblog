@@ -62,7 +62,16 @@ export default function Input({
           </button>
         )}
       </div>
-      {error && <span className="text-red-600">{error}</span>}
+
+      {error && (
+        <ul className="flex flex-col gap-2">
+          {error.map((err, index) => (
+            <li className="text-red-600" key={index}>
+              {err}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
