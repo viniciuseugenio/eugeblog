@@ -16,4 +16,9 @@ urlpatterns = [
     ),
     path("signup/", api.Signup.as_view(), name="signup"),
     path("logout/", api.Logout.as_view(), name="logout"),
+    path(
+        "password-reset/",
+        api.PasswordResetRequestView.as_view(),
+        name="password_reset_request",
+    ),
 ]
