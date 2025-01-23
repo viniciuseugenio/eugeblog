@@ -8,6 +8,7 @@ export default function Input({
   label,
   className,
   error,
+  ...props
 }) {
   const borderColor = error ? "border-red-600" : "border-secondary";
   const textColor = error ? "text-red-600" : "text-secondary";
@@ -45,6 +46,7 @@ export default function Input({
           placeholder=" "
           className={`${borderColor} focus:border-primary text-primary focus:text-primary peer box-border w-full rounded-sm border py-2 pl-4 text-base outline-none`}
           required
+          {...props}
         />
         <label
           htmlFor={id}
