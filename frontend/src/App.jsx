@@ -15,6 +15,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage from "./pages/Signup";
 import { queryClient } from "./utils/http";
+import PasswordResetSentPage from "./pages/PasswordResetSent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: "forgot-password",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "password-reset-sent",
+        element: <PasswordResetSentPage />,
       },
     ],
   },
