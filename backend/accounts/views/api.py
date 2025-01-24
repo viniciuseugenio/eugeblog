@@ -4,18 +4,19 @@ from urllib.parse import urlencode
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.html import strip_tags
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from dotenv import load_dotenv
 from rest_framework import serializers, status
 from rest_framework.compat import requests
-from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.exceptions import APIException, NotFound, ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -278,3 +279,41 @@ class PasswordResetRequestView(APIView):
             html_message=html_message,
         )
         return Response({"detail": "E-mail sent successfully!"}, status=200)
+
+
+class PasswordResetView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, uidb64, token):
+        try:
+            decoded_uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=decoded_uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            raise NotFound("The user was not found. Please, request another token.")
+
+        is_valid = default_token_generator.check_token(user, token)
+
+        if not is_valid:
+            raise APIException(
+                "The token is invalid. Please, request another one.", 400
+            )
+
+        password = request.data.get("password")
+        confirm_password = request.data.get("confirm_password")
+
+        if not password or not confirm_password:
+            raise APIException("Password and confirm password are required.", 400)
+
+        if password != confirm_password:
+            raise APIException("The passwords do not match.", 400)
+
+        try:
+            validate_password(password, user)
+            user.set_password(password)
+            user.save()
+        except serializers.DjangoValidationError as e:
+            raise ValidationError({"errors": e.messages}, 400)
+
+        return Response(
+            {"detail": "Your password was reseted successfully!"}, status=200
+        )

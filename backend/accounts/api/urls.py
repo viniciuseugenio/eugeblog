@@ -21,4 +21,9 @@ urlpatterns = [
         api.PasswordResetRequestView.as_view(),
         name="password_reset_request",
     ),
+    path(
+        "password-reset/set/<uidb64>/<token>/",
+        api.PasswordResetView.as_view(),
+        name="password_reset_confirm",
+    ),
 ]
