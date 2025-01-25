@@ -82,7 +82,7 @@ export default function SignupPage() {
             id="id_email"
             name="email"
             label="E-mail"
-            className="col-span-2"
+            className="col-span-2 mb-6"
             error={getError("email")}
             setClientSide={setClientSide}
           />
