@@ -22,7 +22,7 @@ export function validateSignupData(form) {
     errors.last_name = ["Last name must be at least 3 characters long."];
   }
 
-  if (form.password.length < 8) {
+  if (form.password.length < 9) {
     errors.password = ["Password must be at least 8 characters long."];
   }
 
