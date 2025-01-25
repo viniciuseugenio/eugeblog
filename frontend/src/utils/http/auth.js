@@ -164,3 +164,27 @@ export async function requestPasswordReset(email) {
     throw new Error(error.message || UNEXPECTED_ERROR);
   }
 }
+
+export async function resetPassword({ uid, token, formData }) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/accounts/password-reset/set/${uid}/${token}/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      },
+    );
+    const data = await response.json();
+
+    if (!response.ok && response.status !== 400) {
+      throw new Error(data.detail);
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occured"); // Replace with variable
+  }
+}
