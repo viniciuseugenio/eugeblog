@@ -28,7 +28,7 @@ export default function ForgotPasswordPage() {
       <section className="max-w-[30rem] p-12 text-center">
         <p
           aria-label="Password Icon"
-          className="password-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-3 text-5xl"
+          className="key-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-3 text-5xl"
         >
           <ion-icon name="key-outline"></ion-icon>
         </p>
