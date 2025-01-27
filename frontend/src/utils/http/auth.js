@@ -1,5 +1,7 @@
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
+const UNEXPECTED_ERROR = "An unexpected error occurred. Please, try again.";
+
 async function refreshToken() {
   try {
     const response = await fetch(
@@ -134,6 +136,55 @@ export async function performLogout() {
     throw new Error(
       error.message ||
         "An unexpected error occurred while logging out. Please, try again later.",
+  }
+}
+
+export async function requestPasswordReset(email) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/accounts/password-reset/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      },
     );
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail);
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || UNEXPECTED_ERROR);
+  }
+}
+
+export async function resetPassword({ uid, token, formData }) {
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/accounts/password-reset/set/${uid}/${token}/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      },
+    );
+    const data = await response.json();
+
+    if (!response.ok && response.status !== 400) {
+      throw new Error(data.detail);
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occured"); // Replace with variable
   }
 }

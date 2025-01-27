@@ -6,11 +6,13 @@ export default function Input({
   setClientSide,
   id,
   label,
-  className,
+  className = "mb-6",
   error,
+  isError,
+  ...props
 }) {
-  const borderColor = error ? "border-red-600" : "border-secondary";
-  const textColor = error ? "text-red-600" : "text-secondary";
+  const borderColor = isError || error ? "border-red-600" : "border-secondary";
+  const textColor = isError || error ? "text-red-600" : "text-secondary";
   const input = useRef();
   const [icon, setIcon] = useState("eye-outline");
 
@@ -34,7 +36,7 @@ export default function Input({
   }
 
   return (
-    <div className={`mb-6 ${className ?? ""}`}>
+    <div className={className || ""}>
       <div className="relative">
         <input
           ref={input}
@@ -45,6 +47,7 @@ export default function Input({
           placeholder=" "
           className={`${borderColor} focus:border-primary text-primary focus:text-primary peer box-border w-full rounded-sm border py-2 pl-4 text-base outline-none`}
           required
+          {...props}
         />
         <label
           htmlFor={id}
