@@ -10,8 +10,8 @@ export default function ForgotPasswordPage() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: requestPasswordReset,
-    onSuccess: () => {
-      navigate("/password-reset-sent");
+    onSuccess: (_, variables) => {
+      navigate("/password-reset-sent", { state: { email: variables } });
     },
     onError: (error) => {
       toast.error(error.message);
