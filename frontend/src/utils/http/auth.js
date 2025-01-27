@@ -133,9 +133,7 @@ export async function performLogout() {
 
     return response.json();
   } catch (error) {
-    throw new Error(
-      error.message ||
-        "An unexpected error occurred while logging out. Please, try again later.",
+    throw new Error(error.message || UNEXPECTED_ERROR);
   }
 }
 
