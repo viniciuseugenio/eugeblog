@@ -46,7 +46,14 @@ User = get_user_model()
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except AuthenticationFailed:
+            raise AuthenticationFailed(
+                "The email or password you entered is incorrect. Please, check your credentials and try again.",
+                400,
+            )
 
         user = serializer.user
         remember = request.data.get("remember")
