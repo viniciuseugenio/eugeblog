@@ -21,10 +21,10 @@ export default function Posts() {
 
   if (isError) {
     content = (
-      <BaseError title={error.message}>
+      <BaseError title="Unable to load posts">
         <p>
-          {error.info?.message ||
-            "We are very sorry for this, please, try again later."}
+          {error.message ||
+            "We're sorry, but we couldn't load the posts. Please try again later."}
         </p>
       </BaseError>
     );
