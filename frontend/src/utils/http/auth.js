@@ -1,6 +1,7 @@
-const { VITE_BASE_BACKEND_URL } = import.meta.env;
+import { fetchWithErrorHandling } from ".";
 
 const UNEXPECTED_ERROR = "An unexpected error occurred. Please, try again.";
+const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
 async function refreshToken() {
   try {
@@ -67,36 +68,22 @@ export async function loginUser(formData) {
   const remember = formData.get("remember");
 
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/token/`, {
+    return await fetchWithErrorHandling("/api/token/", {
       method: "POST",
-      body: JSON.stringify({ email, password, remember }),
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      body: JSON.stringify({ email, password, remember }),
     });
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errorMessage = {
-        400: data.error || "Please provide both email and password.",
-        401: "The e-mail and password you provided did not match any of our records. Please, try again.",
-        500: "An error occurred. Please, try again.",
-      };
-
-      throw new Error(errorMessage[response.status]);
-    }
-
-    return data;
   } catch (error) {
-    throw new Error(error.message || "An error occurred. Please, try again.");
+    throw new Error(error.message);
   }
 }
 
 export async function signUser(formData) {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/accounts/signup/`,
+    return await fetchWithErrorHandling(
+      "/api/accounts/signup/",
       {
         method: "POST",
         headers: {
@@ -104,14 +91,8 @@ export async function signUser(formData) {
         },
         body: JSON.stringify(formData),
       },
+      true, // Ignore 400 errors
     );
-    const data = await response.json();
-
-    if (!response.ok && response.status !== 400) {
-      throw new Error(data.detail);
-    }
-
-    return data;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -119,19 +100,9 @@ export async function signUser(formData) {
 
 export async function performLogout() {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/accounts/logout/`,
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error("Something went wrong while logging out.");
-    }
-
-    return response.json();
+    return await fetchWithErrorHandling("/api/accounts/logout/", {
+      method: "POST",
+    });
   } catch (error) {
     throw new Error(error.message || UNEXPECTED_ERROR);
   }
@@ -139,25 +110,13 @@ export async function performLogout() {
 
 export async function requestPasswordReset(email) {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/accounts/password-reset/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
+    return await fetchWithErrorHandling("/api/accounts/password-reset/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.detail);
-    }
-
-    return data;
+      body: JSON.stringify({ email }),
+    });
   } catch (error) {
     throw new Error(error.message || UNEXPECTED_ERROR);
   }
@@ -165,23 +124,15 @@ export async function requestPasswordReset(email) {
 
 export async function resetPassword({ uid, token, formData }) {
   try {
-    const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/accounts/password-reset/set/${uid}/${token}/`,
+    return await fetchWithErrorHandling(
+      `/api/accounts/password-reset/set/${uid}/${token}/`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       },
+      true,
     );
-    const data = await response.json();
-
-    if (!response.ok && response.status !== 400) {
-      throw new Error(data.detail);
-    }
-
-    return data;
   } catch (error) {
     throw new Error(error.message || "An unexpected error occured"); // Replace with variable
   }
