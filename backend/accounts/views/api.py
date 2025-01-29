@@ -56,7 +56,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
 
         user = serializer.user
-        remember = request.data.get("remember")
+        remember = request.data.get("remember", None)
 
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
@@ -65,9 +65,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             {"detail": "You have successfully logged in!", "user_id": user.id},
             status=status.HTTP_200_OK,
         )
-        max_age = (settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] if remember else None,)
 
-        api_helpers.set_access_token(response, access_token, max_age)
+        api_helpers.set_access_token(response, access_token, remember)
 
         if remember:
             api_helpers.set_refresh_token(response, str(refresh))
