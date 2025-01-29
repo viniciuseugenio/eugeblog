@@ -1,4 +1,3 @@
-from time import sleep
 from django.contrib.auth import get_user_model
 from posts.models import Post
 from rest_framework import generics, status
