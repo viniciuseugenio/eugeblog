@@ -16,7 +16,14 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from dotenv import load_dotenv
 from rest_framework import serializers, status
 from rest_framework.compat import requests
-from rest_framework.exceptions import APIException, NotFound, ValidationError
+from utils.throttling import EmailBasedThrottle
+from rest_framework.exceptions import (
+    APIException,
+    NotFound,
+    ValidationError,
+    AuthenticationFailed,
+    Throttled,
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -246,7 +253,17 @@ class GithubLogin(APIView):
 
 
 class PasswordResetRequestView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
+    throttle_classes = [EmailBasedThrottle]
+
+    def throttled(self, request, wait):
+        wait_hours = int(wait / 60)
+
+        raise Throttled(
+            detail=f"Too many requests for this e-mail. Please try again in {wait_hours} minutes.",
+            code=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
 
     def post(self, request):
         email = request.data.get("email")
@@ -282,6 +299,7 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request, uidb64, token):

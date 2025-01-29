@@ -10,6 +10,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "utils.permissions.JWTCustomAuthentication",
     ],
+    "DEFAULT_THROTTLE_RATES": {
+        "password_reset": "3/hour",
+    },
 }
 
 SIMPLE_JWT = {
