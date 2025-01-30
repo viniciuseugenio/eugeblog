@@ -14,16 +14,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from dotenv import load_dotenv
-from rest_framework import serializers, status
+from rest_framework import exceptions, serializers, status
 from rest_framework.compat import requests
-from utils.throttling import EmailBasedThrottle
-from rest_framework.exceptions import (
-    APIException,
-    NotFound,
-    ValidationError,
-    AuthenticationFailed,
-    Throttled,
-)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,6 +27,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from utils import api_helpers
+from utils.throttling import EmailBasedThrottle
 
 from ..api.serializers import UserSerializer
 
@@ -49,8 +42,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
         try:
             serializer.is_valid(raise_exception=True)
-        except AuthenticationFailed:
-            raise AuthenticationFailed(
+        except exceptions.AuthenticationFailed:
+            raise exceptions.AuthenticationFailed(
                 "The email or password you entered is incorrect. Please, check your credentials and try again.",
                 400,
             )
@@ -191,7 +184,7 @@ class GoogleLogin(APIView):
             user_data = api_helpers.google_get_user_info(
                 access_token=tokens["access_token"]
             )
-        except ValidationError:
+        except exceptions.ValidationError:
             return redirect(f"{login_url}?error=access_token")
 
         profile_data = {
@@ -266,7 +259,7 @@ class PasswordResetRequestView(APIView):
     def throttled(self, request, wait):
         wait_hours = int(wait / 60)
 
-        raise Throttled(
+        raise exceptions.Throttled(
             detail=f"Too many requests for this e-mail. Please try again in {wait_hours} minutes.",
             code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
@@ -275,12 +268,12 @@ class PasswordResetRequestView(APIView):
         email = request.data.get("email")
 
         if not email:
-            raise APIException("E-mail is required to reset password.", 400)
+            raise exceptions.APIException("E-mail is required to reset password.", 400)
 
         user = User.objects.filter(email=email).first()
 
         if not user:
-            raise APIException("No user with this e-mail was found.", 404)
+            raise exceptions.APIException("No user with this e-mail was found.", 404)
 
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -313,12 +306,14 @@ class PasswordResetView(APIView):
             decoded_uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=decoded_uid)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            raise NotFound("The user was not found. Please, request another token.")
+            raise exceptions.NotFound(
+                "The user was not found. Please, request another token."
+            )
 
         is_valid = default_token_generator.check_token(user, token)
 
         if not is_valid:
-            raise APIException(
+            raise exceptions.APIException(
                 "The token is invalid. Please, request another one.", 400
             )
 
@@ -326,17 +321,19 @@ class PasswordResetView(APIView):
         confirm_password = request.data.get("confirm_password")
 
         if not password or not confirm_password:
-            raise APIException("Password and confirm password are required.", 400)
+            raise exceptions.APIException(
+                "Password and confirm password are required.", 400
+            )
 
         if password != confirm_password:
-            raise APIException("The passwords do not match.", 400)
+            raise exceptions.APIException("The passwords do not match.", 400)
 
         try:
             validate_password(password, user)
             user.set_password(password)
             user.save()
         except serializers.DjangoValidationError as e:
-            raise ValidationError({"errors": e.messages}, 400)
+            raise exceptions.ValidationError({"errors": e.messages}, 400)
 
         return Response(
             {"detail": "Your password was reseted successfully!"}, status=200
