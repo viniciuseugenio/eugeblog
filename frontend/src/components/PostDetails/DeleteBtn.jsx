@@ -3,6 +3,7 @@ import { useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { deletePost, queryClient } from "../../utils/http";
+import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
 
@@ -24,15 +25,8 @@ export default function DeleteBtn({ buttonClasses }) {
         queryKey: ["publishedPosts", postId],
       });
 
-      // Invalidate both published and pending lists to ensure the post is removed
-      queryClient.invalidateQueries({
-        queryKey: ["publishedPosts"],
-        exact: true,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["pendingPosts"],
-        exact: true,
-      });
+      // Invalidate the pending and published lists to ensure the post is removed
+      invalidatePostListQueries();
 
       navigate("/");
     },

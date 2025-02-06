@@ -3,6 +3,7 @@ import { useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { acceptPostReview, queryClient } from "../../utils/http";
+import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
 
@@ -21,17 +22,8 @@ export default function ApproveBtn({ buttonClasses }) {
       // Remove the post details from the pending cache, since it is now published
       queryClient.removeQueries(["pendingPosts", postId]);
 
-      // Invalidate the pendingPosts list to ensure it updates
-      queryClient.invalidateQueries({
-        queryKey: ["pendingPosts"],
-        exact: true,
-      });
-
-      // Invalidate the publishedPosts list to ensure the new post appears
-      queryClient.invalidateQueries({
-        queryKey: ["publishedPosts"],
-        exact: true,
-      });
+      // Invalidate the pending and published lists to ensure the post is removed
+      invalidatePostListQueries();
 
       navigate("/");
     },

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import PostFormBase from "../components/PostForm/PostFormBase";
 import { editPost, loadPost, queryClient } from "../utils/http";
+import { invalidatePostListQueries } from "../utils/query";
 
 export default function PostEditPage() {
   const params = useParams();
@@ -37,14 +38,7 @@ export default function PostEditPage() {
       queryClient.removeQueries(["publishedPosts", postId]);
 
       // Invalidate the pending and published lists to ensure the post is removed
-      queryClient.invalidateQueries({
-        queryKey: ["publishedPosts"],
-        exact: true,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["pendingPosts"],
-        exact: true,
-      });
+      invalidatePostListQueries();
 
       navigate(`/post/review/${postId}`);
     },
