@@ -21,23 +21,32 @@ export default function PostEditPage() {
   } = useMutation({
     mutationFn: editPost,
     onSuccess: (successData) => {
-      if (!successData.errors) {
-        const nextUrl =
-          data.post.review_status === "P"
-            ? `/post/review/${postId}/`
-            : `/post/${postId}/`;
-
-        toast.success(successData.detail, { id: "edit-success" });
-        queryClient.invalidateQueries(["post", postId]);
-        navigate(nextUrl);
-      } else {
+      if (successData.errors) {
         toast.error(
           "There was an error with your submission. Check all the fields.",
           {
             id: "edit-error",
           },
         );
+        return;
       }
+
+      toast.success(successData.detail, { id: "edit-success" });
+
+      // Remove the post from the post details cache
+      queryClient.removeQueries(["publishedPosts", postId]);
+
+      // Invalidate the pending and published lists to ensure the post is removed
+      queryClient.invalidateQueries({
+        queryKey: ["publishedPosts"],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["pendingPosts"],
+        exact: true,
+      });
+
+      navigate(`/post/review/${postId}`);
     },
     onError: (error) => {
       toast.error(error.message, { id: "edit-error" });
