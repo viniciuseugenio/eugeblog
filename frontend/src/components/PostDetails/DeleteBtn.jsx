@@ -15,7 +15,25 @@ export default function DeleteBtn({ buttonClasses }) {
     mutationFn: deletePost,
     onSuccess: () => {
       toast.success("Post was successfully deleted.");
-      queryClient.invalidateQueries(["posts"]);
+
+      // Remove queries related to the post since it does not exist anymore
+      queryClient.removeQueries({
+        queryKey: ["pendingPosts", postId],
+      });
+      queryClient.removeQueries({
+        queryKey: ["publishedPosts", postId],
+      });
+
+      // Invalidate both published and pending lists to ensure the post is removed
+      queryClient.invalidateQueries({
+        queryKey: ["publishedPosts"],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["pendingPosts"],
+        exact: true,
+      });
+
       navigate("/");
     },
     onError: (error) => {

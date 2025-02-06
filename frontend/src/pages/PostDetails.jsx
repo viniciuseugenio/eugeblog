@@ -5,5 +5,7 @@ import { loadPost } from "../utils/http";
 export default function PostDetailsPage() {
   const { id } = useParams();
 
-  return <PostDetailsBase queryKey={["posts", id]} fetchFn={loadPost} />;
+  return (
+    <PostDetailsBase queryKey={["publishedPosts", id]} fetchFn={loadPost} />
+  );
 }

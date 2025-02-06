@@ -14,7 +14,7 @@ export default function Posts() {
   const search = searchParams.get("q");
 
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["posts", { currentPage, search }],
+    queryKey: ["publishedPosts", { currentPage, search }],
     queryFn: () => loadPosts({ currentPage, search }),
     staleTime: 5000,
   });

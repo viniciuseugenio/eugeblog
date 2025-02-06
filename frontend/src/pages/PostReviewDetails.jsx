@@ -7,7 +7,7 @@ export default function PostReviewDetailsPage() {
 
   return (
     <PostDetailsBase
-      queryKey={["postReview", id]}
+      queryKey={["pendingPosts", id]}
       fetchFn={loadPostReview}
       isReview
     />

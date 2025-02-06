@@ -17,7 +17,22 @@ export default function ApproveBtn({ buttonClasses }) {
       toast.success("This post was successfully approved.", {
         id: "approve-success",
       });
-      queryClient.invalidateQueries(["posts"]);
+
+      // Remove the post details from the pending cache, since it is now published
+      queryClient.removeQueries(["pendingPosts", postId]);
+
+      // Invalidate the pendingPosts list to ensure it updates
+      queryClient.invalidateQueries({
+        queryKey: ["pendingPosts"],
+        exact: true,
+      });
+
+      // Invalidate the publishedPosts list to ensure the new post appears
+      queryClient.invalidateQueries({
+        queryKey: ["publishedPosts"],
+        exact: true,
+      });
+
       navigate("/");
     },
     onError: (error) => {
