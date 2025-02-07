@@ -1,9 +1,10 @@
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
-from django.db.models import Q, Prefetch
+from django.db.models import Prefetch, Q
 from django.http import Http404
 from dotenv import load_dotenv
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -13,8 +14,6 @@ from utils.permissions import IsOwnerOrPostReviewer
 
 from ..api.serializers import (
     CategorySerializer,
-    CommentCreateSerializer,
-    CommentDetailsSerializer,
     PostCreationSerializer,
     PostDetailsSerializer,
     PostListSerializer,
@@ -30,200 +29,209 @@ class CategoryList(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
-class PostListCreateView(generics.ListCreateAPIView):
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     pagination_class = BaseListPagination
 
     def get_serializer_class(self):
-        if self.request.method == "POST":
-            return PostCreationSerializer
+        serializers = {
+            "create": PostCreationSerializer,
+            "partial_update": PostCreationSerializer,
+            "list": PostListSerializer,
+            "user_posts": PostListSerializer,
+        }
 
-        return PostListSerializer
+        return serializers.get(self.action, PostDetailsSerializer)
 
     def get_queryset(self):
-        if self.request.method == "POST":
-            return super().get_queryset()
+        qs = super().get_queryset()
 
-        qs = Post.objects.filter(is_published=True).order_by("-id")
-        search = self.request.query_params.get("q")
+        if self.action == "create":
+            return qs
 
-        if search:
-            qs = qs.filter(Q(title__icontains=search) | Q(excerpt__icontains=search))
+        if self.action == "list":
+            qs = qs.filter(is_published=True).order_by("-id")
+            search = self.request.query_params.get("q")
+
+            if search:
+                qs = qs.filter(
+                    Q(title__icontains=search) | Q(excerpt__icontains=search)
+                )
 
         return qs
 
     def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsAuthenticated()]
+        action_permissions = {
+            "update": [IsOwnerOrPostReviewer()],
+            "partial_update": [IsOwnerOrPostReviewer()],
+            "destroy": [IsOwnerOrPostReviewer()],
+            "review": [IsOwnerOrPostReviewer()],
+            "accept_review": [IsOwnerOrPostReviewer()],
+            "create": [IsAuthenticated()],
+            "user_posts": [IsAuthenticated()],
+            "create_comment": [IsAuthenticated()],
+        }
 
-        return [AllowAny()]
+        return action_permissions.get(self.action, [AllowAny()])
 
-    def post(self, request):
+    def get_object(self):
+        try:
+            if self.action in ["update", "destroy", "partial_update"]:
+                post = Post.objects.get(pk=self.kwargs.get("pk"))
+            elif self.action in ["review", "accept_review"]:
+                post = Post.objects.get(
+                    is_published=False, review_status="P", pk=self.kwargs.get("pk")
+                )
+            else:
+                post = (
+                    Post.objects.filter(pk=self.kwargs.get("pk"), is_published=True)
+                    .prefetch_related(
+                        Prefetch("comments", queryset=Comment.objects.order_by("-id"))
+                    )
+                    .first()
+                )
+            if not post:
+                raise NotFound("This post does not exist or was deleted.")
+            return post
+        except Post.DoesNotExist:
+            raise NotFound("This post does not exist or was deleted.")
+
+    def create(self, request, *args, **kwargs):
         user = request.user
         serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save(author=user, review_status="P")
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if not serializer.is_valid():
+            return Response(
+                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Handle invalid data
-        return Response(
-            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-        )
+        serializer.save(author=user, review_status="P")
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-class UserPostsList(generics.ListAPIView):
-    serializer_class = PostListSerializer
-    pagination_class = BaseDropdownPagination
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        qs = Post.objects.filter(author=user).order_by("-id")
-        return qs
-
-
-class PostDetails(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.filter(is_published=True).prefetch_related(
-        Prefetch("comments", queryset=Comment.objects.order_by("-id"))
-    )
-
-    def get_serializer_class(self):
-        if self.request.method == "PATCH":
-            return PostCreationSerializer
-
-        return PostDetailsSerializer
-
-    def get_permissions(self):
-        method_permissions = {
-            "DELETE": [IsOwnerOrPostReviewer()],
-            "PATCH": [IsOwnerOrPostReviewer()],
-        }
-
-        return method_permissions.get(self.request.method, [AllowAny()])
-
-    def get_object(self):
-        post_pk = self.kwargs.get("pk")
-
-        try:
-            return self.get_queryset().get(pk=post_pk)
-        except Post.DoesNotExist:
-            raise NotFound("This post does not exist or is not published.")
-
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request, pk=None):
         post = self.get_object()
         post_serialized = self.get_serializer(post)
+        context = self._get_post_context(post, request.user)
 
+        return Response(
+            {
+                "post": post_serialized.data,
+                **context,
+            }
+        )
+
+    def partial_update(self, request, *args, **kwargs):
+        if not request.data:
+            return Response(
+                {"detail": "No changes were made."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        data = request.data.copy()
+        data["category"] = str(data.get("category", [None])[0])
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=data, partial=True)
+
+        if not serializer.is_valid():
+            return Response(
+                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Ensure the post is sent to review after editing
+        instance.is_published = False
+        instance.review_status = "P"
+
+        serializer.save()
+
+        return Response(
+            {"detail": "This post was successfully updated!"},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=True, methods=["GET"])
+    def review(self, request, pk=None):
+        post = self.get_object()
+
+        if not post:
+            raise Http404("This post does not exist or was already reviewed.")
+
+        post_serialized = self.get_serializer(post)
+        context = self._get_post_context(post, request.user)
+
+        return Response(
+            {
+                "post": post_serialized.data,
+                **context,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=True, methods=["POST"], url_path="review/accept")
+    def accept_review(self, request, pk=None):
+        post = Post.objects.filter(is_published=False, review_status="P", pk=pk)
+
+        if not post.exists():
+            raise Http404("This post does not exist or was already reviewed.")
+
+        post = post.first()
+        post.review_status = "A"
+        post.is_published = True
+        post.save()
+
+        post_serialized = self.get_serializer(post)
+        return Response(post_serialized.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["GET"], url_path="categories")
+    def get_categories(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        url_path="user",
+        pagination_class=BaseDropdownPagination,
+    )
+    def user_posts(self, request):
         user = request.user
+        qs = Post.objects.filter(author=user).order_by("-id")
+
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["POST"], url_path="comments")
+    def add_comment(self, request, pk=None):
+        post = self.get_object()
+        user = request.user
+
+        content = request.data.get("content")
+        if not content:
+            return Response(
+                {"detail": "Comment cannot be left empty."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        Comment.objects.create(post=post, author=user, content=content)
+        return Response("Comment created!", status=status.HTTP_201_CREATED)
+
+    def _get_post_context(self, post, user):
         is_bookmarked = False
-        is_owner = False
         is_reviewer = False
+        is_owner = False
 
         if user.is_authenticated:
             is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
             is_owner = post.author == user
             is_reviewer = user.groups.filter(name="post_reviewer").exists()
 
-        return Response(
-            {
-                "post": post_serialized.data,
-                "is_bookmarked": is_bookmarked,
-                "is_owner": is_owner,
-                "is_reviewer": is_reviewer,
-            }
-        )
-
-    def partial_update(self, request, *args, **kwargs):
-        if not request.data:
-            return Response({"detail": "No changes were made."})
-
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {"detail": "This post was successfully updated!"},
-                status=status.HTTP_200_OK,
-            )
-
-        return Response(
-            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-        )
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(
-            {"detail": "Post deleted successfully."}, status=status.HTTP_200_OK
-        )
-
-
-class PostReviewDetails(generics.RetrieveUpdateAPIView):
-    queryset = Post.objects.filter(is_published=False, review_status="P")
-    serializer_class = PostDetailsSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrPostReviewer]
-
-    def get_object(self):
-        post_pk = self.kwargs.get("pk")
-        try:
-            return self.queryset.get(pk=post_pk)
-        except Post.DoesNotExist:
-            raise Http404("This post does not exist or was already reviewed.")
-
-    def perform_update(self, instance):
-        instance.review_status = "A"
-        instance.is_published = True
-        instance.save()
-
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_update(instance)
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, *args, **kwargs):
-        post = self.get_object()
-        post_serialized = self.get_serializer(post)
-
-        user = request.user
-        is_owner = False
-        is_reviewer = False
-
-        if user.is_authenticated:
-            is_owner = post.author.id == user.id
-            is_reviewer = user.groups.filter(name="post_reviewer").exists()
-
-        return Response(
-            {
-                "post": post_serialized.data,
-                "is_owner": is_owner,
-                "is_reviewer": is_reviewer,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-
-class PostComments(generics.ListCreateAPIView):
-    serializer_class = CommentDetailsSerializer
-
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsAuthenticated()]
-
-        return [AllowAny()]
-
-    def get_queryset(self):
-        post_id = self.kwargs.get("pk")
-        return Comment.objects.filter(post=post_id).order_by("-id")
-
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return CommentCreateSerializer
-
-        return CommentDetailsSerializer
-
-    def perform_create(self, serializer):
-        author = self.request.user
-        post = generics.get_object_or_404(Post, pk=self.kwargs.get("pk"))
-        serializer.save(author=author, post=post)
+        return {
+            "is_bookmarked": is_bookmarked,
+            "is_reviewer": is_reviewer,
+            "is_owner": is_owner,
+        }

@@ -1,17 +1,12 @@
 from posts.views import api
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 app_name = "api"
 
+router = DefaultRouter(trailing_slash=True)
+router.register("", api.PostViewSet, basename="post")
+
 urlpatterns = [
-    path("", api.PostListCreateView.as_view(), name="list_create"),
-    path("<int:pk>/", api.PostDetails.as_view(), name="api_details"),
-    path("review/<int:pk>/", api.PostReviewDetails.as_view(), name="api_review"),
-    path("user/", api.UserPostsList.as_view(), name="api_post_list_user"),
-    path(
-        "<int:pk>/comments/",
-        api.PostComments.as_view(),
-        name="api_comments",
-    ),
-    path("categories/", api.CategoryList.as_view(), name="api_categories"),
+    path("", include(router.urls)),
 ]
