@@ -58,7 +58,7 @@ export async function deletePost(id) {
 
 export async function loadPostReview(id) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/review/${id}/`);
+    return await fetchWithErrorHandling(`/api/posts/${id}/review/`);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -66,8 +66,8 @@ export async function loadPostReview(id) {
 
 export async function acceptPostReview(id) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/review/${id}/`, {
-      method: "PATCH",
+    return await fetchWithErrorHandling(`/api/posts/${id}/review/accept/`, {
+      method: "POST",
     });
   } catch (error) {
     throw new Error(error.message);
@@ -105,8 +105,7 @@ export async function createComment({ content, postId }) {
 
 export async function fetchCategories() {
   try {
-    const data = await fetchWithErrorHandling("/api/posts/categories/");
-    return data.results;
+    return await fetchWithErrorHandling("/api/posts/categories/");
   } catch (error) {
     throw new Error(error.message);
   }
