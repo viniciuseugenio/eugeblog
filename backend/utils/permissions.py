@@ -7,6 +7,8 @@ from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from posts.models import Post
+
 User = get_user_model()
 
 
@@ -50,6 +52,25 @@ class JWTCustomAuthentication(BaseAuthentication):
 
 
 class IsOwnerOrPostReviewer(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+
+        if not user.is_authenticated:
+            return False
+
+        pk = view.kwargs.get("pk")
+        obj = Post.objects.get(pk=pk)
+
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
+        is_owner = obj.author.id == user.id
+
+        if not is_owner and not is_reviewer:
+            raise PermissionDenied(
+                "You do not have permission to perform any action in this post."
+            )
+
+        return True
+
     def has_object_permission(self, request, view, obj):
         user = request.user
 
