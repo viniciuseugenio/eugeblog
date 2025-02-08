@@ -2,7 +2,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import PostFormBase from "../components/PostForm/PostFormBase";
-import { editPost, loadPost, queryClient } from "../utils/http";
+import {
+  editPost,
+  loadPendingAndPublishedPost,
+  queryClient,
+} from "../utils/http";
 import { invalidatePostListQueries } from "../utils/query";
 
 export default function PostEditPage() {
@@ -12,7 +16,7 @@ export default function PostEditPage() {
 
   const { data } = useQuery({
     queryKey: ["post", postId],
-    queryFn: () => loadPost(postId),
+    queryFn: () => loadPendingAndPublishedPost(postId),
   });
 
   const {
