@@ -21,18 +21,18 @@ export default function LoggedHeader() {
         <Tooltip text="Create a post" topPosition="top-11" />
       </Link>
       <li>
-        <Dropdown tooltipText="Your posts" DropdownContent={UserPostsDropdown}>
-          <IconSpan>
-            <ion-icon name="file-tray-stacked-outline"></ion-icon>
-          </IconSpan>
-        </Dropdown>
+        <Dropdown
+          label="User Posts"
+          icon="file-tray-stacked-outline"
+          DropdownContent={UserPostsDropdown}
+        />
       </li>
       <li>
-        <Dropdown tooltipText="Bookmarks" DropdownContent={BookmarksDropdown}>
-          <IconSpan>
-            <ion-icon name="bookmarks-outline"></ion-icon>
-          </IconSpan>
-        </Dropdown>
+        <Dropdown
+          label="Bookmarks"
+          icon="bookmarks-outline"
+          DropdownContent={BookmarksDropdown}
+        />
       </li>
       <li className={liClasses}>
         <LogoutButton />
