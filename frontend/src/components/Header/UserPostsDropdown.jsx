@@ -9,6 +9,7 @@ export default function UserPostsDropdown() {
     <DropdownList
       queryKey={["archivedPosts", { userId }]}
       queryFn={fetchUserPosts}
+      emptyMessage="You have no posts yet."
     />
   );
 }

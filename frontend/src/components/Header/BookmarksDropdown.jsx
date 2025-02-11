@@ -9,6 +9,7 @@ export default function BookmarksDropdown() {
     <DropdownList
       queryKey={["bookmarks", { userId }]}
       queryFn={fetchBookmarks}
+      emptyMessage="You have no bookmarks yet."
     />
   );
 }

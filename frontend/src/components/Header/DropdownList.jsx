@@ -5,7 +5,7 @@ import { queryClient } from "../../utils/http";
 import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 
-export default function DropdownList({ queryKey, queryFn }) {
+export default function DropdownList({ queryKey, queryFn, emptyMessage }) {
   let content;
   const [page, setPage] = useState(1);
   const isArchived = queryKey[0] === "archivedPosts";
@@ -74,7 +74,7 @@ export default function DropdownList({ queryKey, queryFn }) {
         </>
       );
     } else {
-      content = <p className="w-96 p-4 text-center">No bookmarks available.</p>;
+      content = <p className="w-96 p-4 text-center">{emptyMessage}</p>;
     }
   }
 
