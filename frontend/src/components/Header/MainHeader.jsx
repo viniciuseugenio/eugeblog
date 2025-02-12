@@ -1,27 +1,32 @@
 import { Link } from "react-router";
-import IconHorizontal from "../../assets/eugeblog-hori.svg";
-import SearchInput from "./SearchInput";
+import LoggedIcon from "../../assets/eu-icon.svg";
+import NormalIcon from "../../assets/eugeblog-hori.svg";
 import { useAuthContext } from "../../store/auth-context";
 import AuthHeader from "./AuthHeader";
+import LogoutButton from "./LogoutButton";
+import SearchInput from "./SearchInput";
 import LoggedHeader from "./LoggedHeader";
 
 export default function MainHeader() {
   const { isLogged } = useAuthContext();
 
+  const logoSrc = isLogged ? LoggedIcon : NormalIcon;
+  const iconClasses = isLogged ? "w-14" : "w-32 py-2";
+
   return (
-    <>
-      <header className="bg-light flex items-center justify-between px-14 py-4">
+    <header className="bg-light flex items-center justify-between px-14 py-2">
+      <div className="flex items-center justify-center gap-6">
         <Link to="/" className="flex items-center">
-          <img src={IconHorizontal} alt="" className="w-32" />
+          <img src={logoSrc} alt="Site logo" className={iconClasses} />
         </Link>
 
-        <nav className="flex items-center justify-center">
-          <SearchInput />
-          <ul className={`${isLogged ? "gap-2" : "gap-6"} flex justify-center`}>
-            {!isLogged ? <AuthHeader /> : <LoggedHeader />}
-          </ul>
-        </nav>
-      </header>
-    </>
+        {isLogged && <LoggedHeader />}
+      </div>
+
+      <div className="flex items-center justify-center">
+        <SearchInput />
+        <>{!isLogged ? <AuthHeader /> : <LogoutButton />}</>
+      </div>
+    </header>
   );
 }

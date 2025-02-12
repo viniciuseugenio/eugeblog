@@ -26,11 +26,11 @@ export default function LogoutButton() {
       </Modal>
 
       <form className="h-full" onSubmit={handleLogout}>
-        <button className="flex h-full items-center justify-center gap-2 py-2">
+        <button className="active:bg-accent flex h-full items-center justify-center gap-2 rounded-lg px-4 py-2 duration-300 hover:bg-[#e2d3ca] hover:text-black">
           <IconSpan>
             <ion-icon name="exit-outline"></ion-icon>
           </IconSpan>
-          <span>Logout</span>
+          <span className="font-medium">Logout</span>
         </button>
       </form>
     </>

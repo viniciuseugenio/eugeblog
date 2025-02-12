@@ -1,11 +1,10 @@
-import { useState } from "react";
-import DropdownListItem from "./DropdownListItem.jsx";
-import Pagination from "../Pagination/Pagination.jsx";
-import { queryClient } from "../../utils/http";
-import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import Pagination from "../Pagination/Pagination.jsx";
+import DropdownListItem from "./DropdownListItem.jsx";
 
-export default function DropdownList({ queryKey, queryFn }) {
+export default function DropdownList({ queryKey, queryFn, emptyMessage }) {
   let content;
   const [page, setPage] = useState(1);
   const isArchived = queryKey[0] === "archivedPosts";
@@ -17,17 +16,14 @@ export default function DropdownList({ queryKey, queryFn }) {
 
   function handleSetPage(page) {
     setPage(page);
-    queryClient.invalidateQueries([queryKey]);
   }
 
   function handleNextPage() {
     setPage((prev) => prev + 1);
-    queryClient.invalidateQueries([queryKey]);
   }
 
   function handlePreviousPage() {
     setPage((prev) => (prev > 1 ? prev - 1 : prev));
-    queryClient.invalidateQueries([queryKey]);
   }
 
   if (isPending) {
@@ -49,7 +45,7 @@ export default function DropdownList({ queryKey, queryFn }) {
     if (data.results.length > 0) {
       content = (
         <>
-          <ul className="flex flex-grow flex-col gap-y-6 p-4">
+          <ul className="flex flex-1 flex-col gap-y-6 p-2 pb-6">
             {data.results.map((item) => (
               <DropdownListItem
                 key={item.id}
@@ -61,7 +57,6 @@ export default function DropdownList({ queryKey, queryFn }) {
           {data.pagination.qty_pages > 1 && (
             <div className="mb-4 mt-auto">
               <Pagination
-                isBookmarks
                 className="justify-center"
                 handleNextPage={handleNextPage}
                 handlePreviousPage={handlePreviousPage}
@@ -74,12 +69,12 @@ export default function DropdownList({ queryKey, queryFn }) {
         </>
       );
     } else {
-      content = <p className="w-96 p-4 text-center">No bookmarks available.</p>;
+      content = <p className="w-96 p-4 text-center">{emptyMessage}</p>;
     }
   }
 
   return (
-    <div className="flex min-h-[42rem] min-w-[26rem] flex-col items-center justify-center">
+    <div className="flex flex-1 flex-col items-center justify-center">
       {content}
     </div>
   );

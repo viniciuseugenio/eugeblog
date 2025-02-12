@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 export default function AuthHeader() {
   return (
-    <>
+    <ul className="ml-3 flex gap-3">
       <li>
         <Link
           to="/signup"
@@ -19,6 +19,6 @@ export default function AuthHeader() {
           Log in
         </Link>
       </li>
-    </>
+    </ul>
   );
 }

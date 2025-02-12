@@ -40,21 +40,21 @@ export default function SearchInput() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="ring-primary/30 hover:ring-secondary focus-within:ring-secondary mr-3 flex w-80 items-center gap-2 rounded-md bg-white py-2 pr-3 duration-300 ease-out focus-within:shadow-lg hover:shadow-lg"
+      className="hover:ring-secondary focus-within:ring-secondary ring-secondary/20 mr-3 flex w-80 items-center gap-2 rounded-md bg-white py-2 pr-3 ring-1 duration-300 ease-out focus-within:shadow-md hover:shadow-md"
     >
       <input
         type="text"
         name="search"
         onChange={handleSearch}
-        placeholder="Search something"
-        aria-label="Search something"
+        placeholder="Search for posts"
+        aria-label="Search for posts"
         className="h-full w-full bg-white pl-4 text-sm placeholder-gray-500 outline-none"
       />
       <button
         aria-label="Submit search"
-        className="flex items-center justify-center text-lg duration-300 hover:scale-125"
+        className="flex items-center justify-center text-lg opacity-50 duration-300 hover:scale-125 hover:opacity-100"
       >
-        <ion-icon name="search-outline"></ion-icon>
+        <ion-icon name="search-outline" />
       </button>
     </form>
   );
