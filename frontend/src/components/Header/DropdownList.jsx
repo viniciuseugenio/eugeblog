@@ -45,7 +45,7 @@ export default function DropdownList({ queryKey, queryFn, emptyMessage }) {
     if (data.results.length > 0) {
       content = (
         <>
-          <ul className="flex flex-col gap-y-6 p-2 pb-6">
+          <ul className="flex flex-1 flex-col gap-y-6 p-2 pb-6">
             {data.results.map((item) => (
               <DropdownListItem
                 key={item.id}
