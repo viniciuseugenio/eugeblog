@@ -25,9 +25,7 @@ export default function MainHeader() {
 
       <div className="flex items-center justify-center">
         <SearchInput />
-        <div className={`${isLogged ? "gap-2" : "gap-6"} flex justify-center`}>
-          {!isLogged ? <AuthHeader /> : <LogoutButton />}
-        </div>
+        <>{!isLogged ? <AuthHeader /> : <LogoutButton />}</>
       </div>
     </header>
   );
