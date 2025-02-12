@@ -29,17 +29,14 @@ export default function DropdownListItem({ post, isArchived }) {
   }
 
   return (
-    <>
-      <li>
-        <Link to={url} className="hover:text-secondary flex gap-3 duration-300">
-          <img src={post.image} className="w-24 rounded-md" alt={post.title} />
-          <div className="flex flex-col justify-center">
-            <span className="break-words font-medium">{post.title}</span>
-            {postMeta}
-          </div>
-        </Link>
-      </li>
-      <hr />
-    </>
+    <li className="rounded-md p-2 duration-300 ease-out hover:bg-stone-200">
+      <Link to={url} className="flex gap-3 duration-300">
+        <img src={post.image} className="w-24 rounded-md" alt={post.title} />
+        <div className="flex flex-col justify-center">
+          <span className="break-words font-medium">{post.title}</span>
+          {postMeta}
+        </div>
+      </Link>
+    </li>
   );
 }
