@@ -6,6 +6,7 @@ import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import { useAuthCheck } from "../utils/hooks";
 import { resetPassword } from "../utils/http";
+import { Key } from "lucide-react";
 
 export default function PasswordResetPage() {
   const navigate = useNavigate();
@@ -73,9 +74,9 @@ export default function PasswordResetPage() {
       <section className="max-w-[30rem] p-12 text-center">
         <p
           aria-label="Password Icon"
-          className="password-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-3 text-5xl"
+          className="password-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-4 text-5xl"
         >
-          <ion-icon name="key-outline"></ion-icon>
+          <Key size={42} />
         </p>
         <h1 className="mb-3 text-4xl font-semibold">Set new password</h1>
         <p className="font-medium text-neutral-700">

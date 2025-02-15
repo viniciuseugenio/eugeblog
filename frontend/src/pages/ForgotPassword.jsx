@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import { requestPasswordReset } from "../utils/http";
+import { Key } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const navigate = useNavigate();
@@ -28,9 +29,9 @@ export default function ForgotPasswordPage() {
       <section className="max-w-[30rem] p-12 text-center">
         <p
           aria-label="Password Icon"
-          className="key-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-3 text-5xl"
+          className="bg-accent/30 text-primary mb-6 inline-flex rounded-full p-4 text-5xl"
         >
-          <ion-icon name="key-outline"></ion-icon>
+          <Key size={42} />
         </p>
         <h1 id="password-reset-form" className="mb-3 text-4xl font-semibold">
           Forgot your password?

@@ -1,6 +1,8 @@
 import { Divider } from "@mui/material";
 import SocialIcon from "../components/SocialIcon";
 import { openGoogleLoginPage } from "../utils/helpers";
+import Github from "/social_icons/github-icon.svg";
+import Google from "/social_icons/google-icon.svg";
 
 const { VITE_GITHUB_CLIENT_ID } = import.meta.env;
 
@@ -13,15 +15,18 @@ export default function SocialLogin({ page }) {
     window.location = fullRedirectUrl;
   }
 
+  const iconClass =
+    "w-11 rounded-lg bg-stone-200 p-2 duration-300 hover:bg-stone-300 active:bg-stone-400";
+
   return (
     <>
       <Divider>Or {page} with</Divider>
-      <ul className="mt-6 flex items-center justify-center gap-12">
+      <ul className="mt-6 flex items-center justify-center gap-6">
         <SocialIcon onClick={openGoogleLoginPage}>
-          <ion-icon name="logo-google"></ion-icon>
+          <img src={Google} className={iconClass} alt="Google" />
         </SocialIcon>
         <SocialIcon onClick={openGitLoginPage}>
-          <ion-icon name="logo-github"></ion-icon>
+          <img src={Github} className={iconClass} alt="GitHub" />
         </SocialIcon>
       </ul>
     </>

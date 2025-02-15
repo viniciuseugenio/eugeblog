@@ -3,6 +3,7 @@ import BookmarksDropdown from "./BookmarksDropdown";
 import Dropdown from "./Dropdown";
 import IconSpan from "./IconSpan";
 import UserPostsDropdown from "./UserPostsDropdown";
+import { User, Bookmark, Plus } from "lucide-react";
 
 export default function LoggedHeader() {
   return (
@@ -10,7 +11,7 @@ export default function LoggedHeader() {
       <li>
         <Dropdown
           label="User Posts"
-          icon="person-outline"
+          icon={<User size={20} />}
           DropdownContent={UserPostsDropdown}
         />
       </li>
@@ -18,7 +19,7 @@ export default function LoggedHeader() {
       <li>
         <Dropdown
           label="Bookmarks"
-          icon="bookmark-outline"
+          icon={<Bookmark size={20} />}
           DropdownContent={BookmarksDropdown}
         />
       </li>
@@ -27,9 +28,9 @@ export default function LoggedHeader() {
         to="/post/create/"
         className="active:bg-accent group relative flex items-center justify-center rounded-lg px-4 duration-300 hover:bg-[#e2d3ca] hover:text-black"
       >
-        <li className="flex gap-1">
+        <li className="flex gap-2">
           <IconSpan>
-            <ion-icon name="add-outline"></ion-icon>
+            <Plus size={20} />
           </IconSpan>
           <p className="text-sm">New post</p>
         </li>

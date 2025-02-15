@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router";
+import { MailCheck } from "lucide-react";
 
 export default function PasswordResetSentPage() {
   const location = useLocation();
@@ -9,10 +10,10 @@ export default function PasswordResetSentPage() {
       <section className="max-w-[27rem] p-12 text-center">
         <header>
           <p
-            className="password-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-3 text-5xl"
+            className="password-icon bg-accent/30 text-primary mb-6 inline-flex rounded-full p-4 text-5xl"
             aria-label="Mail icon"
           >
-            <ion-icon name="mail-outline"></ion-icon>
+            <MailCheck size={42} />
           </p>
           <h1 className="mb-3 text-4xl font-semibold">Check your e-mail</h1>
         </header>

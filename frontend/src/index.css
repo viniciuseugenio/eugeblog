@@ -15,10 +15,6 @@
   }
 }
 
-.key-icon {
-  --ionicon-stroke-width: 20px;
-}
-
 .dropdown-clip {
   clip-path: polygon(0% 0%, 100% 0%, 50% 50%, 0% 100%);
 }

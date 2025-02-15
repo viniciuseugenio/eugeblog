@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ChevronRight } from "lucide-react";
 
 export default function PostItem({ post }) {
   const date = new Date(post.created_at);
@@ -30,7 +31,7 @@ export default function PostItem({ post }) {
             className="flex items-center justify-center"
           >
             Read more
-            <ion-icon name="chevron-forward-outline"></ion-icon>
+            <ChevronRight size={16} />
           </Link>
         </div>
       </div>

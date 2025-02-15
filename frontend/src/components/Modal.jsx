@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { createPortal } from "react-dom";
+import { TriangleAlert } from "lucide-react";
 
 /**
  * Modal component that renders a dialog to confirm an important action. Portal is used to render the dialog in the root element.
@@ -19,16 +20,15 @@ const Modal = forwardRef(function Modal(
     children,
     title,
     mutateFn,
-    icon = "close-circle-outline",
-    iconColor,
+    icon = <TriangleAlert size={72} color="#c01c28" />,
     confirmBtnClasses,
   },
   ref,
 ) {
   return createPortal(
     <dialog ref={ref} className="max-w-2xl rounded-lg px-12 py-8 text-center">
-      <span className={`${iconColor} text-7xl`}>
-        <ion-icon name={icon} />
+      <span className="mb-6 flex w-full items-center justify-center">
+        {icon}
       </span>
       <h2 className="text-primary mb-6 text-4xl">{title}</h2>
       <p className="mb-6">{children}</p>

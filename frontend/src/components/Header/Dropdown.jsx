@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import IconSpan from "./IconSpan";
+import { ChevronDownIcon } from "lucide-react";
 
 export default function Dropdown({ DropdownContent, icon, label }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,14 +27,12 @@ export default function Dropdown({ DropdownContent, icon, label }) {
         onClick={() => setIsOpen((prev) => !prev)}
         className={`${isOpen ? "bg-accent" : "hover:bg-[#e2d3ca]"} active:bg-accent group flex h-full cursor-pointer gap-3 rounded-lg px-4 py-2 duration-300 hover:text-black`}
       >
-        <IconSpan>
-          <ion-icon name={icon} />
-        </IconSpan>
+        <IconSpan>{icon}</IconSpan>
 
         <p className="text-sm">{label}</p>
 
-        <IconSpan isOpen={isOpen} size="sm">
-          <ion-icon name="chevron-down-outline"></ion-icon>
+        <IconSpan isOpen={isOpen}>
+          <ChevronDownIcon size={15} />
         </IconSpan>
       </button>
 

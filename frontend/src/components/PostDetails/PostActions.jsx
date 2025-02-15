@@ -4,6 +4,7 @@ import ApproveBtn from "./ApproveBtn.jsx";
 import BookmarkButtons from "./BookmarkButtons";
 import DeleteBtn from "./DeleteBtn.jsx";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
+import { PencilLine } from "lucide-react";
 
 export default function PostActions() {
   const { isReview, isOwner, isReviewer, postId } =
@@ -21,9 +22,9 @@ export default function PostActions() {
 
           <Link
             to={`/post/edit/${postId}/`}
-            className={`${buttonClasses} text-blue-800 ring-1 ring-blue-300 hover:scale-105 hover:bg-blue-100 hover:ring-blue-300`}
+            className={`${buttonClasses} text-blue-800 ring-1 ring-blue-300 hover:bg-blue-100 hover:ring-blue-300`}
           >
-            <ion-icon name="create-outline"></ion-icon>
+            <PencilLine size={14} />
             <span>Edit</span>
           </Link>
           {isReview && isReviewer && (

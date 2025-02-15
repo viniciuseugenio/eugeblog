@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import Pagination from "../Pagination/Pagination.jsx";
 import DropdownListItem from "./DropdownListItem.jsx";
+import { CircleAlert } from "lucide-react";
 
 export default function DropdownList({ queryKey, queryFn, emptyMessage }) {
   let content;
@@ -34,7 +35,7 @@ export default function DropdownList({ queryKey, queryFn, emptyMessage }) {
     content = (
       <p className="p-3 text-center text-red-500">
         <span className="flex items-center justify-center text-2xl">
-          <ion-icon name="alert-circle-outline"></ion-icon>
+          <CircleAlert />
         </span>
         {error.message}
       </p>

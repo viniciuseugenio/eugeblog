@@ -1,5 +1,6 @@
 import IconSpan from "../Header/IconSpan";
 import { useState } from "react";
+import { ImageUp } from "lucide-react";
 
 export default function ImageInput({ data, errors }) {
   const [image, setImage] = useState(data);
@@ -19,7 +20,7 @@ export default function ImageInput({ data, errors }) {
           <img src={image} className="h-6 rounded-md" alt="" />
         ) : (
           <IconSpan>
-            <ion-icon name="images-outline"></ion-icon>
+            <ImageUp size={18} />
           </IconSpan>
         )}
         <span>{image ? "Change " : "Upload "} your image</span>
