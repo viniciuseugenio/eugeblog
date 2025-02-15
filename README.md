@@ -1,7 +1,7 @@
 ## <p align='center'>“Stay Informed, Stay Ahead — Your Daily News with Eugeblog”</p>
 
 <p align='center'>
-  <img src="https://github.com/viniciuseugenio/eugeblog/blob/main/frontend/public/eugeblog-hori-white.png" />
+  <img src="https://github.com/viniciuseugenio/eugeblog/blob/main/frontend/public/icons/eugeblog-hori-white.png" />
 </p>
 
 A full-stack application made with Django and React.js. A side project for you to post thoughts, news or reflections.
@@ -29,17 +29,16 @@ This project is currently in development. I still pretend to enhance and add a l
 - [ ] Deploy the application.
 
 If you have a suggestion of a new feature to implement, contact me. It will be a pleasure to see your side and develop it!
-                  
+
 ## Project Screen Shots
 
 <img src='frontend/public/homepage.png'/>
 <img src='frontend/public/postdetails.png'/>
 <img src='frontend/public/signup.png'/>
 
-
 ## Installation and Setup Instructions
 
-Clone down this repository. You will need `node`, `npm`, `python3` and `mysql` installed globally on your machine.  
+Clone down this repository. You will need `node`, `npm`, `python3` and `mysql` installed globally on your machine.
 
 Go to the folder of the project, and install the packages from front-end:
 
