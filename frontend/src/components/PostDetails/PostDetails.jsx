@@ -4,6 +4,7 @@ import PostMeta from "./PostMeta";
 import { formatDate } from "../../utils/helpers";
 import { useContext } from "react";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
+import { Tag, CalendarDays, CircleUserRound } from "lucide-react";
 
 export default function PostDetails({ post }) {
   const createdAt = formatDate(post.created_at);
@@ -20,17 +21,17 @@ export default function PostDetails({ post }) {
 
         <div className="mb-5 flex gap-4">
           <PostMeta>
-            <ion-icon name="person-circle-outline" />
+            <CircleUserRound size={16} />
             <span>{post.author}</span>
           </PostMeta>
 
           <PostMeta>
-            <ion-icon name="calendar-outline" />
+            <CalendarDays size={16} />
             <span>{createdAt}</span>
           </PostMeta>
 
           <PostMeta>
-            <ion-icon name="pricetag-outline" />
+            <Tag size={16} />
             <span>{post.category.name}</span>
           </PostMeta>
         </div>

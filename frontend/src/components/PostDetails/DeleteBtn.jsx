@@ -6,6 +6,7 @@ import { deletePost, queryClient } from "../../utils/http";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
+import { Trash2 } from "lucide-react";
 
 export default function DeleteBtn({ buttonClasses }) {
   const { postId } = useContext(PostDetailsContext);
@@ -40,7 +41,6 @@ export default function DeleteBtn({ buttonClasses }) {
       <Modal
         ref={modal}
         title="Are you sure of this?"
-        icon="alert-circle-outline"
         iconColor="text-red-600"
         confirmBtnClasses="bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:bg-red-300 hover:ring-red-400"
         mutateFn={() => mutate(postId)}
@@ -51,9 +51,9 @@ export default function DeleteBtn({ buttonClasses }) {
 
       <button
         onClick={() => modal.current.showModal()}
-        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:scale-105 hover:bg-red-200 hover:ring-red-300`}
+        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:bg-red-200 hover:ring-red-300`}
       >
-        <ion-icon name="trash-outline"></ion-icon>
+        <Trash2 size={14} />
         <span>Delete</span>
       </button>
     </>

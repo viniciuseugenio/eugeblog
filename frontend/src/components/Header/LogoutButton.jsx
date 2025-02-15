@@ -2,6 +2,7 @@ import { useRef } from "react";
 import Modal from "../Modal";
 import IconSpan from "./IconSpan";
 import { useLogout } from "../../utils/hooks";
+import { LogOutIcon } from "lucide-react";
 
 export default function LogoutButton() {
   const modal = useRef();
@@ -28,7 +29,7 @@ export default function LogoutButton() {
       <form className="h-full" onSubmit={handleLogout}>
         <button className="active:bg-accent flex h-full items-center justify-center gap-2 rounded-lg px-4 py-2 duration-300 hover:bg-[#e2d3ca] hover:text-black">
           <IconSpan>
-            <ion-icon name="exit-outline"></ion-icon>
+            <LogOutIcon size={15} />
           </IconSpan>
           <span className="font-medium">Logout</span>
         </button>

@@ -1,16 +1,30 @@
-import SocialIcon from "./SocialIcon";
+import Github from "/social_icons/github-icon.svg";
+import Linkedin from "/social_icons/linkedin-icon.svg";
 import FooterLink from "./FooterLink";
 
 export default function Footer() {
+  const commonStyle =
+    "hover:text-primary flex cursor-pointer flex-col items-center justify-center text-3xl duration-300 hover:scale-110";
+
   return (
     <footer className="mt-auto flex flex-col items-center justify-center bg-[#E4E0E1] py-5">
       <ul className="mb-3 flex gap-6">
-        <SocialIcon link="https://github.com/viniciuseugenio">
-          <ion-icon size="large" name="logo-github"></ion-icon>
-        </SocialIcon>
-        <SocialIcon link="https://www.linkedin.com/in/eugencius/">
-          <ion-icon size="large" name="logo-linkedin"></ion-icon>
-        </SocialIcon>
+        <a
+          href="https://github.com/viniciuseugenio"
+          target="_blank"
+          className={commonStyle}
+        >
+          <img src={Github} className="w-8" alt="GitHub" />
+          <span className="text-sm font-medium">GitHub</span>
+        </a>
+        <a
+          href="https://www.linkedin.com/in/eugencius/"
+          target="_blank"
+          className={commonStyle}
+        >
+          <img src={Linkedin} className="w-8 text-inherit" alt="Linkedin" />
+          <span className="text-sm font-medium">LinkedIn</span>
+        </a>
       </ul>
       <ul className="mb-3 flex gap-5">
         <FooterLink title="Privacy Policy" link="/privacy-policy" />

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router";
+import { Search } from "lucide-react";
 
 export default function SearchInput() {
   const [searchParams, setSearchParams] = useSearchParams("");
@@ -54,7 +55,7 @@ export default function SearchInput() {
         aria-label="Submit search"
         className="flex items-center justify-center text-lg opacity-50 duration-300 hover:scale-125 hover:opacity-100"
       >
-        <ion-icon name="search-outline" />
+        <Search size={18} />
       </button>
     </form>
   );

@@ -6,6 +6,7 @@ import { acceptPostReview, queryClient } from "../../utils/http";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
+import { CircleCheckBig } from "lucide-react";
 
 export default function ApproveBtn({ buttonClasses }) {
   const { postId } = useContext(PostDetailsContext);
@@ -52,7 +53,7 @@ export default function ApproveBtn({ buttonClasses }) {
         onClick={() => modal.current.showModal()}
         className={`${buttonClasses} text-green-800 shadow-lg ring-1 ring-green-200 hover:bg-green-200 hover:ring-green-300`}
       >
-        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        <CircleCheckBig size={14} />
         <span>Approve</span>
       </button>
     </>

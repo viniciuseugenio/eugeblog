@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Input({
   type,
@@ -14,16 +15,16 @@ export default function Input({
   const borderColor = isError || error ? "border-red-600" : "border-secondary";
   const textColor = isError || error ? "text-red-600" : "text-secondary";
   const input = useRef();
-  const [icon, setIcon] = useState("eye-outline");
+  const [EyeIcon, setEyeIcon] = useState(Eye);
 
   function handleShowPassword() {
     const nextType = input.current.type === "password" ? "text" : "password";
     input.current.type = nextType;
 
     if (nextType === "text") {
-      setIcon("eye-off-outline");
+      setEyeIcon(EyeOff);
     } else if (nextType === "password") {
-      setIcon("eye-outline");
+      setEyeIcon(Eye);
     }
   }
 
@@ -61,7 +62,7 @@ export default function Input({
             type="button"
             className="absolute right-2 top-2/4 translate-y-[-50%]"
           >
-            <ion-icon name={icon}></ion-icon>
+            <EyeIcon size={16} className="text-primary/70" />
           </button>
         )}
       </div>
