@@ -67,10 +67,9 @@ class CommentDetailsSerializer(serializers.ModelSerializer):
 
 class PostDetailsSerializer(PostBaseSerializer):
     category = CategorySerializer()
-    comments = CommentDetailsSerializer(many=True)
 
     class Meta(PostBaseSerializer.Meta):
-        fields = PostBaseSerializer.Meta.fields + ["comments"]
+        fields = PostBaseSerializer.Meta.fields
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):

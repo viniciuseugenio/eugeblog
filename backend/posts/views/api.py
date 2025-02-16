@@ -1,11 +1,11 @@
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
-from django.db.models import Prefetch, Q
+from django.db.models import Q
 from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotAuthenticated, NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -14,6 +14,7 @@ from utils.permissions import IsOwnerOrPostReviewer
 
 from ..api.serializers import (
     CategorySerializer,
+    CommentDetailsSerializer,
     PostCreationSerializer,
     PostDetailsSerializer,
     PostListSerializer,
@@ -69,7 +70,6 @@ class PostViewSet(viewsets.ModelViewSet):
             "accept_review": [IsOwnerOrPostReviewer()],
             "create": [IsAuthenticated()],
             "user_posts": [IsAuthenticated()],
-            "create_comment": [IsAuthenticated()],
         }
 
         return action_permissions.get(self.action, [AllowAny()])
@@ -77,22 +77,17 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_object(self):
         try:
             if self.action in ["update", "destroy", "partial_update"]:
-                post = Post.objects.get(pk=self.kwargs.get("pk"))
+                parameters = {"pk": self.kwargs.get("pk")}
             elif self.action in ["review", "accept_review"]:
-                post = Post.objects.get(
-                    is_published=False, review_status="P", pk=self.kwargs.get("pk")
-                )
+                parameters = {
+                    "pk": self.kwargs.get("pk"),
+                    "review_status": "P",
+                    "is_published": False,
+                }
             else:
-                post = (
-                    Post.objects.filter(pk=self.kwargs.get("pk"), is_published=True)
-                    .prefetch_related(
-                        Prefetch("comments", queryset=Comment.objects.order_by("-id"))
-                    )
-                    .first()
-                )
-            if not post:
-                raise NotFound("This post does not exist or was deleted.")
-            return post
+                parameters = {"pk": self.kwargs.get("pk"), "is_published": True}
+
+            return Post.objects.get(**parameters)
         except Post.DoesNotExist:
             raise NotFound("This post does not exist or was deleted.")
 
@@ -205,20 +200,30 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["POST"], url_path="comments")
-    def add_comment(self, request, pk=None):
+    @action(detail=True, methods=["GET", "POST"], url_path="comments")
+    def comments(self, request, pk=None):
         post = self.get_object()
-        user = request.user
 
-        content = request.data.get("content")
-        if not content:
-            return Response(
-                {"detail": "Comment cannot be left empty."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if request.method == "GET":
+            comments = Comment.objects.filter(post=post)
+            serializer = CommentDetailsSerializer(comments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-        Comment.objects.create(post=post, author=user, content=content)
-        return Response("Comment created!", status=status.HTTP_201_CREATED)
+        elif request.method == "POST":
+            user = request.user
+
+            if not user.is_authenticated:
+                raise NotAuthenticated("You must be logged in to comment on this post.")
+
+            content = request.data.get("content")
+            if not content:
+                return Response(
+                    {"detail": "Comment cannot be left empty."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            Comment.objects.create(post=post, author=user, content=content)
+            return Response("Comment created!", status=status.HTTP_201_CREATED)
 
     def _get_post_context(self, post, user):
         is_bookmarked = False
