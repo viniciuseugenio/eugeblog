@@ -46,7 +46,7 @@ export default function PostDetails({ post }) {
 
       <PostActions />
 
-      {!isReview && <Comments data={post.comments} />}
+      {!isReview && <Comments />}
     </>
   );
 }

@@ -1,7 +1,11 @@
-export default function CommentsCount({ qty }) {
+export default function CommentsCount({ qty, isPending }) {
   let count;
 
-  if (qty === 0) {
+  if (isPending) {
+    count = "Loading comments...";
+  }
+
+  if ((!qty && !isPending) || qty === 0) {
     count = "No comments yet...";
   } else if (qty === 1) {
     count = "1 comment";

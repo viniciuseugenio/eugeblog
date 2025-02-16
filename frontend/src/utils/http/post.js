@@ -120,6 +120,14 @@ export async function createPost(postData) {
   }
 }
 
+export async function loadComments(postId) {
+  try {
+    return await fetchWithErrorHandling(`/api/posts/${postId}/comments/`);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function createComment({ content, postId }) {
   try {
     return await fetchWithErrorHandling(`/api/posts/${postId}/comments/`, {
