@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { toast } from "sonner";
 import { createComment, queryClient } from "../../utils/http";
-import TextArea from "./TextArea";
+import CommentInput from "./CommentInput";
 
 export default function CommentForm() {
   const params = useParams();
@@ -37,7 +37,7 @@ export default function CommentForm() {
   }
   return (
     <form onSubmit={handleCommentCreation} method="post">
-      <TextArea isPending={isPending} isSuccess={isSuccess} />
+      <CommentInput isPending={isPending} isSuccess={isSuccess} />
     </form>
   );
 }

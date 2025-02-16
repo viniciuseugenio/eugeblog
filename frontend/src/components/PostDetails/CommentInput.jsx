@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function TextArea({ isPending, isSuccess }) {
+export default function CommentInput({ isPending, isSuccess }) {
   const textArea = useRef();
   const [value, setValue] = useState("");
 
