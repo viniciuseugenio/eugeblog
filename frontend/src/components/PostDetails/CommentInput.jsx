@@ -4,6 +4,12 @@ export default function CommentInput({ isPending, isSuccess }) {
   const textArea = useRef();
   const [value, setValue] = useState("");
 
+  useEffect(() => {
+    if (isSuccess && value) {
+      setValue("");
+    }
+  }, [isSuccess, value]);
+
   function handleChange(event) {
     setValue(event.target.value);
   }
