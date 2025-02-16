@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
+import { useAuthContext } from "../../store/auth-context.jsx";
 import { createComment, queryClient } from "../../utils/http";
 import CommentInput from "./CommentInput";
 
 export default function CommentForm() {
-  const params = useParams();
-  const postId = params.id;
+  const { id: postId } = useParams();
+  const { isLogged } = useAuthContext();
 
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: createComment,
@@ -35,9 +36,26 @@ export default function CommentForm() {
 
     mutate({ content, postId });
   }
-  return (
-    <form onSubmit={handleCommentCreation} method="post">
-      <CommentInput isPending={isPending} isSuccess={isSuccess} />
-    </form>
-  );
+
+  if (isLogged) {
+    return (
+      <form onSubmit={handleCommentCreation} method="post">
+        <CommentInput isPending={isPending} isSuccess={isSuccess} />
+      </form>
+    );
+  } else {
+    return (
+      <p className="mb-6">
+        Any thoughts on this?&nbsp;
+        <Link
+          className="text-primary font-bold underline"
+          to={`/login?next=/post/${postId}`}
+          aria-label="Log in to share your thoughts on this post"
+        >
+          Log in
+        </Link>
+        &nbsp;and share them with us!
+      </p>
+    );
+  }
 }
