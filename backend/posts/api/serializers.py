@@ -1,5 +1,6 @@
 from posts.models import Post, Comment, Category
 from rest_framework import serializers
+from accounts.api.serializers import UserCommentDetailsSerializer
 
 
 class AuthorFullnameField(serializers.Field):
@@ -58,11 +59,11 @@ class PostCreationSerializer(serializers.ModelSerializer):
 
 
 class CommentDetailsSerializer(serializers.ModelSerializer):
+    author = UserCommentDetailsSerializer()
+
     class Meta:
         model = Comment
         fields = ["id", "author", "content", "created_at"]
-
-    author = AuthorFullnameField()
 
 
 class PostDetailsSerializer(PostBaseSerializer):
