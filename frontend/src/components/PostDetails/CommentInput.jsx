@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function CommentInput({ isPending, isSuccess }) {
+export default function CommentInput({ isPending, isSuccess, mutationReset }) {
   const textArea = useRef();
   const [value, setValue] = useState("");
 
   useEffect(() => {
     if (isSuccess && value) {
       setValue("");
+      mutationReset();
     }
-  }, [isSuccess, value]);
+  }, [isSuccess, value, mutationReset]);
 
   function handleChange(event) {
     setValue(event.target.value);

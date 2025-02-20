@@ -9,7 +9,7 @@ export default function CommentForm() {
   const { id: postId } = useParams();
   const { isLogged } = useAuthContext();
 
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, isPending, isSuccess, reset } = useMutation({
     mutationFn: createComment,
     onSuccess: () => {
       toast.success("Comment posted successfully.");
@@ -40,7 +40,11 @@ export default function CommentForm() {
   if (isLogged) {
     return (
       <form onSubmit={handleCommentCreation} method="post">
-        <CommentInput isPending={isPending} isSuccess={isSuccess} />
+        <CommentInput
+          isPending={isPending}
+          isSuccess={isSuccess}
+          mutationReset={reset}
+        />
       </form>
     );
   } else {
