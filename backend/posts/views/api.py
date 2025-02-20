@@ -205,7 +205,7 @@ class PostViewSet(viewsets.ModelViewSet):
         post = self.get_object()
 
         if request.method == "GET":
-            comments = Comment.objects.filter(post=post)
+            comments = Comment.objects.filter(post=post).order_by("-id")
             serializer = CommentDetailsSerializer(comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
