@@ -9,9 +9,15 @@ export default function Comment({ comment }) {
 
   const { userId } = useAuthContext();
   const isAuthor = userId === comment.author.id;
+  const columns = isAuthor
+    ? "grid-cols-[2.4rem_1fr_2.6rem]"
+    : "grid-cols-[2.4rem_1fr]";
+
 
   return (
-    <div className="hover:bg-light/40 group relative grid grid-cols-[2.4rem_1fr] grid-rows-[1.6rem_1fr] rounded-md px-2 py-1 duration-300">
+    <div
+      className={`hover:bg-light/40 group grid ${columns} grid-rows-[1.6rem_1fr] rounded-md px-2 py-1 duration-300`}
+    >
       <span className="row-span-2 self-start p-1">
         <CircleUser />
       </span>
@@ -19,11 +25,11 @@ export default function Comment({ comment }) {
         <span className="font-semibold">{authorName}</span>
         &mdash; {createdAt}
       </div>
-      <p className="max-w-3xl self-start hyphens-auto break-words">
+      <p className="order-2 max-w-3xl self-start hyphens-auto break-words">
         {comment.content}
       </p>
       {isAuthor && (
-        <div className="invisible absolute right-3 top-1/2 -translate-y-1/2 scale-0 opacity-0 duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100">
+        <div className="invisible row-span-2 ml-1 scale-0 self-center opacity-0 duration-300 group-hover:visible group-hover:scale-100 group-hover:opacity-100">
           <CommentDeleteButton commentId={comment.id} />
         </div>
       )}
