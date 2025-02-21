@@ -142,6 +142,19 @@ export async function createComment({ content, postId }) {
   }
 }
 
+export async function deleteComment({ postId, commentId }) {
+  try {
+    return await fetchWithErrorHandling(
+      `/api/posts/${postId}/comments/${commentId}/`,
+      {
+        method: "DELETE",
+      },
+    );
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function fetchCategories() {
   try {
     return await fetchWithErrorHandling("/api/posts/categories/");

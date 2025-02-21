@@ -5,7 +5,7 @@ from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotAuthenticated, NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied, NotAuthenticated
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -224,6 +224,22 @@ class PostViewSet(viewsets.ModelViewSet):
 
             Comment.objects.create(post=post, author=user, content=content)
             return Response("Comment created!", status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["DELETE"], url_path="comments/(?P<comment_id>[0-9]+)")
+    def delete_comment(self, request, pk=None, comment_id=None):
+        post = self.get_object()
+        user = request.user
+
+        try:
+            comment = Comment.objects.get(post=post, author=user, pk=comment_id)
+        except Comment.DoesNotExist:
+            return NotFound("This comment does not exist or was already deleted.")
+
+        if comment.author != user:
+            raise PermissionDenied("You are not allowed to delete this comment.")
+
+        comment.delete()
+        return Response("Comment deleted successfully!", status=status.HTTP_200_OK)
 
     def _get_post_context(self, post, user):
         is_bookmarked = False
