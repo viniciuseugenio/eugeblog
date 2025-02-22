@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { fetchCategories } from "../../utils/http";
+import { fetchCategories } from "../../utils/api";
 
 export default function SelectCategory({ value, name, id }) {
   const { data, isPending } = useQuery({

@@ -8,7 +8,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useAuthContext } from "../store/auth-context";
 import { useAuthCheck, useSocialErrorDisplay } from "../utils/hooks";
-import { loginUser, queryClient } from "../utils/http";
+import { loginUser, queryClient } from "../utils/api";
 
 export default function LoginPage() {
   useSocialErrorDisplay();

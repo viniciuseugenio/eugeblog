@@ -14,7 +14,7 @@ import PostReviewDetailsPage from "./pages/PostReviewDetails.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RootPage from "./pages/Root";
 import SignupPage from "./pages/Signup";
-import { queryClient } from "./utils/http";
+import { queryClient } from "./utils/api";
 import PasswordResetSentPage from "./pages/PasswordResetSent.jsx";
 import PasswordResetPage from "./pages/ResetPassword.jsx";
 

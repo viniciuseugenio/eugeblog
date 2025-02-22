@@ -1,4 +1,4 @@
-import { fetchBookmarks } from "../../utils/http";
+import { fetchBookmarks } from "../../utils/api";
 import { useAuthContext } from "../../store/auth-context";
 import DropdownList from "./DropdownList";
 

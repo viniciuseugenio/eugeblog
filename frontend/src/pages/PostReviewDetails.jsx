@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { loadPostReview } from "../utils/http";
+import { loadPostReview } from "../utils/api";
 import PostDetailsBase from "../components/PostDetails/PostDetailsBase";
 
 export default function PostReviewDetailsPage() {

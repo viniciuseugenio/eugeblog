@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 import { useContext, useRef } from "react";
 import { toast } from "sonner";
-import { deleteComment, queryClient } from "../../utils/http/";
+import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
 

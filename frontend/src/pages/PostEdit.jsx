@@ -6,7 +6,7 @@ import {
   editPost,
   loadPendingAndPublishedPost,
   queryClient,
-} from "../utils/http";
+} from "../utils/api";
 import { invalidatePostListQueries } from "../utils/query";
 
 export default function PostEditPage() {

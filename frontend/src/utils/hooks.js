@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useAuthContext } from "../store/auth-context";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { performLogout, isUserAuthenticated, queryClient } from "./http";
+import { performLogout, isUserAuthenticated, queryClient } from "./api";
 
 export function useSocialErrorDisplay() {
   const location = useLocation();

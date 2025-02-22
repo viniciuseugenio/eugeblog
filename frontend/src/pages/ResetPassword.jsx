@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import { useAuthCheck } from "../utils/hooks";
-import { resetPassword } from "../utils/http";
+import { resetPassword } from "../utils/api";
 import { Key } from "lucide-react";
 
 export default function PasswordResetPage() {

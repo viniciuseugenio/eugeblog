@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 import { useAuthContext } from "../../store/auth-context.jsx";
-import { createComment, queryClient } from "../../utils/http";
+import { createComment, queryClient } from "../../utils/api/index.js";
 import CommentInput from "./CommentInput";
 
 export default function CommentForm() {

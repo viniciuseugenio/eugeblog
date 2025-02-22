@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import PostItem from "./PostDetails/PostItem";
 import Pagination from "./Pagination/Pagination.jsx";
-import { loadPosts } from "../utils/http";
+import { loadPosts } from "../utils/api";
 import BaseError from "./BaseError.jsx";
 import { useSearchParams } from "react-router";
 

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
-import { requestPasswordReset } from "../utils/http";
+import { requestPasswordReset } from "../utils/api";
 import { Key } from "lucide-react";
 
 export default function ForgotPasswordPage() {

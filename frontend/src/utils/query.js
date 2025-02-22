@@ -1,4 +1,4 @@
-import { queryClient } from "./http";
+import { queryClient } from "./api";
 
 export function invalidatePostListQueries() {
   queryClient.invalidateQueries({

@@ -1,4 +1,4 @@
-import { addBookmark } from "../../utils/http";
+import { addBookmark } from "../../utils/api";
 import BookmarkBtn from "./BookmarkBtn";
 import { toast } from "sonner";
 import { BookmarkPlus } from "lucide-react";

@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { removeBookmark } from "../../utils/http";
+import { removeBookmark } from "../../utils/api";
 import BookmarkBtn from "./BookmarkBtn";
 import { BookmarkMinus } from "lucide-react";
 

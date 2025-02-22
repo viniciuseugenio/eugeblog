@@ -2,7 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert } from "lucide-react";
 import { useParams } from "react-router";
-import { loadComments } from "../../utils/http";
+import { loadComments } from "../../utils/api/index.js";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm.jsx";
 import CommentsCount from "./CommentsCount.jsx";

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import PostFormBase from "../components/PostForm/PostFormBase";
 import { useAuthCheck } from "../utils/hooks";
-import { createPost } from "../utils/http";
+import { createPost } from "../utils/api";
 
 export default function PostCreationPage() {
   const navigate = useNavigate();

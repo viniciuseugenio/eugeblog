@@ -1,5 +1,5 @@
 import { useAuthContext } from "../../store/auth-context";
-import { fetchUserPosts } from "../../utils/http";
+import { fetchUserPosts } from "../../utils/api";
 import DropdownList from "./DropdownList";
 
 export default function UserPostsDropdown() {

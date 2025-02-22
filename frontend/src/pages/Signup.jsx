@@ -7,7 +7,7 @@ import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useAuthCheck } from "../utils/hooks";
-import { signUser } from "../utils/http";
+import { signUser } from "../utils/api";
 import { validateSignupData } from "../utils/validators";
 
 export default function SignupPage() {

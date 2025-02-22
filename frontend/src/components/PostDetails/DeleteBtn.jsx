@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { deletePost, queryClient } from "../../utils/http";
+import { deletePost, queryClient } from "../../utils/api";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
