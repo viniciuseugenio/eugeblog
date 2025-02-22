@@ -1,4 +1,4 @@
-export * from "./post.js";
+export * from "./posts";
 export * from "./bookmarks.js";
 export * from "./auth.js";
 
