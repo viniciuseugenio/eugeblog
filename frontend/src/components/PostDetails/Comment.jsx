@@ -19,7 +19,7 @@ export default function Comment({ comment }) {
   return (
     <div
       tabIndex={0}
-      className={`hover:bg-light/40 group grid ${columns} grid-rows-[1.6rem_1fr] rounded-md px-2 py-1 duration-300`}
+      className={`hover:bg-light/40 focus:bg-light/40 group grid ${columns} grid-rows-[1.6rem_1fr] rounded-md px-2 py-1 duration-300`}
     >
       <span className="row-span-2 self-start p-1">
         <CircleUser />
