@@ -16,9 +16,7 @@ export default function ApproveBtn({ buttonClasses }) {
   const { mutate } = useMutation({
     mutationFn: acceptPostReview,
     onSuccess: () => {
-      toast.success("This post was successfully approved.", {
-        id: "approve-success",
-      });
+      toast.success("This post was successfully approved.");
 
       // Remove the post details from the pending cache, since it is now published
       queryClient.removeQueries(["pendingPosts", postId]);
@@ -29,9 +27,7 @@ export default function ApproveBtn({ buttonClasses }) {
       navigate("/");
     },
     onError: (error) => {
-      toast.error(error.message, {
-        id: "approve-error",
-      });
+      toast.error(error.message);
     },
   });
 
