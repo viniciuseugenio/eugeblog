@@ -121,11 +121,8 @@ class PostViewSet(viewsets.ModelViewSet):
                 {"detail": "No changes were made."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        data = request.data.copy()
-        data["category"] = str(data.get("category", [None])[0])
-
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
 
         if not serializer.is_valid():
             return Response(
