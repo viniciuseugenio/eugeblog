@@ -1,8 +1,11 @@
 import { fetchWithErrorHandling } from "..";
+import { buildApiUrl } from "../helpers";
+import { API_ENDPOINTS } from "../constants";
 
 export async function loadComments(postId) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/${postId}/comments/`);
+    const url = buildApiUrl(API_ENDPOINTS.COMMENTS, { postId });
+    return await fetchWithErrorHandling(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -10,7 +13,8 @@ export async function loadComments(postId) {
 
 export async function createComment({ content, postId }) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/${postId}/comments/`, {
+    const url = buildApiUrl(API_ENDPOINTS.COMMENTS, { postId });
+    return await fetchWithErrorHandling(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,12 +28,10 @@ export async function createComment({ content, postId }) {
 
 export async function deleteComment({ postId, commentId }) {
   try {
-    return await fetchWithErrorHandling(
-      `/api/posts/${postId}/comments/${commentId}/`,
-      {
-        method: "DELETE",
-      },
-    );
+    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { postId, commentId });
+    return await fetchWithErrorHandling(url, {
+      method: "DELETE",
+    });
   } catch (error) {
     throw new Error(error.message);
   }

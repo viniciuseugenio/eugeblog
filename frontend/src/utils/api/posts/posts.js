@@ -1,9 +1,11 @@
 import { fetchWithErrorHandling } from "..";
+import { API_ENDPOINTS } from "../constants";
+import { buildApiUrl } from "../helpers"; //
 
 export async function createPost(postData) {
   try {
     return await fetchWithErrorHandling(
-      `api/posts/`,
+      API_ENDPOINTS.POSTS,
       {
         method: "POST",
         body: postData,
@@ -17,7 +19,7 @@ export async function createPost(postData) {
 
 export async function fetchUserPosts(page) {
   try {
-    let url = `/api/posts/user/`;
+    let url = API_ENDPOINTS.USER_POSTS;
 
     if (page > 1) {
       url += `?page=${page}`;
@@ -31,7 +33,7 @@ export async function fetchUserPosts(page) {
 
 export async function loadPosts({ currentPage, search }) {
   try {
-    let url = "/api/posts/";
+    let url = API_ENDPOINTS.POSTS;
 
     if (currentPage > 1) {
       url += `?page=${currentPage}`;
@@ -50,7 +52,8 @@ export async function loadPosts({ currentPage, search }) {
 
 export async function loadPost(id) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/${id}/`);
+    const url = buildApiUrl(API_ENDPOINTS.POST, { postId: id });
+    return await fetchWithErrorHandling(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -62,8 +65,9 @@ export async function editPost({ postId, formData }) {
   }
 
   try {
+    const url = buildApiUrl(API_ENDPOINTS.POST, { postId });
     return await fetchWithErrorHandling(
-      `/api/posts/${postId}/`,
+      url,
       {
         method: "PATCH",
         body: formData,
@@ -75,9 +79,10 @@ export async function editPost({ postId, formData }) {
   }
 }
 
-export async function deletePost(id) {
+export async function deletePost(postId) {
   try {
-    return await fetchWithErrorHandling(`/api/posts/${id}/`, {
+    const url = buildApiUrl(API_ENDPOINTS.POST, { postId });
+    return await fetchWithErrorHandling(url, {
       method: "DELETE",
     });
   } catch (error) {

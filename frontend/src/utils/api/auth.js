@@ -1,12 +1,10 @@
 import { fetchWithErrorHandling } from ".";
-
-const UNEXPECTED_ERROR = "An unexpected error occurred. Please, try again.";
-const { VITE_BASE_BACKEND_URL } = import.meta.env;
+import { BACKEND_URL, UNEXPECTED_ERROR, API_ENDPOINTS } from "./constants";
 
 async function refreshToken() {
   try {
     const response = await fetch(
-      `${VITE_BASE_BACKEND_URL}/api/token/refresh/`,
+      `${BACKEND_URL}${API_ENDPOINTS.TOKEN_REFRESH}`,
       {
         method: "POST",
         credentials: "include",
@@ -22,10 +20,13 @@ async function refreshToken() {
 
 async function verifyToken() {
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}/api/token/verify/`, {
-      method: "POST",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${BACKEND_URL}${API_ENDPOINTS.TOKEN_VERIFY}`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
 
     if (!response.ok) {
       return null;
@@ -68,7 +69,7 @@ export async function loginUser(formData) {
   const remember = formData.get("remember");
 
   try {
-    return await fetchWithErrorHandling("/api/token/", {
+    return await fetchWithErrorHandling(API_ENDPOINTS.LOGIN, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +84,7 @@ export async function loginUser(formData) {
 export async function signUser(formData) {
   try {
     return await fetchWithErrorHandling(
-      "/api/accounts/signup/",
+      API_ENDPOINTS["SIGNUP"],
       {
         method: "POST",
         headers: {
@@ -100,7 +101,7 @@ export async function signUser(formData) {
 
 export async function performLogout() {
   try {
-    return await fetchWithErrorHandling("/api/accounts/logout/", {
+    return await fetchWithErrorHandling(API_ENDPOINTS.LOGOUT, {
       method: "POST",
     });
   } catch (error) {
@@ -110,7 +111,7 @@ export async function performLogout() {
 
 export async function requestPasswordReset(email) {
   try {
-    return await fetchWithErrorHandling("/api/accounts/password-reset/", {
+    return await fetchWithErrorHandling(API_ENDPOINTS.PASSWORD_RESET, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -125,7 +126,7 @@ export async function requestPasswordReset(email) {
 export async function resetPassword({ uid, token, formData }) {
   try {
     return await fetchWithErrorHandling(
-      `/api/accounts/password-reset/set/${uid}/${token}/`,
+      `${API_ENDPOINTS.PASSWORD_RESET_SET}${uid}/${token}/`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

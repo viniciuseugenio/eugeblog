@@ -5,8 +5,7 @@ export * from "./auth.js";
 import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
 
-const { VITE_BASE_BACKEND_URL } = import.meta.env;
-const UNEXPECTED_ERROR = "An unexpected error occurred. Please, try again.";
+import { BACKEND_URL, UNEXPECTED_ERROR } from "./constants";
 
 /**
  * Helper function to handle fetch requests with consistent error handling.
@@ -22,7 +21,7 @@ export async function fetchWithErrorHandling(
   ignore400 = false,
 ) {
   try {
-    const response = await fetch(`${VITE_BASE_BACKEND_URL}${url}`, {
+    const response = await fetch(`${BACKEND_URL}${url}`, {
       ...options,
       credentials: "include",
     });
