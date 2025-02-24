@@ -26,6 +26,12 @@ export default function PostEditPage() {
   } = useMutation({
     mutationFn: editPost,
     onSuccess: (successData) => {
+      if (successData?.id === "no-changes") {
+        toast.info(successData.detail);
+        navigate(`/post/${postId}`);
+        return;
+      }
+
       if (successData.errors) {
         toast.error(
           "There was an error with your submission. Check all the fields.",

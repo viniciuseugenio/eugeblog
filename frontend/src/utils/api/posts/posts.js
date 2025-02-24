@@ -61,7 +61,7 @@ export async function loadPost(id) {
 
 export async function editPost({ postId, formData }) {
   if (Array.from(formData.entries()).length === 0) {
-    return { detail: "No changes were made." };
+    return { detail: "No changes were made.", id: "no-changes" };
   }
 
   try {
