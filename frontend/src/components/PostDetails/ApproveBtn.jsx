@@ -41,7 +41,7 @@ export default function ApproveBtn({ buttonClasses }) {
         ref={modal}
         title="This post will be published!"
         mutateFn={() => mutate(postId)}
-        icon="checkmark-circle-outline"
+        Icon={CircleCheckBig}
         iconColor="text-green-800"
         confirmBtnClasses="ring-300 bg-green-200 text-green-950 shadow-md ring-1 hover:bg-green-300"
       >

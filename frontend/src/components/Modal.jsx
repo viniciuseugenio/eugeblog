@@ -20,17 +20,20 @@ const Modal = forwardRef(function Modal(
     children,
     title,
     mutateFn,
-    icon = <TriangleAlert size={72} color="#c01c28" />,
+    Icon = TriangleAlert,
+    iconColor = "text-red-600",
     confirmBtnClasses,
   },
   ref,
 ) {
   return createPortal(
     <dialog ref={ref} className="max-w-2xl rounded-lg px-12 py-8 text-center">
-      <span className="mb-6 flex w-full items-center justify-center">
-        {icon}
+      <span
+        className={`${iconColor} mb-6 flex w-full  items-center justify-center`}
+      >
+        <Icon size={84} />
       </span>
-      <h2 className="text-primary mb-6 text-4xl">{title}</h2>
+      <h2 className="text-primary mb-6 text-4xl font-medium">{title}</h2>
       <p className="mb-6">{children}</p>
       <div className="flex justify-end gap-3">
         <form method="dialog">

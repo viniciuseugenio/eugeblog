@@ -41,7 +41,6 @@ export default function DeleteBtn({ buttonClasses }) {
       <Modal
         ref={modal}
         title="Are you sure of this?"
-        iconColor="text-red-600"
         confirmBtnClasses="bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:bg-red-300 hover:ring-red-400"
         mutateFn={() => mutate(postId)}
       >
