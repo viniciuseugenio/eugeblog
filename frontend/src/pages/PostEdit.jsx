@@ -29,9 +29,6 @@ export default function PostEditPage() {
       if (successData.errors) {
         toast.error(
           "There was an error with your submission. Check all the fields.",
-          {
-            id: "edit-error",
-          },
         );
         return;
       }
@@ -47,7 +44,7 @@ export default function PostEditPage() {
       navigate(`/post/review/${postId}`);
     },
     onError: (error) => {
-      toast.error(error.message, { id: "edit-error" });
+      toast.error(error.message);
     },
   });
 
