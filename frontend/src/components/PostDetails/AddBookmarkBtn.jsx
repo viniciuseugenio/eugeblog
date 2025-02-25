@@ -1,7 +1,7 @@
+import { Bookmark } from "lucide-react";
+import { toast } from "sonner";
 import { addBookmark } from "../../utils/api";
 import BookmarkBtn from "./BookmarkBtn";
-import { toast } from "sonner";
-import { BookmarkPlus } from "lucide-react";
 
 export default function AddBookmarkBtn({ postId, setIsBookmarked }) {
   return (
@@ -12,7 +12,7 @@ export default function AddBookmarkBtn({ postId, setIsBookmarked }) {
       setIsBookmarked={() => setIsBookmarked(true)}
       authMessage="You have to be logged to bookmark a post."
       label="Bookmark"
-      Icon={BookmarkPlus}
+      icon=<Bookmark />
     />
   );
 }
