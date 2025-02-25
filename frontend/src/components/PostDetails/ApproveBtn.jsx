@@ -38,8 +38,6 @@ export default function ApproveBtn({ buttonClasses }) {
         title="This post will be published!"
         mutateFn={() => mutate(postId)}
         Icon={CircleCheckBig}
-        iconColor="text-green-800"
-        confirmBtnClasses="ring-300 bg-green-200 text-green-950 shadow-md ring-1 hover:bg-green-300"
       >
         Please review all post content before approving it. We wouldn&apos;t
         want our users reading inappropriate content.
@@ -47,7 +45,7 @@ export default function ApproveBtn({ buttonClasses }) {
 
       <button
         onClick={() => modal.current.showModal()}
-        className={`${buttonClasses} text-green-800 shadow-lg ring-1 ring-green-200 hover:bg-green-200 hover:ring-green-300`}
+        className={`${buttonClasses} text-green-800 shadow-lg ring-1 ring-green-300 hover:bg-green-200 hover:ring-green-300 active:bg-green-300`}
       >
         <CircleCheckBig size={14} />
         <span>Approve</span>

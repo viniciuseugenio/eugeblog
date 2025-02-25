@@ -41,7 +41,6 @@ export default function DeleteBtn({ buttonClasses }) {
       <Modal
         ref={modal}
         title="Are you sure of this?"
-        confirmBtnClasses="bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:bg-red-300 hover:ring-red-400"
         mutateFn={() => mutate(postId)}
       >
         This action is irreversible. After deletion, you will not be able to
@@ -50,7 +49,7 @@ export default function DeleteBtn({ buttonClasses }) {
 
       <button
         onClick={() => modal.current.showModal()}
-        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:bg-red-200 hover:ring-red-300`}
+        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:bg-red-200 active:bg-red-300`}
       >
         <Trash2 size={14} />
         <span>Delete</span>

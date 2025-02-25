@@ -26,7 +26,6 @@ export default function CommentDeleteButton({ commentId }) {
   return (
     <>
       <Modal
-        confirmBtnClasses="bg-red-200 text-red-950 shadow-md ring-1 ring-red-300 hover:bg-red-300 hover:ring-red-400"
         ref={modal}
         title="This comment will be deleted."
         mutateFn={() => mutate({ postId, commentId })}

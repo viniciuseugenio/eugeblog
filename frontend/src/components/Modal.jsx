@@ -16,33 +16,24 @@ import { TriangleAlert } from "lucide-react";
  * @returns {React.ReactPortal} A React Portal containing the modal dialog.
  */
 const Modal = forwardRef(function Modal(
-  {
-    children,
-    title,
-    mutateFn,
-    Icon = TriangleAlert,
-    iconColor = "text-red-600",
-    confirmBtnClasses,
-  },
+  { children, title, mutateFn, Icon = TriangleAlert },
   ref,
 ) {
   return createPortal(
     <dialog ref={ref} className="max-w-2xl rounded-lg px-12 py-8 text-center">
-      <span
-        className={`${iconColor} mb-6 flex w-full  items-center justify-center`}
-      >
+      <span className="mb-6 flex w-full items-center  justify-center text-yellow-500">
         <Icon size={84} />
       </span>
       <h2 className="text-primary mb-6 text-4xl font-medium">{title}</h2>
       <p className="mb-6">{children}</p>
       <div className="flex justify-end gap-3">
         <form method="dialog">
-          <button className="cursor-pointer rounded-lg px-3 py-1 ring-1 ring-slate-300 duration-300 hover:bg-slate-200 hover:shadow-lg hover:ring-slate-200">
+          <button className="cursor-pointer rounded-lg px-3 py-1 ring-1 ring-stone-300 duration-300 hover:bg-stone-200 hover:shadow-lg active:bg-stone-300">
             Cancel
           </button>
         </form>
         <button
-          className={`cursor-pointer rounded-lg px-3 py-1 duration-300 ${confirmBtnClasses} hover:shadow-lg`}
+          className="cursor-pointer rounded-lg bg-yellow-200 px-3 py-1 text-yellow-950 shadow-md ring-1 ring-yellow-300 duration-300 hover:bg-yellow-300 hover:shadow-lg active:bg-amber-400"
           onClick={mutateFn}
         >
           I am sure
