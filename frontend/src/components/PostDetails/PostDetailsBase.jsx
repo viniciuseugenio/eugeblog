@@ -67,8 +67,11 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
     <PostDetailsContext.Provider value={contextValue}>
       <div className="flex flex-grow flex-col items-center justify-center py-24">
         <div className="max-w-[52rem]">
-          {isPending && <CircularProgress size="3rem" color="#493628" />}
-          {data && <PostDetails post={data.post} />}
+          {isPending ? (
+            <CircularProgress size="3rem" color="#493628" />
+          ) : (
+            data && <PostDetails post={data.post} />
+          )}
         </div>
       </div>
     </PostDetailsContext.Provider>
