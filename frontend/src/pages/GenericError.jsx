@@ -10,7 +10,7 @@ export default function GenericError({ layout }) {
   return (
     <>
       {layout && <MainHeader />}
-      <BaseError title="Page not found" status={404}>
+      <BaseError title="We couldn't load this page" status={404}>
         Sorry, we couldn&apos;t find the page you were looking for.
       </BaseError>
       {layout && <Footer />}
