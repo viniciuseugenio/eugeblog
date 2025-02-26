@@ -61,7 +61,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: performLogout,
     onSuccess: () => {
-      toast.warning("You logged out successfuly.", {
+      toast.info("You have been logged out.", {
         id: "logout-message",
       });
 
