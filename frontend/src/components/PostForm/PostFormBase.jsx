@@ -96,11 +96,9 @@ export default function PostFormBase({
             <button
               onClick={() => window.history.back()}
               type="reset"
-              className="group flex rounded-md px-8 py-2 text-red-800 ring-1 ring-inset ring-red-300 duration-300 hover:bg-red-200 hover:ring-red-300"
+              className="grow-0 rounded-md px-10 py-1 text-red-800 ring-1 ring-inset ring-red-300 duration-300 hover:bg-red-200 hover:ring-red-300 active:bg-red-300"
             >
-              <span className="duration-300 ease-out group-hover:scale-110">
-                Cancel
-              </span>
+              Cancel
             </button>
 
             <PrimaryButton

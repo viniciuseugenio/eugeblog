@@ -25,7 +25,7 @@ export default function PostItem({ post }) {
           </p>
           <p className="line-clamp-3 text-sm">{post.excerpt}</p>
         </header>
-        <div className="hover:bg-accent/50 mt-auto flex items-center justify-center self-end rounded-md px-3 py-1 font-medium duration-300">
+        <div className="hover:bg-accent/50 active:bg-accent mt-auto flex items-center justify-center self-end rounded-md px-3 py-1 font-medium duration-300">
           <Link
             to={`/post/${post.id}`}
             className="flex items-center justify-center"

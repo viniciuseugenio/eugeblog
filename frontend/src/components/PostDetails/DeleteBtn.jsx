@@ -49,7 +49,7 @@ export default function DeleteBtn({ buttonClasses }) {
 
       <button
         onClick={() => modal.current.showModal()}
-        className={`${buttonClasses} text-red-800 ring-1 ring-red-300 hover:bg-red-200 active:bg-red-300`}
+        className={`${buttonClasses} text-red-800 ring-red-300 hover:bg-red-200 active:bg-red-300`}
       >
         <Trash2 size={14} />
         <span>Delete</span>
