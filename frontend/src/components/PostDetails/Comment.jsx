@@ -1,7 +1,9 @@
 import { CircleUser } from "lucide-react";
+import { useState } from "react";
 import { useAuthContext } from "../../store/auth-context";
 import { formatDate } from "../../utils/helpers";
-import CommentDeleteButton from "./CommentDeleteButton";
+import CommentEditor from "./CommentEditor";
+import CommentView from "./CommentView";
 
 export default function Comment({ comment }) {
   const createdAt = formatDate(comment.created_at);
@@ -10,8 +12,10 @@ export default function Comment({ comment }) {
   const { userId } = useAuthContext();
   const isAuthor = userId === comment.author.id;
 
-  const deleteButtonStates =
+  const actionStates =
     "group-focus-within:visible group-focus-within:scale-100 group-focus-within:opacity-100 group-hover:visible group-hover:scale-100 group-hover:opacity-100";
+
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div
@@ -25,15 +29,20 @@ export default function Comment({ comment }) {
         <span className="font-semibold">{authorName}</span>
         &mdash; {createdAt}
       </div>
-      <p className="order-2 max-w-3xl self-start hyphens-auto break-words">
-        {comment.content}
-      </p>
-      {isAuthor && (
-        <div
-          className={`invisible row-span-2 ml-1 scale-0 self-center opacity-0 duration-300 ${deleteButtonStates}`}
-        >
-          <CommentDeleteButton commentId={comment.id} />
-        </div>
+
+      {isEditing ? (
+        <CommentEditor
+          comment={comment}
+          setIsEditing={setIsEditing}
+          actionStates={actionStates}
+        />
+      ) : (
+        <CommentView
+          comment={comment}
+          actionStates={actionStates}
+          setIsEditing={setIsEditing}
+          isAuthor={isAuthor}
+        />
       )}
     </div>
   );
