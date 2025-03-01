@@ -9,9 +9,6 @@ export default function Comment({ comment }) {
 
   const { userId } = useAuthContext();
   const isAuthor = userId === comment.author.id;
-  const columns = isAuthor
-    ? "grid-cols-[2.4rem_1fr_2.6rem]"
-    : "grid-cols-[2.4rem_1fr]";
 
   const deleteButtonStates =
     "group-focus-within:visible group-focus-within:scale-100 group-focus-within:opacity-100 group-hover:visible group-hover:scale-100 group-hover:opacity-100";
@@ -19,9 +16,9 @@ export default function Comment({ comment }) {
   return (
     <div
       tabIndex={0}
-      className={`hover:bg-light/40 focus:bg-light/40 group grid ${columns} grid-rows-[1.6rem_1fr] rounded-md px-2 py-1 duration-300`}
+      className="hover:bg-light/40 focus:bg-light/40 group grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] rounded-md px-2 py-1 duration-300"
     >
-      <span className="row-span-2 self-start p-1">
+      <span className="row-span-2 mr-2 self-start p-1">
         <CircleUser />
       </span>
       <div className="flex gap-1 self-start">
