@@ -26,6 +26,25 @@ export async function createComment({ content, postId }) {
   }
 }
 
+export async function updateComment({ content, postId, commentId }) {
+  try {
+    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { postId, commentId });
+    return await fetchWithErrorHandling(
+      url,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      },
+      true,
+    );
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function deleteComment({ postId, commentId }) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.COMMENT, { postId, commentId });

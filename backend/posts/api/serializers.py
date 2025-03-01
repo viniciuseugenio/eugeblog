@@ -77,3 +77,11 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "content"]
+
+    def validate_content(self, value):
+        if not value or len(value.strip()) < 5:
+            raise serializers.ValidationError(
+                "This comment is too short! It must have at least 10 characters."
+            )
+
+        return value

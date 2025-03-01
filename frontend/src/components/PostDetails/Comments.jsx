@@ -12,8 +12,7 @@ export default function Comments() {
 
   const { data, isPending, isError } = useQuery({
     queryFn: () => loadComments(postId),
-    queryKey: ["comments", postId],
-    retry: 1,
+    queryKey: ["comments", +postId],
   });
 
   if (isError) {

@@ -44,7 +44,11 @@ class JWTCustomAuthentication(BaseAuthentication):
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
 
-            user = User.objects.get(id=refresh.payload["user_id"])
+            user_id = refresh.payload.get("user_id")
+            if not user_id:
+                return (AnonymousUser(), None)
+
+            user = User.objects.get(id=user_id)
             return (user, {"access": access_token, "refresh": str(refresh)})
 
         except jwt.InvalidTokenError:
