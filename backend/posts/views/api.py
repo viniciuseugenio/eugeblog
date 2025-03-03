@@ -250,14 +250,16 @@ class PostViewSet(viewsets.ModelViewSet):
             )
 
     def _get_post_context(self, post, user):
-        is_bookmarked = False
-        is_reviewer = False
-        is_owner = False
+        if not user.is_authenticated:
+            return {
+                "is_bookmarked": False,
+                "is_owner": False,
+                "is_reviewer": False,
+            }
 
-        if user.is_authenticated:
-            is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
-            is_owner = post.author == user
-            is_reviewer = user.groups.filter(name="post_reviewer").exists()
+        is_bookmarked = Bookmarks.objects.filter(post=post, user=user).exists()
+        is_owner = post.author == user
+        is_reviewer = user.groups.filter(name="post_reviewer").exists()
 
         return {
             "is_bookmarked": is_bookmarked,
