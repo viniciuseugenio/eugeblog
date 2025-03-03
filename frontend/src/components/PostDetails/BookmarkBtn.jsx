@@ -40,7 +40,7 @@ export default function BookmarkBtn({
     <div className="group relative flex items-center justify-center">
       <button
         onClick={handleClick}
-        className="text-primary active:bg-accent flex items-center gap-1 rounded-md p-2 duration-300 ease-out hover:bg-[#e2d3ca]"
+        className="text-primary active:bg-accent flex items-center gap-1 rounded-full p-2 duration-300 ease-out hover:bg-[#e2d3ca]"
         aria-label={label}
       >
         {icon}

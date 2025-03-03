@@ -11,7 +11,7 @@ export default function RemoveBookmarkBtn({ postId, setIsBookmarked }) {
       successToast={() => toast.info("This post was removed from bookmarks.")}
       setIsBookmarked={() => setIsBookmarked(false)}
       authMessage="You have to be logged to remove a bookmark."
-      icon={<Bookmark fill="#493628" />}
+      icon={<Bookmark size={20} fill="#493628" />}
       label="Remove bookmark"
     />
   );

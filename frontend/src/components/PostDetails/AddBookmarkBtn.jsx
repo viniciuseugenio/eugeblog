@@ -12,7 +12,7 @@ export default function AddBookmarkBtn({ postId, setIsBookmarked }) {
       setIsBookmarked={() => setIsBookmarked(true)}
       authMessage="You have to be logged to bookmark a post."
       label="Bookmark"
-      icon=<Bookmark />
+      icon=<Bookmark size={20} />
     />
   );
 }
