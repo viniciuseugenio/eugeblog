@@ -32,7 +32,6 @@ class CategoryList(generics.ListAPIView):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
     pagination_class = BaseListPagination
 
     def get_serializer_class(self):
@@ -46,15 +45,14 @@ class PostViewSet(viewsets.ModelViewSet):
         return serializers.get(self.action, PostDetailsSerializer)
 
     def get_queryset(self):
-        qs = super().get_queryset()
-
-        if self.action == "create":
-            return qs
+        queryset_mapping = {
+            "create": Post.objects.all(),
+            "list": Post.published.all(),
+        }
+        qs = queryset_mapping.get(self.action, Post.objects.none())
 
         if self.action == "list":
-            qs = qs.filter(is_published=True).order_by("-id")
             search = self.request.query_params.get("q")
-
             if search:
                 qs = qs.filter(
                     Q(title__icontains=search) | Q(excerpt__icontains=search)
@@ -77,19 +75,15 @@ class PostViewSet(viewsets.ModelViewSet):
         return action_permissions.get(self.action, [AllowAny()])
 
     def get_object(self):
-        try:
-            if self.action in ["update", "destroy", "partial_update"]:
-                parameters = {"pk": self.kwargs.get("pk")}
-            elif self.action in ["review", "accept_review"]:
-                parameters = {
-                    "pk": self.kwargs.get("pk"),
-                    "review_status": "P",
-                    "is_published": False,
-                }
-            else:
-                parameters = {"pk": self.kwargs.get("pk"), "is_published": True}
+        pk = self.kwargs.get("pk")
 
-            return Post.objects.get(**parameters)
+        try:
+            if self.action in ["review", "accept_review"]:
+                return Post.for_review.get(pk=pk)
+            elif self.action in ["update", "destroy", "partial_update"]:
+                return Post.objects.get(pk=pk)
+            else:
+                return Post.published.get(pk=pk)
         except Post.DoesNotExist:
             raise NotFound("This post does not exist or was deleted.")
 
@@ -162,12 +156,11 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["POST"], url_path="review/accept")
     def accept_review(self, request, pk=None):
-        post = Post.objects.filter(is_published=False, review_status="P", pk=pk)
-
-        if not post.exists():
+        try:
+            post = Post.for_review.get(pk=pk)
+        except Post.DoesNotExist:
             raise Http404("This post does not exist or was already reviewed.")
 
-        post = post.first()
         post.review_status = "A"
         post.is_published = True
         post.save()

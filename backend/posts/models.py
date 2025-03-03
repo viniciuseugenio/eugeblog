@@ -19,7 +19,21 @@ class Category(models.Model):
         return self.name
 
 
+class PublishedPostManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=True).order_by("-id")
+
+
+class ReviewPostManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(review_status="P", is_published=False)
+
+
 class Post(models.Model):
+    objects = models.Manager()
+    published = PublishedPostManager()
+    for_review = ReviewPostManager()
+
     author = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL, verbose_name=_("Author")
     )
