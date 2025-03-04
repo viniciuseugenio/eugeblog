@@ -34,7 +34,7 @@ export default function CommentInput({ isPending, isSuccess, mutationReset }) {
       />
 
       <div className="mb-6 flex justify-end">
-        <div className="invisible flex origin-center scale-0 transform gap-3 opacity-0 duration-300 ease-in-out group-focus-within/div:visible group-focus-within/div:scale-100 group-focus-within/div:opacity-100">
+        <div className="invisible flex origin-center scale-90 transform gap-3 opacity-0 duration-300 ease-in-out group-focus-within/div:visible group-focus-within/div:scale-100 group-focus-within/div:opacity-100">
           <button
             type="reset"
             onClick={() => {
