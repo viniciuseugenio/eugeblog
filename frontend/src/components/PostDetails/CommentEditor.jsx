@@ -90,7 +90,7 @@ export default function CommentEditor({
       </div>
 
       <div
-        className={`invisible row-span-2 ml-1 flex scale-0 place-self-end self-center opacity-0 duration-300 ${actionStates}`}
+        className={`invisible row-span-2 ml-1 flex scale-90 place-self-end self-center opacity-0 duration-300 ${actionStates}`}
       >
         <div className="flex gap-1">
           <button
