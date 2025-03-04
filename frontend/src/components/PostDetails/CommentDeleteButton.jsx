@@ -6,7 +6,7 @@ import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
-export default function CommentDeleteButton({ commentId }) {
+export default function CommentDeleteButton({ commentId, redButtonStyle }) {
   const modal = useRef();
   const { postId } = useContext(PostDetailsContext);
 
@@ -36,7 +36,7 @@ export default function CommentDeleteButton({ commentId }) {
       <button
         onClick={() => modal.current.showModal()}
         disabled={isPending}
-        className="flex items-center justify-center rounded-full p-2 text-red-500 duration-300 hover:bg-red-200 hover:text-red-700 active:scale-90"
+        className={redButtonStyle}
       >
         <Trash size={20} />
       </button>

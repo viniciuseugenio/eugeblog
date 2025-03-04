@@ -6,6 +6,8 @@ export default function CommentView({
   setIsEditing,
   actionStates,
   isAuthor,
+  blueButtonStyle,
+  redButtonStyle,
 }) {
   function handleEdit() {
     setIsEditing(true);
@@ -29,14 +31,14 @@ export default function CommentView({
       >
         {isAuthor && (
           <div className="flex gap-1">
-            <button
-              onClick={handleEdit}
-              className="rounded-full p-2 text-blue-600 duration-300 hover:bg-blue-200"
-            >
+            <button onClick={handleEdit} className={blueButtonStyle}>
               <SquarePen size={18} />
             </button>
 
-            <CommentDeleteButton commentId={comment.id} />
+            <CommentDeleteButton
+              commentId={comment.id}
+              redButtonStyle={redButtonStyle}
+            />
           </div>
         )}
       </div>

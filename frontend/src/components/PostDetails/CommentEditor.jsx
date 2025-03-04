@@ -6,7 +6,13 @@ import { queryClient } from "../../utils/api/index.js";
 import { updateComment } from "../../utils/api/posts/";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
-export default function CommentEditor({ comment, setIsEditing, actionStates }) {
+export default function CommentEditor({
+  comment,
+  setIsEditing,
+  actionStates,
+  blueButtonStyle,
+  redButtonStyle,
+}) {
   const { postId } = useContext(PostDetailsContext);
   const [commentValue, setCommentValue] = useState(comment.content);
   const textArea = useRef();
@@ -90,14 +96,14 @@ export default function CommentEditor({ comment, setIsEditing, actionStates }) {
           <button
             disabled={isPending}
             onClick={handleSave}
-            className="rounded-full p-2 text-blue-600 duration-300 hover:bg-blue-200"
+            className={blueButtonStyle}
             aria-label="Save changes"
           >
             <Save size={20} />
           </button>
           <button
             disabled={isPending}
-            className="rounded-full p-2 text-red-500 duration-300 hover:bg-red-200 hover:text-red-800"
+            className={redButtonStyle}
             onClick={() => setIsEditing(false)}
             aria-label="Cancel editing"
           >

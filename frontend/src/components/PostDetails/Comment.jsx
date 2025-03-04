@@ -15,6 +15,11 @@ export default function Comment({ comment }) {
   const actionStates =
     "group-focus-within:visible group-focus-within:scale-100 group-focus-within:opacity-100 group-hover:visible group-hover:scale-100 group-hover:opacity-100";
 
+  const blueButtonStyle =
+    "rounded-full p-2 text-blue-600 duration-300 hover:bg-blue-200 active:bg-blue-300";
+  const redButtonStyle =
+    "flex items-center justify-center rounded-full p-2 text-red-500 duration-300 hover:bg-red-200 hover:text-red-700 active:bg-red-300";
+
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -35,6 +40,8 @@ export default function Comment({ comment }) {
           comment={comment}
           setIsEditing={setIsEditing}
           actionStates={actionStates}
+          blueButtonStyle={blueButtonStyle}
+          redButtonStyle={redButtonStyle}
         />
       ) : (
         <CommentView
@@ -42,6 +49,8 @@ export default function Comment({ comment }) {
           actionStates={actionStates}
           setIsEditing={setIsEditing}
           isAuthor={isAuthor}
+          blueButtonStyle={blueButtonStyle}
+          redButtonStyle={redButtonStyle}
         />
       )}
     </div>
