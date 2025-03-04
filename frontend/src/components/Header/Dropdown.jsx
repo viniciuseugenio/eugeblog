@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import IconSpan from "./IconSpan";
 import { ChevronDownIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 export default function Dropdown({ DropdownContent, icon, label }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,12 +38,20 @@ export default function Dropdown({ DropdownContent, icon, label }) {
         </IconSpan>
       </button>
 
-      {isOpen && (
-        <div className="border-accent absolute top-14 z-10 flex min-h-[44rem] min-w-[26rem] flex-col rounded-md border bg-white shadow-lg">
-          <div className="border-accent dropdown-clip absolute left-16 top-0 h-4 w-4 -translate-y-1/2 rotate-45 border bg-white" />
-          <DropdownContent isOpen={isOpen} />
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="border-accent absolute top-14 z-10 flex min-h-[44rem] min-w-[26rem] flex-col rounded-md border bg-white shadow-lg"
+            initial={{ opacity: 0, scale: 0.95, y: -30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -30 }}
+            transition={{ duration: 0.3, type: "tween" }}
+          >
+            <div className="border-accent dropdown-clip absolute left-16 top-0 h-4 w-4 -translate-y-1/2 rotate-45 border bg-white" />
+            <DropdownContent isOpen={isOpen} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
