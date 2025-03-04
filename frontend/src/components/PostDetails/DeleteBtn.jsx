@@ -1,16 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
-import { useContext, useRef } from "react";
+import { Trash2 } from "lucide-react";
+import { AnimatePresence } from "motion/react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { deletePost, queryClient } from "../../utils/api";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase";
-import { Trash2 } from "lucide-react";
 
 export default function DeleteBtn({ buttonClasses }) {
   const { postId } = useContext(PostDetailsContext);
-  const modal = useRef();
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
@@ -36,19 +36,25 @@ export default function DeleteBtn({ buttonClasses }) {
     },
   });
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
-      <Modal
-        ref={modal}
-        title="Are you sure of this?"
-        mutateFn={() => mutate(postId)}
-      >
-        This action is irreversible. After deletion, you will not be able to
-        recover the post.
-      </Modal>
+      <AnimatePresence>
+        {isOpen && (
+          <Modal
+            title="Are you sure of this?"
+            mutateFn={() => mutate(postId)}
+            setIsOpen={setIsOpen}
+          >
+            This action is irreversible. After deletion, you will not be able to
+            recover the post.
+          </Modal>
+        )}
+      </AnimatePresence>
 
       <button
-        onClick={() => modal.current.showModal()}
+        onClick={() => setIsOpen(true)}
         className={`${buttonClasses} text-red-800 ring-red-300 hover:bg-red-200 active:bg-red-300`}
       >
         <Trash2 size={14} />

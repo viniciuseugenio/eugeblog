@@ -1,14 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { toast } from "sonner";
 import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
+import { AnimatePresence } from "motion/react";
 
 export default function CommentDeleteButton({ commentId, redButtonStyle }) {
-  const modal = useRef();
   const { postId } = useContext(PostDetailsContext);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { mutate, isPending } = useMutation({
     mutationFn: deleteComment,
@@ -20,21 +21,26 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
       toast.error(message);
       console.error(message);
     },
-    onSettled: () => modal.current.close(),
+    onSettled: () => setIsOpen(false),
   });
 
   return (
     <>
-      <Modal
-        ref={modal}
-        title="This comment will be deleted."
-        mutateFn={() => mutate({ postId, commentId })}
-      >
-        This will permanently delete the comment and the action cannot be
-        undone. Confirm deletion?
-      </Modal>
+      <AnimatePresence>
+        {isOpen && (
+          <Modal
+            title="This comment will be deleted."
+            mutateFn={() => mutate({ postId, commentId })}
+            setIsOpen={setIsOpen}
+          >
+            This will permanently delete the comment and the action cannot be
+            undone. Confirm deletion?
+          </Modal>
+        )}
+      </AnimatePresence>
+
       <button
-        onClick={() => modal.current.showModal()}
+        onClick={() => setIsOpen(true)}
         disabled={isPending}
         className={redButtonStyle}
       >
