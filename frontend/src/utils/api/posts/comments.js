@@ -14,13 +14,17 @@ export async function loadComments(postId) {
 export async function createComment({ content, postId }) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.COMMENTS, { postId });
-    return await fetchWithErrorHandling(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    return await fetchWithErrorHandling(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
       },
-      body: JSON.stringify({ content }),
-    });
+      true,
+    );
   } catch (error) {
     throw new Error(error.message);
   }

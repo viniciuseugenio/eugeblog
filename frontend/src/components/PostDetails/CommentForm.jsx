@@ -11,7 +11,12 @@ export default function CommentForm() {
 
   const { mutate, isPending, isSuccess, reset } = useMutation({
     mutationFn: createComment,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (!data.detail) {
+        data.content.map((error) => toast.error(error));
+        return;
+      }
+
       toast.success("Comment posted successfully.");
       queryClient.invalidateQueries(["comments", postId]);
     },

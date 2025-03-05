@@ -207,15 +207,14 @@ class PostViewSet(viewsets.ModelViewSet):
             if not user.is_authenticated:
                 raise NotAuthenticated("You must be logged in to comment on this post.")
 
-            content = request.data.get("content")
-            if not content:
-                return Response(
-                    {"detail": "Comment cannot be left empty."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            serializer = CommentCreateSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(post=post, author=user)
 
-            Comment.objects.create(post=post, author=user, content=content)
-            return Response("Comment created!", status=status.HTTP_201_CREATED)
+            return Response(
+                {"detail": "Comment created successfully!"},
+                status=status.HTTP_201_CREATED,
+            )
 
     @action(
         detail=True,
