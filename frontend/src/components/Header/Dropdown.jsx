@@ -42,9 +42,13 @@ export default function Dropdown({ DropdownContent, icon, label }) {
         {isOpen && (
           <motion.div
             className="border-accent absolute top-14 z-10 flex min-h-[44rem] min-w-[26rem] flex-col rounded-md border bg-white shadow-lg"
-            initial={{ opacity: 0, scale: 0.95, y: -30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -30 }}
+            variants={{
+              visible: { opacity: 1, scale: 1, y: 0 },
+              hidden: { opacity: 0, scale: 0.95, y: -30 },
+            }}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
             transition={{ duration: 0.3, type: "tween" }}
           >
             <div className="border-accent dropdown-clip absolute left-16 top-0 h-4 w-4 -translate-y-1/2 rotate-45 border bg-white" />

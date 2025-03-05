@@ -36,13 +36,17 @@ export default function Modal({
         <motion.dialog
           open
           className="fixed z-50 max-w-2xl rounded-lg px-12 py-8 text-center shadow-md"
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{
-            scale: 1,
-            opacity: 1,
-            transition: { type: "spring" },
+          variants={{
+            visible: {
+              scale: 1,
+              opacity: 1,
+            },
+            hidden: { scale: 0.95, opacity: 0 },
           }}
-          exit={{ scale: 0.95, opacity: 0 }}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          transition={{ type: "spring" }}
         >
           <span className="mb-6 flex w-full items-center  justify-center text-yellow-500">
             <Icon size={84} />
