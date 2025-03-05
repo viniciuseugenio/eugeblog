@@ -1,5 +1,5 @@
 import { fetchWithErrorHandling } from "..";
-import { API_ENDPOINTS } from "../constants";
+import { API_ENDPOINTS, BACKEND_URL, UNEXPECTED_ERROR } from "../constants";
 import { buildApiUrl } from "../helpers"; //
 
 export async function createPost(postData) {
@@ -82,9 +82,16 @@ export async function editPost({ postId, formData }) {
 export async function deletePost(postId) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST, { postId });
-    return await fetchWithErrorHandling(url, {
+
+    const response = await fetch(`${BACKEND_URL}${url}`, {
       method: "DELETE",
+      credentials: "include",
     });
+    if (!response.ok) {
+      throw new Error(response.detail || UNEXPECTED_ERROR);
+    }
+
+    return { detail: "Post deleted successfully." };
   } catch (error) {
     throw new Error(error.message);
   }
