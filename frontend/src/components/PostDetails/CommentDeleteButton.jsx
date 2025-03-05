@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
-import { useContext, useRef, useState } from "react";
+import { AnimatePresence } from "motion/react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
 import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
 import { PostDetailsContext } from "./PostDetailsBase.jsx";
-import { AnimatePresence } from "motion/react";
 
 export default function CommentDeleteButton({ commentId, redButtonStyle }) {
   const { postId } = useContext(PostDetailsContext);
@@ -13,15 +13,44 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: deleteComment,
+    onMutate: async ({ postId, commentId }) => {
+      await queryClient.cancelQueries({ queryKey: ["comments", postId] });
+      const previousComments = queryClient.getQueryData(["comments", postId]);
+
+      setIsOpen(false);
+
+      // Use timeout so the modal doesn't disappear immediately
+      const TIMEOUT_DURATION = 300;
+      setTimeout(() => {
+        queryClient.setQueryData(["comments", postId], (oldData) => {
+          return oldData.filter((item) => item.id !== commentId);
+        });
+      }, TIMEOUT_DURATION);
+
+      return {
+        previousComments,
+        postId,
+        TIMEOUT_DURATION,
+      };
+    },
+    onError: (error, _, context) => {
+      setTimeout(
+        () => {
+          queryClient.setQueryData(
+            ["comments", context.postId],
+            context.previousComments,
+          );
+
+          toast.error(error.message);
+          console.error(error.message);
+        },
+
+        context.TIMEOUT_DURATION + 5,
+      );
+    },
     onSuccess: () => {
       toast.success("The comment was deleted successfully.");
-      queryClient.invalidateQueries(["comments", postId]);
     },
-    onError: ({ message }) => {
-      toast.error(message);
-      console.error(message);
-    },
-    onSettled: () => setIsOpen(false),
   });
 
   return (
