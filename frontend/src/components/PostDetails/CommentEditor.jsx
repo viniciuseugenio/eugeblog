@@ -25,8 +25,6 @@ export default function CommentEditor({
   const { mutate, isPending } = useMutation({
     mutationFn: updateComment,
     onMutate: async (comment) => {
-      const postId = +comment.postId;
-
       await queryClient.cancelQueries({ queryKey: ["comments", postId] });
       const previousComments = queryClient.getQueryData(["comments", postId]);
 
@@ -71,7 +69,7 @@ export default function CommentEditor({
       return;
     }
 
-    mutate({ content, postId, commentId: comment.id });
+    mutate({ content, commentId: comment.id });
   }
 
   return (

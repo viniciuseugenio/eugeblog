@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Trash } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import { toast } from "sonner";
 import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
@@ -13,7 +13,7 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: deleteComment,
-    onMutate: async ({ postId, commentId }) => {
+    onMutate: async (commentId) => {
       await queryClient.cancelQueries({ queryKey: ["comments", postId] });
       const previousComments = queryClient.getQueryData(["comments", postId]);
 
@@ -59,7 +59,7 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
         {isOpen && (
           <Modal
             title="This comment will be deleted."
-            mutateFn={() => mutate({ postId, commentId })}
+            mutateFn={() => mutate(commentId)}
             setIsOpen={setIsOpen}
           >
             This will permanently delete the comment and the action cannot be

@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
   PASSWORD_RESET_SET: "/api/accounts/password-reset/set/",
   BOOKMARKS: "/api/bookmarks/",
   COMMENTS: "/api/posts/:postId/comments/",
-  COMMENT: "/api/posts/:postId/comments/:commentId/",
+  COMMENT: "/api/posts/comments/:commentId/",
   POSTS: "/api/posts/",
   POST: "/api/posts/:postId/",
   USER_POSTS: "/api/posts/user/",

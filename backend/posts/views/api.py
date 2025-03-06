@@ -1,3 +1,4 @@
+import time
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -192,62 +193,6 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["GET", "POST"], url_path="comments")
-    def comments(self, request, pk=None):
-        post = self.get_object()
-
-        if request.method == "GET":
-            comments = Comment.objects.filter(post=post).order_by("-id")
-            serializer = CommentDetailsSerializer(comments, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        elif request.method == "POST":
-            user = request.user
-
-            if not user.is_authenticated:
-                raise NotAuthenticated("You must be logged in to comment on this post.")
-
-            serializer = CommentCreateSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(post=post, author=user)
-
-            return Response(
-                {"detail": "Comment created successfully!"},
-                status=status.HTTP_201_CREATED,
-            )
-
-    @action(
-        detail=True,
-        methods=["DELETE", "PATCH"],
-        url_path="comments/(?P<comment_id>[0-9]+)",
-    )
-    def manage_comment(self, request, pk=None, comment_id=None):
-        post = self.get_object()
-        user = request.user
-
-        try:
-            comment = Comment.objects.get(post=post, author=user, pk=comment_id)
-        except Comment.DoesNotExist:
-            return NotFound("This comment does not exist or was already removed.")
-
-        if request.method == "DELETE":
-            comment.delete()
-            return Response(
-                {"detail": "Comment deleted successfully!"}, status=status.HTTP_200_OK
-            )
-
-        elif request.method == "PATCH":
-            serializer = CommentCreateSerializer(
-                comment, data=request.data, partial=True
-            )
-
-            serializer.is_valid(raise_exception=True)
-
-            serializer.save()
-            return Response(
-                {"detail": "Your comment was edited."}, status=status.HTTP_200_OK
-            )
-
     def _get_post_context(self, post, user):
         if not user.is_authenticated:
             return {
@@ -265,3 +210,63 @@ class PostViewSet(viewsets.ModelViewSet):
             "is_reviewer": is_reviewer,
             "is_owner": is_owner,
         }
+
+
+class PostCommentViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentCreateSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs.get("post_id")
+        post = self._get_post(post_id)
+        return Comment.objects.filter(post=post).order_by("-id")
+
+    def list(self, *args, **kwargs):
+        comments = self.get_queryset()
+        serializer = CommentDetailsSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, post_id):
+        post = self._get_post(post_id)
+
+        serializer = CommentCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(post=post, author=request.user)
+
+        time.sleep(1)
+        return Response(
+            {"detail": "Comment created successfully!"},
+            status=status.HTTP_201_CREATED,
+        )
+
+    def destroy(self, request, comment_id=None, *args, **kwargs):
+        user = request.user
+        comment = self._get_comment(user, comment_id)
+
+        comment.delete()
+        return Response(
+            {"detail": "Comment deleted successfully!"}, status=status.HTTP_200_OK
+        )
+
+    def partial_update(self, request, comment_id=None, *args, **kwargs):
+        comment = self._get_comment(request.user, comment_id)
+        serializer = CommentCreateSerializer(comment, data=request.data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {"detail": "Your comment was edited."}, status=status.HTTP_200_OK
+        )
+
+    def _get_post(self, id):
+        try:
+            return Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            raise NotFound("This post does not exist or was deleted.")
+
+    def _get_comment(self, author, pk):
+        try:
+            return Comment.objects.get(author=author, pk=pk)
+        except Comment.DoesNotExist:
+            raise NotFound("This comment does not exist or was already removed.")

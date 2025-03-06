@@ -30,9 +30,9 @@ export async function createComment({ content, postId }) {
   }
 }
 
-export async function updateComment({ content, postId, commentId }) {
+export async function updateComment({ content, commentId }) {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { postId, commentId });
+    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { commentId });
     return await fetchWithErrorHandling(
       url,
       {
@@ -49,9 +49,9 @@ export async function updateComment({ content, postId, commentId }) {
   }
 }
 
-export async function deleteComment({ postId, commentId }) {
+export async function deleteComment(commentId) {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { postId, commentId });
+    const url = buildApiUrl(API_ENDPOINTS.COMMENT, { commentId });
     return await fetchWithErrorHandling(url, {
       method: "DELETE",
     });
