@@ -24,6 +24,7 @@ from accounts.views import (
     CustomTokenRefreshView,
     CustomTokenVerifyView,
 )
+from posts.views import CategoryList
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -36,6 +37,7 @@ urlpatterns = [
     path("api/posts/", include("posts.api.urls")),
     path("api/bookmarks/", include("bookmarks.api.urls")),
     path("api/accounts/", include("accounts.api.urls")),
+    path("api/categories/", CategoryList.as_view(), name="categories_api"),
     # JWT authentication
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),

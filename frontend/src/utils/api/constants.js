@@ -3,7 +3,7 @@ export const { VITE_BASE_BACKEND_URL: BACKEND_URL } = import.meta.env;
 export const UNEXPECTED_ERROR =
   "An unexpected error occurred. Please, try again.";
 export const API_ENDPOINTS = {
-  CATEGORIES: "/api/posts/categories/",
+  CATEGORIES: "/api/categories/",
   TOKEN_REFRESH: "/api/token/refresh/",
   TOKEN_VERIFY: "/api/token/verify/",
   LOGIN: "/api/token/",

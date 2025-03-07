@@ -22,7 +22,7 @@ export default function SelectCategory({ value, name, id }) {
       {isPending && <option disabled>Loading...</option>}
 
       {data &&
-        data.map((category) => (
+        data.results.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
           </option>
