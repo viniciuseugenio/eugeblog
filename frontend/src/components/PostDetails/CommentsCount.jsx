@@ -3,9 +3,7 @@ export default function CommentsCount({ qty, isPending }) {
 
   if (isPending) {
     count = "Loading comments...";
-  }
-
-  if ((!qty && !isPending) || qty === 0) {
+  } else if ((!qty && !isPending) || qty === 0) {
     count = "No comments yet...";
   } else if (qty === 1) {
     count = "1 comment";
