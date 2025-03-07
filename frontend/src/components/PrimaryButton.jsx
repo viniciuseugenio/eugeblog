@@ -11,7 +11,7 @@ export default function PrimaryButton({
     <button
       type={type}
       disabled={isPending}
-      className={`font-inherit bg-primary active:bg-primary group flex w-full min-w-[10rem] items-center justify-center rounded-lg py-2 text-white shadow-md shadow-neutral-400 duration-300 hover:bg-[#5b4a3e] ${className}`}
+      className={`font-inherit bg-primary active:bg-primary min-w-32 group flex w-full items-center justify-center rounded-lg py-2 text-white shadow-md shadow-neutral-400 duration-300 hover:bg-[#5b4a3e] ${className}`}
       {...props}
     >
       <span className="flex items-center justify-center duration-300 ease-out">
