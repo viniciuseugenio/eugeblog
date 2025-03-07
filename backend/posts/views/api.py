@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from dotenv import load_dotenv
-from rest_framework import generics, status, viewsets
+from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotAuthenticated, NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -27,12 +29,12 @@ User = get_user_model()
 load_dotenv()
 
 
-class CategoryList(generics.ListAPIView):
+class CategoryList(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostViewSet(ModelViewSet):
     pagination_class = BaseListPagination
 
     def get_serializer_class(self):
@@ -169,12 +171,6 @@ class PostViewSet(viewsets.ModelViewSet):
         post_serialized = self.get_serializer(post)
         return Response(post_serialized.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["GET"], url_path="categories")
-    def get_categories(self, request):
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data)
-
     @action(
         detail=False,
         methods=["GET"],
@@ -212,7 +208,7 @@ class PostViewSet(viewsets.ModelViewSet):
         }
 
 
-class PostCommentViewSet(viewsets.ModelViewSet):
+class PostCommentViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentCreateSerializer
 
