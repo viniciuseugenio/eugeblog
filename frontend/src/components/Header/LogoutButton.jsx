@@ -29,8 +29,8 @@ export default function LogoutButton() {
         )}
       </AnimatePresence>
 
-      <form className="h-full" onSubmit={handleLogout}>
-        <button className="active:bg-accent flex h-full items-center justify-center gap-2 rounded-lg px-4 py-2 duration-300 hover:bg-[#e2d3ca] hover:text-black">
+      <form onSubmit={handleLogout}>
+        <button className="active:bg-accent flex items-center justify-center gap-2 rounded-lg px-4 py-1.5 text-base duration-300 hover:bg-[#e2d3ca] hover:text-black">
           <IconSpan>
             <LogOutIcon size={15} />
           </IconSpan>
