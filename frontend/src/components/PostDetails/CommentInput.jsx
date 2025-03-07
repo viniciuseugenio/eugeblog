@@ -16,7 +16,7 @@ export default function CommentInput({ value, setValue }) {
     <textarea
       ref={textArea}
       name="content"
-      id="content"
+      id="comment-content"
       rows={1}
       value={value}
       placeholder="Add a comment..."

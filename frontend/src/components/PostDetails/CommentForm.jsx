@@ -17,7 +17,7 @@ export default function CommentForm() {
     onSuccess: (data) => {
       if (!data.detail) {
         data.content.map((error) => toast.error(error));
-        document.getElementById("comment_content").focus();
+        document.getElementById("comment-content").focus();
         return;
       }
 
