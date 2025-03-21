@@ -1,27 +1,13 @@
+import { Plus } from "lucide-react";
 import { Link } from "react-router";
-import BookmarksDropdown from "./BookmarksDropdown";
-import Dropdown from "./Dropdown";
+import DropdownButton from "./Dropdown/DropdownButton";
 import IconSpan from "./IconSpan";
-import UserPostsDropdown from "./UserPostsDropdown";
-import { User, Bookmark, Plus } from "lucide-react";
 
 export default function LoggedHeader() {
   return (
     <ul className="flex gap-3">
       <li>
-        <Dropdown
-          label="User Posts"
-          icon={<User size={20} />}
-          DropdownContent={UserPostsDropdown}
-        />
-      </li>
-
-      <li>
-        <Dropdown
-          label="Bookmarks"
-          icon={<Bookmark size={20} />}
-          DropdownContent={BookmarksDropdown}
-        />
+        <DropdownButton />
       </li>
 
       <Link
