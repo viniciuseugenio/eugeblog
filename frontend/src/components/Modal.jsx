@@ -1,4 +1,4 @@
-import { TriangleAlert } from "lucide-react";
+import { TriangleAlert, X } from "lucide-react";
 import { motion } from "motion/react";
 import { createPortal } from "react-dom";
 
@@ -17,25 +17,48 @@ import { createPortal } from "react-dom";
  */
 
 export default function Modal({
-  children,
   title,
-  mutateFn,
-  setIsOpen,
+  description,
+  onConfirm,
+  confirmText,
+  cancelText,
+  onCancel,
   Icon = TriangleAlert,
+  variant = "danger",
 }) {
+  const colorVariants = {
+    danger: {
+      button: "bg-red-500 hover:bg-red-600 active:bg-red-700",
+      icon: "bg-red-100 text-red-600",
+    },
+    info: {
+      button: "bg-blue-500 hover:bg-blue-600 active:bg-blue-700",
+      icon: "bg-blue-100 text-blue-600",
+    },
+    success: {
+      button: "bg-green-500 hover:bg-green-600 active:bg-green-700",
+      icon: "bg-green-100 text-green-600",
+    },
+  };
+
   return createPortal(
     <>
+      {/* Backdrop  */}
       <motion.div
-        className="fixed inset-0 z-40 bg-black bg-opacity-30"
-        onClick={() => setIsOpen(false)}
+        className="fixed inset-0 z-40 bg-black bg-opacity-40"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       />
+
+      {/* Dialog */}
       <motion.div className="fixed inset-0 z-50 flex items-center justify-center">
         <motion.dialog
           open
-          className="fixed z-50 max-w-2xl rounded-lg px-12 py-8 text-center shadow-md"
+          role="dialog"
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+          className="relative z-50 grid max-w-md auto-rows-auto grid-cols-[auto_1fr] gap-x-3 rounded-lg p-6 shadow-md"
           variants={{
             visible: {
               scale: 1,
@@ -46,27 +69,48 @@ export default function Modal({
           initial="hidden"
           animate="visible"
           exit="hidden"
-          transition={{ type: "spring" }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
         >
-          <span className="mb-6 flex w-full items-center  justify-center text-yellow-500">
-            <Icon size={84} />
+          <button
+            type="button"
+            className="absolute right-3 top-3 opacity-60 duration-300 hover:opacity-80"
+            onClick={onCancel}
+            aria-label="Close modal"
+          >
+            <X size={20} />
+          </button>
+
+          <span
+            className={`${colorVariants[variant].icon} row-span-3 self-start rounded-full p-2`}
+          >
+            <Icon />
           </span>
-          <h2 className="text-primary mb-6 text-4xl font-medium">{title}</h2>
-          <p className="mb-6">{children}</p>
-          <div className="flex justify-end gap-3">
+
+          <header>
+            <h2 id="modal-title" className="mb-2 text-lg font-medium">
+              {title}
+            </h2>
+          </header>
+
+          <section id="modal-description">
+            <p className="text-sm opacity-70">{description}</p>
+          </section>
+
+          <footer className="mt-6 flex justify-end gap-3 text-sm">
             <button
-              onClick={() => setIsOpen(false)}
-              className="cursor-pointer rounded-lg px-3 py-1 ring-1 ring-stone-300 duration-300 hover:bg-stone-200 hover:shadow-lg active:bg-stone-300"
+              onClick={onCancel}
+              className="cursor-pointer rounded-md px-4 py-2 font-medium ring-1 ring-stone-300 duration-300 hover:bg-stone-200 active:bg-stone-300"
             >
-              Cancel
+              {cancelText}
             </button>
+
             <button
-              className="cursor-pointer rounded-lg bg-yellow-200 px-3 py-1 text-yellow-950 shadow-md ring-1 ring-yellow-300 duration-300 hover:bg-yellow-300 hover:shadow-lg active:bg-amber-400"
-              onClick={mutateFn}
+              className={`${colorVariants[variant].button} cursor-pointer rounded-md px-4 py-2 font-medium text-white duration-300`}
+              onClick={onConfirm}
             >
-              I am sure
+              {confirmText}
             </button>
-          </div>
+          </footer>
         </motion.dialog>
       </motion.div>
     </>,

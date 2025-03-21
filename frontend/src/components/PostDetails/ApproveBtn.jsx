@@ -37,10 +37,14 @@ export default function ApproveBtn({ buttonClasses }) {
       <AnimatePresence>
         {isOpen && (
           <Modal
-            title="This post will be published!"
-            mutateFn={() => mutate(postId)}
+            title="Approve Post"
+            description="This post will be to the public after approval. Do you want to continue? visible visible"
+            cancelText="Review Again"
+            confirmText="Approve"
+            variant="success"
+            onConfirm={() => mutate(postId)}
+            onCancel={() => setIsOpen(false)}
             Icon={CircleCheckBig}
-            setIsOpen={setIsOpen}
           >
             Please review all post content before approving it. We wouldn&apos;t
             want our users reading inappropriate content.

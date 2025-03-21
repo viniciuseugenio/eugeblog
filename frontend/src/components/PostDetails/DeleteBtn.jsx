@@ -43,13 +43,14 @@ export default function DeleteBtn({ buttonClasses }) {
       <AnimatePresence>
         {isOpen && (
           <Modal
-            title="Are you sure of this?"
-            mutateFn={() => mutate(postId)}
-            setIsOpen={setIsOpen}
-          >
-            This action is irreversible. After deletion, you will not be able to
-            recover the post.
-          </Modal>
+            title="Delete Your Post"
+            description="Are you sure you want to delete this post? This action cannot be undone."
+            onConfirm={() => mutate(postId)}
+            onCancel={() => setIsOpen(false)}
+            confirmText="Delete"
+            cancelText="Cancel"
+            Icon={Trash2}
+          />
         )}
       </AnimatePresence>
 

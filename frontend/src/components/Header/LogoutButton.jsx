@@ -19,13 +19,15 @@ export default function LogoutButton() {
       <AnimatePresence>
         {isOpen && (
           <Modal
-            mutateFn={mutate}
-            title="Are you sure you want to logout?"
-            setIsOpen={setIsOpen}
-          >
-            You will not be able to modify your posts nor view your bookmarks.
-            You will have to login again.
-          </Modal>
+            onConfirm={mutate}
+            onCancel={() => setIsOpen(false)}
+            title="Logout Confirmation"
+            description="Are you sure you want to log out of your account?"
+            confirmText="Logout"
+            cancelText="Stay Logged In"
+            variant="info"
+            Icon={LogOutIcon}
+          />
         )}
       </AnimatePresence>
 

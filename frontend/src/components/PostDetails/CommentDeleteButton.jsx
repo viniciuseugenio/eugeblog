@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { Trash } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useState, useContext } from "react";
 import { toast } from "sonner";
@@ -58,13 +58,14 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
       <AnimatePresence>
         {isOpen && (
           <Modal
-            title="This comment will be deleted."
-            mutateFn={() => mutate(commentId)}
-            setIsOpen={setIsOpen}
-          >
-            This will permanently delete the comment and the action cannot be
-            undone. Confirm deletion?
-          </Modal>
+            title="Delete Comment"
+            description="Are you sure you want to delete this comment? This action cannot be undone."
+            onConfirm={() => mutate(commentId)}
+            onCancel={() => setIsOpen(false)}
+            confirmText="Delete"
+            cancelText="Cancel"
+            Icon={Trash2}
+          />
         )}
       </AnimatePresence>
 
@@ -73,7 +74,7 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
         disabled={isPending}
         className={redButtonStyle}
       >
-        <Trash size={20} />
+        <Trash2 size={20} />
       </button>
     </>
   );
