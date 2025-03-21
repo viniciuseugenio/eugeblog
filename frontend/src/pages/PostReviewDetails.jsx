@@ -6,10 +6,12 @@ export default function PostReviewDetailsPage() {
   const { id } = useParams();
 
   return (
-    <PostDetailsBase
-      queryKey={["pendingPosts", id]}
-      fetchFn={loadPostReview}
-      isReview
-    />
+    <main className="container mx-auto px-4 py-8">
+      <PostDetailsBase
+        queryKey={["pendingPosts", id]}
+        fetchFn={loadPostReview}
+        isReview
+      />
+    </main>
   );
 }

@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { removeBookmark } from "../../utils/api";
 import BookmarkBtn from "./BookmarkBtn";
-import { Bookmark } from "lucide-react";
+import { BookmarkCheck } from "lucide-react";
 
 export default function RemoveBookmarkBtn({ postId, setIsBookmarked }) {
   return (
@@ -11,8 +11,9 @@ export default function RemoveBookmarkBtn({ postId, setIsBookmarked }) {
       successToast={() => toast.info("This post was removed from bookmarks.")}
       setIsBookmarked={() => setIsBookmarked(false)}
       authMessage="You have to be logged to remove a bookmark."
-      icon={<Bookmark size={20} fill="#493628" />}
-      label="Remove bookmark"
+      icon={<BookmarkCheck className="h-5 w-5" />}
+      label="Saved"
+      color="text-secondary"
     />
   );
 }

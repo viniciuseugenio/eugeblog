@@ -13,7 +13,9 @@ export default function PostDetails({ post }) {
   return (
     <>
       <div className="flex flex-col items-center">
-        <img src={post.image} className="mb-8 w-[52rem]" alt="" />
+        <div className="mb-8 h-[500px]">
+          <img src={post.image} className="h-full w-full rounded-md" alt="" />
+        </div>
 
         <h1 className="mb-6 max-w-2xl text-center text-4xl font-bold">
           {post.title}

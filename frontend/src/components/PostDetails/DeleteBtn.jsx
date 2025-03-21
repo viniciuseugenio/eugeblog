@@ -1,16 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { deletePost, queryClient } from "../../utils/api";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
-import { PostDetailsContext } from "./PostDetailsBase";
 
-export default function DeleteBtn({ buttonClasses }) {
-  const { postId } = useContext(PostDetailsContext);
+export default function DeleteBtn() {
+  const { id: postId } = useParams();
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
@@ -56,9 +55,9 @@ export default function DeleteBtn({ buttonClasses }) {
 
       <button
         onClick={() => setIsOpen(true)}
-        className={`${buttonClasses} text-red-800 ring-red-300 hover:bg-red-200 active:bg-red-300`}
+        className=" flex gap-1 text-sm text-red-500 duration-300 hover:text-red-600"
       >
-        <Trash2 size={14} />
+        <Trash2 className="h-5 w-5" />
         <span>Delete</span>
       </button>
     </>

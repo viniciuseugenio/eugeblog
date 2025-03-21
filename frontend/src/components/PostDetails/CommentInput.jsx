@@ -19,9 +19,9 @@ export default function CommentInput({ value, setValue }) {
       id="comment-content"
       rows={1}
       value={value}
-      placeholder="Add a comment..."
+      placeholder="Share your thoughts..."
       onChange={handleChange}
-      className="mb-2 w-full border-b border-[#AB886D] pb-1 outline-none duration-300 focus:border-[#493628]"
+      className="border-accent focus:border-primary mb-2 w-full border-b pb-1 outline-none duration-300"
     />
   );
 }

@@ -6,6 +6,7 @@ import { loadComments } from "../../utils/api/index.js";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm.jsx";
 import CommentsCount from "./CommentsCount.jsx";
+import CommentsSkeleton from "./CommentsSkeleton.jsx";
 
 export default function Comments() {
   const { id: postId } = useParams();
@@ -26,26 +27,24 @@ export default function Comments() {
     );
   }
 
+  if (isPending) {
+    return (
+      <div className="p-6">
+        <CommentsSkeleton />
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="p-6">
       <CommentsCount qty={data?.length} postId={postId} isPending={isPending} />
 
       <CommentForm />
 
       <div className="flex flex-col gap-6">
-        {isPending ? (
-          <div className="self-center">
-            <CircularProgress color="#493628" />
-          </div>
-        ) : (
-          <>
-            {data?.length >= 1 &&
-              data.map((comment) => (
-                <Comment key={comment.id} comment={comment} />
-              ))}
-          </>
-        )}
+        {data?.length >= 1 &&
+          data.map((comment) => <Comment key={comment.id} comment={comment} />)}
       </div>
-    </>
+    </div>
   );
 }

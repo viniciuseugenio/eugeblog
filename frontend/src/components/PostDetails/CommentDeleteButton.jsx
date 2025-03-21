@@ -1,35 +1,35 @@
 import { useMutation } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { useState, useContext } from "react";
+import { useState } from "react";
+import { useParams } from "react-router";
 import { toast } from "sonner";
 import { deleteComment, queryClient } from "../../utils/api/";
 import Modal from "../Modal";
-import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
-export default function CommentDeleteButton({ commentId, redButtonStyle }) {
-  const { postId } = useContext(PostDetailsContext);
+export default function CommentDeleteButton({ commentId, buttonStyle }) {
+  const { id: postId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
   const { mutate, isPending } = useMutation({
     mutationFn: deleteComment,
     onMutate: async (commentId) => {
-      await queryClient.cancelQueries({ queryKey: ["comments", postId] });
-      const previousComments = queryClient.getQueryData(["comments", postId]);
+      await queryClient.cancelQueries({ queryKey: ["comments", +postId] });
+      const previousComments = queryClient.getQueryData(["comments", +postId]);
 
       setIsOpen(false);
 
       // Use timeout so the modal doesn't disappear immediately
       const TIMEOUT_DURATION = 300;
       setTimeout(() => {
-        queryClient.setQueryData(["comments", postId], (oldData) => {
+        queryClient.setQueryData(["comments", +postId], (oldData) => {
           return oldData.filter((item) => item.id !== commentId);
         });
       }, TIMEOUT_DURATION);
 
       return {
         previousComments,
-        postId,
+        postId: +postId,
         TIMEOUT_DURATION,
       };
     },
@@ -70,11 +70,13 @@ export default function CommentDeleteButton({ commentId, redButtonStyle }) {
       </AnimatePresence>
 
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+        }}
         disabled={isPending}
-        className={redButtonStyle}
+        className={buttonStyle}
       >
-        <Trash2 size={20} />
+        <span>Delete</span>
       </button>
     </>
   );

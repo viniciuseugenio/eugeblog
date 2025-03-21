@@ -1,5 +1,5 @@
+import { CalendarDays, CircleUserRound } from "lucide-react";
 import { Link } from "react-router";
-import { ChevronRight } from "lucide-react";
 
 export default function PostItem({ post }) {
   const date = new Date(post.created_at);
@@ -9,31 +9,42 @@ export default function PostItem({ post }) {
   }).format(date);
 
   return (
-    <article className="max-w-60 flex flex-col shadow-md">
-      <img src={post.image} alt="" className="h-36 w-full rounded-t-sm" />
-      <div className="flex flex-grow flex-col p-3">
-        <header className="mb-5">
-          <p className="mb-2 inline-block rounded-md bg-gray-200 px-3 py-1 text-xs ">
-            {post.category.name}
-          </p>
+    <article className="max-w-80 flex flex-col rounded-md border bg-white duration-300 hover:shadow-md">
+      <div className="max-h-44 overflow-hidden rounded-t-md">
+        <img src={post.image} alt="" className="object-cover" />
+      </div>
 
-          <p className="text-wrap mb-1 text-base font-medium leading-5">
-            {post.title}
-          </p>
-          <p className="mb-5 text-xs">
-            {post.author} &bull; {formattedDate}
-          </p>
-          <p className="line-clamp-3 text-sm">{post.excerpt}</p>
-        </header>
-        <div className="hover:bg-accent/50 active:bg-accent mt-auto flex items-center justify-center self-end rounded-md px-3 py-1 font-medium duration-300">
+      <div className="flex flex-grow flex-col p-4">
+        <header className="mb-5">
+          <div className="mb-3 flex items-center justify-between text-xs">
+            <p className="bg-light text-secondary inline-block rounded-full px-2 py-1 font-medium">
+              {post.category.name}
+            </p>
+            <div className="flex items-center justify-center gap-1 opacity-75">
+              <CalendarDays size={14} />
+              <span>{formattedDate}</span>
+            </div>
+          </div>
+
           <Link
             to={`/post/${post.id}`}
-            className="flex items-center justify-center"
+            className="text-wrap mb-2 text-lg font-semibold leading-5 decoration-1 underline-offset-2 hover:underline"
           >
-            Read more
-            <ChevronRight size={16} />
+            {post.title}
           </Link>
-        </div>
+
+          <div className="mb-3 mt-1 flex items-center gap-1">
+            <CircleUserRound size={16} />
+            <p className="text-sm font-medium">{post.author}</p>
+          </div>
+          <p className="line-clamp-3 text-sm opacity-70">{post.excerpt}</p>
+        </header>
+        <Link
+          to={`/post/${post.id}`}
+          className="hover:bg-accent/50 active:bg-accent/70 border-accent/50 mt-auto flex items-center justify-center rounded-md border px-3 py-1.5 font-medium duration-300"
+        >
+          Read more
+        </Link>
       </div>
     </article>
   );

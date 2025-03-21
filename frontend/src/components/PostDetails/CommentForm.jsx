@@ -55,7 +55,7 @@ export default function CommentForm() {
 
           <div className="mb-6 flex justify-end">
             <div
-              className={`${isPending ? "visible scale-100 opacity-100" : "invisible scale-90 opacity-0"} flex origin-center transform gap-3 duration-300 ease-in-out group-focus-within/div:visible group-focus-within/div:scale-100 group-focus-within/div:opacity-100`}
+              className={`${isPending ? "visible scale-100 opacity-100" : "invisible scale-90 opacity-0"} flex origin-center transform gap-3 self-start duration-300 ease-in-out group-focus-within/div:visible group-focus-within/div:scale-100 group-focus-within/div:opacity-100`}
             >
               <button
                 type="reset"
@@ -63,7 +63,7 @@ export default function CommentForm() {
                   setValue("");
                   document.activeElement.blur();
                 }}
-                className="active:bg-accent bg-accent/50 hover:bg-accent/70 ring-primary/30 hover:ring-primary/60 active:ring-primary/90 rounded-lg px-4 py-1 ring-1 duration-300 active:scale-95"
+                className="self-start rounded-lg px-4 py-2 ring-1 ring-inset ring-gray-300 duration-300 hover:bg-neutral-200 active:scale-90 active:bg-neutral-300"
                 disabled={isPending}
               >
                 Cancel
@@ -72,7 +72,7 @@ export default function CommentForm() {
                 text="Comment"
                 type="submit"
                 isPending={isPending}
-                className="px-6 active:scale-90"
+                className="self-start px-6 active:scale-90"
               />
             </div>
           </div>
@@ -81,17 +81,16 @@ export default function CommentForm() {
     );
   } else {
     return (
-      <p className="mb-6">
-        Any thoughts on this?&nbsp;
+      <div className="mb-8 bg-gray-50 p-4 text-center text-lg">
+        <p className="mb-2">Any thoughts on this?</p>
         <Link
-          className="text-primary font-bold underline"
+          className="text-primary/80 hover:text-primary font-medium duration-300"
           to={`/login?next=/post/${postId}`}
           aria-label="Log in to share your thoughts on this post"
         >
-          Log in
+          Log in and share them with us!
         </Link>
-        &nbsp;and share them with us!
-      </p>
+      </div>
     );
   }
 }

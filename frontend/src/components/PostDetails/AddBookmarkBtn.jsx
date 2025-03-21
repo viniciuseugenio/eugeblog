@@ -11,8 +11,8 @@ export default function AddBookmarkBtn({ postId, setIsBookmarked }) {
       successToast={() => toast.success("This post is now bookmarked!")}
       setIsBookmarked={() => setIsBookmarked(true)}
       authMessage="You have to be logged to bookmark a post."
-      label="Bookmark"
-      icon=<Bookmark size={20} />
+      label="Save"
+      icon=<Bookmark className="h-5 w-5" />
     />
   );
 }

@@ -1,19 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { Save, X } from "lucide-react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
 import { toast } from "sonner";
 import { queryClient } from "../../utils/api/index.js";
 import { updateComment } from "../../utils/api/posts/";
-import { PostDetailsContext } from "./PostDetailsBase.jsx";
 
-export default function CommentEditor({
-  comment,
-  setIsEditing,
-  actionStates,
-  blueButtonStyle,
-  redButtonStyle,
-}) {
-  const { postId } = useContext(PostDetailsContext);
+export default function CommentEditor({ comment, setIsEditing }) {
+  const { id: postId } = useParams();
   const [commentValue, setCommentValue] = useState(comment.content);
   const textArea = useRef();
 
@@ -25,10 +18,14 @@ export default function CommentEditor({
   const { mutate, isPending } = useMutation({
     mutationFn: updateComment,
     onMutate: async (comment) => {
-      await queryClient.cancelQueries({ queryKey: ["comments", postId] });
-      const previousComments = queryClient.getQueryData(["comments", postId]);
+      const castPostId = +postId;
+      await queryClient.cancelQueries({ queryKey: ["comments", castPostId] });
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        castPostId,
+      ]);
 
-      queryClient.setQueryData(["comments", postId], (oldData) => {
+      queryClient.setQueryData(["comments", castPostId], (oldData) => {
         return oldData.map((item) =>
           item.id === comment.commentId
             ? { ...item, content: comment.content }
@@ -36,7 +33,7 @@ export default function CommentEditor({
         );
       });
 
-      return { previousComments, postId };
+      return { previousComments, castPostId };
     },
     onError: (error, _, context) => {
       queryClient.setQueryData(
@@ -73,42 +70,37 @@ export default function CommentEditor({
   }
 
   return (
-    <>
-      <div className="order-2">
-        <textarea
-          ref={textArea}
-          name="content"
-          id="edit-comment"
-          rows={1}
-          placeholder="Add a comment..."
-          onChange={(e) => setCommentValue(e.target.value)}
-          value={commentValue}
-          className="mb-2 w-full border-b border-[#AB886D] bg-inherit pb-1 text-inherit outline-none duration-300 focus:border-[#493628]"
-        />
-      </div>
+    <div className="flex flex-col">
+      <textarea
+        ref={textArea}
+        name="content"
+        id="edit-comment"
+        rows={1}
+        placeholder="Add a comment..."
+        onChange={(e) => setCommentValue(e.target.value)}
+        value={commentValue}
+        className="mb-2 w-full border-b border-[#AB886D] bg-inherit pb-1 text-inherit outline-none duration-300 focus:border-[#493628]"
+      />
 
-      <div
-        className={`invisible row-span-2 ml-1 flex scale-90 place-self-end self-center opacity-0 duration-300 ${actionStates}`}
-      >
-        <div className="flex gap-1">
-          <button
-            disabled={isPending}
-            onClick={handleSave}
-            className={blueButtonStyle}
-            aria-label="Save changes"
-          >
-            <Save size={20} />
-          </button>
-          <button
-            disabled={isPending}
-            className={redButtonStyle}
-            onClick={() => setIsEditing(false)}
-            aria-label="Cancel editing"
-          >
-            <X size={20} />
-          </button>
-        </div>
+      <div className="flex items-start gap-3 self-end">
+        <button
+          disabled={isPending}
+          onClick={() => setIsEditing(false)}
+          aria-label="Cancel editing"
+          className="rounded-md px-5 py-2 font-medium ring-1 ring-inset ring-neutral-300 duration-300 hover:bg-neutral-200 active:bg-neutral-300"
+        >
+          Cancel
+        </button>
+
+        <button
+          disabled={isPending}
+          onClick={handleSave}
+          aria-label="Save changes"
+          className="bg-primary/80 hover:bg-primary/90 active:bg-primary rounded-md px-5 py-2 font-medium text-white duration-300"
+        >
+          Save
+        </button>
       </div>
-    </>
+    </div>
   );
 }

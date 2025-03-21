@@ -1,38 +1,40 @@
-import { useContext } from "react";
+import { SquarePen } from "lucide-react";
 import { Link } from "react-router";
 import ApproveBtn from "./ApproveBtn.jsx";
 import BookmarkButtons from "./BookmarkButtons";
 import DeleteBtn from "./DeleteBtn.jsx";
-import { PostDetailsContext } from "./PostDetailsBase.jsx";
-import { PencilLine } from "lucide-react";
+import { useParams } from "react-router";
 
-export default function PostActions() {
-  const { isReview, isOwner, isReviewer, postId } =
-    useContext(PostDetailsContext);
-
-  const buttonClasses =
-    "flex items-center justify-center gap-1 rounded-md px-4 py-1 ring-1 duration-300 hover:shadow-md";
+export default function PostActions({
+  isReview,
+  isOwner,
+  isReviewer,
+  isBookmarked,
+}) {
+  const { id: postId } = useParams();
 
   return (
-    <div className="mb-12 flex justify-between">
-      {!isReview && <BookmarkButtons key={postId} />}
-      {(isOwner || isReviewer) && (
-        <div
-          className={`flex gap-3 self-center ${isReview && "w-full justify-end"}`}
-        >
-          <DeleteBtn buttonClasses={buttonClasses} />
+    <div className="mb-8 flex justify-between border-b pb-8">
+      <div className="flex items-center gap-4">
+        {(isOwner || isReviewer) && (
+          <>
+            <Link
+              to={`/post/edit/${postId}/`}
+              className="flex gap-1 text-sm text-blue-500 duration-300 hover:text-blue-700"
+            >
+              <SquarePen className="h-5 w-5" />
+              <span>Edit</span>
+            </Link>
 
-          <Link
-            to={`/post/edit/${postId}/`}
-            className={`${buttonClasses} text-blue-800 ring-blue-300 hover:bg-blue-200 active:bg-blue-300`}
-          >
-            <PencilLine size={14} />
-            <span>Edit</span>
-          </Link>
-          {isReview && isReviewer && (
-            <ApproveBtn buttonClasses={buttonClasses} />
-          )}
-        </div>
+            <DeleteBtn />
+
+            {isReview && isReviewer && <ApproveBtn />}
+          </>
+        )}
+      </div>
+
+      {!isReview && (
+        <BookmarkButtons key={postId} initialIsBookmarked={isBookmarked} />
       )}
     </div>
   );

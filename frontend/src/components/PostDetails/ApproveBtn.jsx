@@ -1,16 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { CircleCheckBig } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { useContext, useState } from "react";
+import { useState } from "react";
+import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { acceptPostReview, queryClient } from "../../utils/api";
 import { invalidatePostListQueries } from "../../utils/query";
 import Modal from "../Modal";
-import { PostDetailsContext } from "./PostDetailsBase";
 
-export default function ApproveBtn({ buttonClasses }) {
-  const { postId } = useContext(PostDetailsContext);
+export default function ApproveBtn() {
+  const { id: postId } = useParams();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,9 +54,9 @@ export default function ApproveBtn({ buttonClasses }) {
 
       <button
         onClick={() => setIsOpen(true)}
-        className={`${buttonClasses} text-green-800 shadow-lg ring-1 ring-green-300 hover:bg-green-200 hover:ring-green-300 active:bg-green-300`}
+        className="flex gap-1 text-sm text-green-600 hover:text-green-800"
       >
-        <CircleCheckBig size={14} />
+        <CircleCheckBig className="h-5 w-5 " />
         <span>Approve</span>
       </button>
     </>

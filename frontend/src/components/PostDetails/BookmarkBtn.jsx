@@ -12,6 +12,7 @@ export default function BookmarkBtn({
   authMessage,
   label,
   icon,
+  color = "text-primary",
 }) {
   const { data: authData } = useAuthCheck();
   const navigate = useNavigate();
@@ -40,12 +41,12 @@ export default function BookmarkBtn({
     <div className="group relative flex items-center justify-center">
       <button
         onClick={handleClick}
-        className="text-primary active:bg-accent flex items-center gap-1 rounded-full p-2 duration-300 ease-out hover:bg-[#e2d3ca]"
+        className={`${color} flex items-center gap-1 rounded-full p-2 duration-300 ease-out`}
         aria-label={label}
       >
         {icon}
+        <span className="text-sm">{label}</span>
       </button>
-      <Tooltip text={label} topPosition="-top-11" />
     </div>
   );
 }

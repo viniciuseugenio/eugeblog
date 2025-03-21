@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuthContext } from "../../store/auth-context";
 import { formatDate } from "../../utils/helpers";
 import CommentEditor from "./CommentEditor";
-import CommentView from "./CommentView";
+import ActionsDropdown from "./ActionsDropdown";
 
 export default function Comment({ comment }) {
   const createdAt = formatDate(comment.created_at);
@@ -15,24 +15,27 @@ export default function Comment({ comment }) {
   const actionStates =
     "group-focus-within:visible group-focus-within:scale-100 group-focus-within:opacity-100 group-hover:visible group-hover:scale-100 group-hover:opacity-100";
 
-  const blueButtonStyle =
-    "rounded-full p-2 text-blue-600 duration-300 hover:bg-blue-200 active:bg-blue-300";
-  const redButtonStyle =
-    "flex items-center justify-center rounded-full p-2 text-red-500 duration-300 hover:bg-red-200 hover:text-red-700 active:bg-red-300";
-
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div
-      tabIndex={0}
-      className="hover:bg-light/40 focus:bg-light/40 group grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] rounded-md px-2 py-1 duration-300"
-    >
+    <div className="group grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr] rounded-md border-b px-2 py-1 pb-6 duration-300 last:border-0">
       <span className="row-span-2 mr-2 self-start p-1">
-        <CircleUser />
+        <CircleUser className="h-8 w-8" />
       </span>
-      <div className="flex gap-1 self-start">
-        <span className="font-semibold">{authorName}</span>
-        &mdash; {createdAt}
+      <div className="col-span-2 mb-3 flex justify-between gap-1">
+        <div>
+          <p className="font-medium">{authorName}</p>
+          <p className="text-xs text-neutral-500">{createdAt}</p>
+        </div>
+
+        {isAuthor && (
+          <div className="flex items-center gap-1">
+            <ActionsDropdown
+              commentId={comment.id}
+              setIsEditing={setIsEditing}
+            />
+          </div>
+        )}
       </div>
 
       {isEditing ? (
@@ -40,18 +43,11 @@ export default function Comment({ comment }) {
           comment={comment}
           setIsEditing={setIsEditing}
           actionStates={actionStates}
-          blueButtonStyle={blueButtonStyle}
-          redButtonStyle={redButtonStyle}
         />
       ) : (
-        <CommentView
-          comment={comment}
-          actionStates={actionStates}
-          setIsEditing={setIsEditing}
-          isAuthor={isAuthor}
-          blueButtonStyle={blueButtonStyle}
-          redButtonStyle={redButtonStyle}
-        />
+        <p className="max-w-3xl self-start hyphens-auto break-words text-stone-700">
+          {comment.content}
+        </p>
       )}
     </div>
   );
