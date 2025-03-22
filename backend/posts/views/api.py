@@ -1,4 +1,3 @@
-import time
 from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -209,8 +208,13 @@ class PostViewSet(ModelViewSet):
 
 
 class PostCommentViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
     serializer_class = CommentCreateSerializer
+
+    def get_permissions(self):
+        if self.action != "list":
+            return [IsAuthenticated()]
+
+        return [AllowAny()]
 
     def get_queryset(self):
         post_id = self.kwargs.get("post_id")
@@ -229,7 +233,6 @@ class PostCommentViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(post=post, author=request.user)
 
-        time.sleep(1)
         return Response(
             {"detail": "Comment created successfully!"},
             status=status.HTTP_201_CREATED,
