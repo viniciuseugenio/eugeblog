@@ -1,8 +1,8 @@
 import { Divider } from "@mui/material";
-import SocialIcon from "../components/SocialIcon";
 import { openGitLoginPage, openGoogleLoginPage } from "../utils/api/helpers";
-import Github from "/social_icons/github-icon.svg";
 import Google from "/social_icons/google-icon.svg";
+import SocialLoginButton from "./SocialLoginButton";
+import { Github } from "lucide-react";
 
 export default function SocialLogin({ page }) {
   const iconClass =
@@ -10,14 +10,21 @@ export default function SocialLogin({ page }) {
 
   return (
     <>
-      <Divider>Or {page} with</Divider>
-      <ul className="mt-6 flex items-center justify-center gap-6">
-        <SocialIcon onClick={openGoogleLoginPage}>
-          <img src={Google} className={iconClass} alt="Google" />
-        </SocialIcon>
-        <SocialIcon onClick={openGitLoginPage}>
-          <img src={Github} className={iconClass} alt="GitHub" />
-        </SocialIcon>
+      <Divider>
+        <span className="text-neutral-500">or</span>
+      </Divider>
+
+      <ul className="mt-6 flex flex-col gap-6">
+        <SocialLoginButton
+          onClick={openGoogleLoginPage}
+          icon={<img src={Google} className="h-6 w-6" alt="Google" />}
+          site="Google"
+        />
+        <SocialLoginButton
+          onClick={openGitLoginPage}
+          icon={<Github className="h-6 w-6" />}
+          site="GitHub"
+        />
       </ul>
     </>
   );
