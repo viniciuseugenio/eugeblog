@@ -109,6 +109,7 @@ export default function DropdownList({
         <button
           onClick={() => setIsOpen(false)}
           className="text-neutral-500 duration-300 hover:text-red-600"
+          aria-label="Close dropdown"
         >
           <X size={18} />
         </button>
