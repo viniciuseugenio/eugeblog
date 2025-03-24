@@ -34,14 +34,17 @@ export default function Input({
     isError || error
       ? "border-red-600 ring-red-200"
       : "focus:border-secondary ring-light border-neutral-300";
-  const textColor =
-    isError || error ? "text-red-600" : "focus:text-secondary text-neutral-500";
+  const textColor = isError || error ? "text-red-600" : "text-primary";
   const labelTextColor =
     isError || error
       ? "text-red-600"
       : "peer-focus:text-secondary text-neutral-500";
 
   function handleChange(e) {
+    if (!fieldValidation) {
+      return;
+    }
+
     if (lastChange.current) {
       clearTimeout(lastChange.current);
     }
