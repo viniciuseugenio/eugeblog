@@ -41,22 +41,22 @@ export default function SearchInput() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="hover:ring-secondary focus-within:ring-secondary ring-secondary/20 mr-3 flex w-80 items-center gap-2 rounded-md bg-white py-2 pr-3 ring-1 duration-300 ease-out focus-within:shadow-md hover:shadow-md"
+      className="hover:ring-secondary focus-within:ring-secondary ring-secondary/40 mr-3 flex items-center gap-2 rounded-md bg-white py-2 pr-3 ring-1 duration-300 ease-out focus-within:shadow-md hover:shadow-md"
     >
+      <button
+        aria-label="Submit search"
+        className="ml-4 flex items-center justify-center text-lg opacity-50 duration-300 hover:opacity-100"
+      >
+        <Search size={16} />
+      </button>
       <input
         type="text"
         name="search"
         onChange={handleSearch}
-        placeholder="Search for posts"
+        placeholder="Search..."
         aria-label="Search for posts"
-        className="h-full w-full bg-white pl-4 text-sm placeholder-gray-500 outline-none"
+        className="w-64 bg-white text-sm outline-none"
       />
-      <button
-        aria-label="Submit search"
-        className="flex items-center justify-center text-lg opacity-50 duration-300 hover:scale-125 hover:opacity-100"
-      >
-        <Search size={18} />
-      </button>
     </form>
   );
 }
