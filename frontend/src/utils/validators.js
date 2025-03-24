@@ -1,3 +1,5 @@
+import { ERROR_MESSAGES } from "./constants";
+
 export function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -7,32 +9,33 @@ export function validateSignupData(form) {
   const errors = {};
 
   if (!form.email || !isValidEmail(form.email)) {
-    errors.email = ["Please provide a valid e-mail address."];
+    errors.email = [ERROR_MESSAGES.INVALID_EMAIL];
   }
 
   if (form.first_name === form.last_name) {
-    errors.last_name = ["First name and last name must be different."];
+    errors.last_name = [ERROR_MESSAGES.EQUAL_NAMES];
   }
 
   if (form.first_name.trim().length < 3) {
-    errors.first_name = ["First name must be at least 3 characters long."];
+    errors.first_name = [ERROR_MESSAGES.FIRST_NAME_LENGTH];
   }
 
   if (form.last_name.trim().length < 3) {
-    errors.last_name = ["Last name must be at least 3 characters long."];
+    errors.last_name = [ERROR_MESSAGES.LAST_NAME_LENGTH];
   }
 
   if (form.password.length < 9) {
-    errors.password = ["Password must be at least 8 characters long."];
+    errors.password = [ERROR_MESSAGES.PASSWORD_LENGTH];
   }
 
   if (form.password !== form.confirm_password) {
-    errors.confirm_password = ["Passwords must be identical."];
+    errors.confirm_password = [ERROR_MESSAGES.CONFIRM_PASSWORD];
   }
 
   if (!form.agree) {
-    errors.agree = ["You must agree with the terms and conditions."];
+    errors.agree = [ERROR_MESSAGES.AGREE_TERMS];
   }
 
   return errors;
 }
+
