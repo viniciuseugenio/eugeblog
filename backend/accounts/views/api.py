@@ -337,3 +337,10 @@ class PasswordResetView(APIView):
         return Response(
             {"detail": "Your password was reseted successfully!"}, status=200
         )
+
+
+class ValidateEmail(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        user = User.objects.filter(email=email).exists()
+        return Response({"exists": user}, status=200)

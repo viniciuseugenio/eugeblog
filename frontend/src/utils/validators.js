@@ -1,5 +1,7 @@
 import { ERROR_MESSAGES } from "./constants";
 
+const { VITE_BASE_BACKEND_URL } = import.meta.env;
+
 export function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -37,5 +39,48 @@ export function validateSignupData(form) {
   }
 
   return errors;
+}
+
+export async function validateEmail(email, setClientSide) {
+  if (!isValidEmail(email)) {
+    setClientSide((prev) => ({
+      errors: {
+        ...prev.errors,
+        email: [ERROR_MESSAGES.INVALID_EMAIL],
+      },
+    }));
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${VITE_BASE_BACKEND_URL}/api/accounts/validate-email/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      },
+    );
+    const data = await response.json();
+
+    if (data.exists) {
+      setClientSide((prev) => ({
+        errors: {
+          ...prev.errors,
+          email: [ERROR_MESSAGES.EMAIL_IN_USE],
+        },
+      }));
+    } else {
+      setClientSide((prev) => {
+        const newErrors = { ...prev.errors };
+        delete newErrors.email;
+        return newErrors;
+      });
+    }
+  } catch (err) {
+    console.log("Email validation failed:", err);
+  }
 }
 

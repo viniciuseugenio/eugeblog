@@ -26,4 +26,5 @@ urlpatterns = [
         api.PasswordResetView.as_view(),
         name="password_reset_confirm",
     ),
+    path("validate-email/", api.ValidateEmail.as_view(), name="validate_email"),
 ]
