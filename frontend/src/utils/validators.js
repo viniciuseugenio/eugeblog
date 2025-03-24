@@ -84,3 +84,30 @@ export async function validateEmail(email, setClientSide) {
   }
 }
 
+export function validateConfirmPassword(form, value, setClientSide) {
+  const password = form.elements.password.value;
+  const confirm_password = value;
+
+  if (password !== confirm_password) {
+    setClientSide((prev) => ({
+      errors: {
+        ...prev.errors,
+        confirm_password: [ERROR_MESSAGES.CONFIRM_PASSWORD],
+      },
+    }));
+  }
+}
+
+export function validateLastName(form, value, setClientSide) {
+  const firstName = form.elements.first_name.value;
+  const lastName = value;
+
+  if (firstName === lastName) {
+    setClientSide((prev) => ({
+      errors: {
+        ...prev.errors,
+        last_name: [ERROR_MESSAGES.EQUAL_NAMES],
+      },
+    }));
+  }
+}
