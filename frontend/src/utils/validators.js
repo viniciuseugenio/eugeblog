@@ -76,7 +76,7 @@ export async function validateEmail(email, setClientSide) {
       setClientSide((prev) => {
         const newErrors = { ...prev.errors };
         delete newErrors.email;
-        return newErrors;
+        return { errors: newErrors };
       });
     }
   } catch (err) {
