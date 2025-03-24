@@ -56,59 +56,87 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="w-3/12 p-16 shadow-2xl">
-        <Link to="/" className="mb-5 flex flex-col items-center justify-center">
-          <img src={logoImg} alt="" className="mb-3 h-20" />
-          <h1 className="text-2xl font-bold">
-            Welcome to <span className="text-primary">Eugeblog</span>!
-          </h1>
-        </Link>
-        <form method="POST" onSubmit={handleLoginSubmit}>
-          {isError && (
-            <div className="mb-4 text-center">
-              <p className="text-red-500">{error.message}</p>
-            </div>
-          )}
-          <Input type="email" name="email" id="id_email" label="E-mail" />
-          <Input
-            type="password"
-            name="password"
-            id="id_password"
-            label="Password"
-          />
+    <div className="flex min-h-screen flex-col justify-center py-12">
+      <div className="mx-auto">
+        <div className="flex justify-center">
+          <div className="relative h-32 w-32">
+            <img src={logoImg} width={128} height={128} />
+          </div>
+        </div>
 
-          <div className="mb-3 flex justify-between">
-            <div>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="remember"
-                  id="id_remember"
-                  className="accent-primary mr-1"
-                />
-                Remember me
-              </label>
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-neutral-900">
+          Welcome back!
+        </h2>
+        <p className="mt-2 text-center text-sm text-neutral-600">
+          Sign in to your account to continue
+        </p>
+      </div>
+      <div className="mx-auto mt-8 w-full max-w-md">
+        <div className="rounded-md bg-white px-10 py-8 shadow">
+          <form className="" onSubmit={handleLoginSubmit}>
+            {/* {isError && ( */}
+            {/*   <div className="mb-6 text-center"> */}
+            {/*     <p className="text-red-500">{error.message}</p> */}
+            {/*   </div> */}
+            {/* )} */}
+
+            <div className="mb-6 flex flex-col gap-6">
+              <Input
+                type="email"
+                isError={isError}
+                name="email"
+                id="id_email"
+                label="E-mail"
+              />
+
+              <Input
+                type="password"
+                name="password"
+                id="id_password"
+                label="Password"
+                isError={isError}
+                error={error?.message && [error?.message]}
+              />
             </div>
-            <Link
-              className="hover:text-secondary text-link underline decoration-inherit duration-300 ease-out"
-              to="/forgot-password"
-            >
-              Forgot password?
-            </Link>
+
+            <div className="mb-6 flex justify-between">
+              <div>
+                <label className="flex items-center text-sm">
+                  <input
+                    type="checkbox"
+                    name="remember"
+                    id="id_remember"
+                    className="accent-primary mr-1"
+                  />
+                  Remember me
+                </label>
+              </div>
+              <Link
+                className="hover:text-secondary text-link text-sm decoration-inherit duration-300 ease-out"
+                to="/forgot-password"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <PrimaryButton type="submit" text="Log In" isPending={isPending} />
+          </form>
+
+          <div className="mt-6">
+            <SocialLogin page="login" />
           </div>
-          <PrimaryButton type="submit" text="Log In" isPending={isPending} />
-          <div className="mb-6 mt-3">
-            <span className="mr-1">Don&apos;t have an account?</span>
-            <Link
-              to="/signup"
-              className="hover:text-secondary text-link underline decoration-inherit duration-300 ease-out"
-            >
-              Sign up
-            </Link>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don&apos;t have an account?{" "}
+              <Link
+                to="/signup"
+                className="hover:text-primary text-link font-medium duration-300 ease-out"
+              >
+                Sign up
+              </Link>
+            </p>
           </div>
-        </form>
-        <SocialLogin page="login" />
+        </div>
       </div>
     </div>
   );
