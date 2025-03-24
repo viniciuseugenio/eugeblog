@@ -44,7 +44,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             serializer.is_valid(raise_exception=True)
         except exceptions.AuthenticationFailed:
             raise exceptions.AuthenticationFailed(
-                "The email or password you entered is incorrect. Please, check your credentials and try again.",
+                "The email or password you entered is incorrect."
             )
 
         user = serializer.user

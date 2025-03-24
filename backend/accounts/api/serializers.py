@@ -39,9 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
             errors_list["agree"].append("You must agree to the terms and conditions.")
 
         if User.objects.filter(email=email).exists():
-            errors_list["email"].append(
-                "User with this email already exists. Might be your twin!"
-            )
+            errors_list["email"].append("This e-mail is already in use.")
 
         if password != confirm_password:
             errors_list["confirm_password"].append("Passwords do not match.")
