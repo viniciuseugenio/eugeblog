@@ -2,6 +2,8 @@ import PostFormInput from "./Input";
 import Editor from "./Editor";
 import ImageInput from "./ImageInput";
 import PrimaryButton from "../PrimaryButton";
+import NeutralButton from "../NeutralButton";
+import { useNavigate } from "react-router";
 
 export default function PostFormBase({
   queryData,
@@ -12,6 +14,19 @@ export default function PostFormBase({
   title,
   description,
 }) {
+  const navigate = useNavigate();
+
+  function handleCancel() {
+    const reviewStatus = queryData?.post?.review_status;
+    if (postId) {
+      const url =
+        reviewStatus === "A" ? `/post/${postId}` : `/post/review/${postId}`;
+      return navigate(url);
+    }
+
+    return navigate("/");
+  }
+
   function handleFormSubmit(event) {
     event.preventDefault();
 
@@ -93,14 +108,7 @@ export default function PostFormBase({
           />
 
           <div className="col-span-2 flex gap-3 justify-self-end">
-            <button
-              onClick={() => window.history.back()}
-              type="reset"
-              className="grow-0 rounded-md px-10 py-1 text-red-800 ring-1 ring-inset ring-red-300 duration-300 hover:bg-red-200 hover:ring-red-300 active:bg-red-300"
-            >
-              Cancel
-            </button>
-
+            <NeutralButton onClick={handleCancel} label="Cancel" />
             <PrimaryButton
               label="Publish Post"
               disabled={isPending}

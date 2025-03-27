@@ -6,6 +6,7 @@ import { useAuthContext } from "../../store/auth-context.jsx";
 import { createComment, queryClient } from "../../utils/api/index.js";
 import PrimaryButton from "../PrimaryButton.jsx";
 import CommentInput from "./CommentInput";
+import NeutralButton from "../NeutralButton.jsx";
 
 export default function CommentForm() {
   const { id: postId } = useParams();
@@ -57,17 +58,15 @@ export default function CommentForm() {
             <div
               className={`${isPending ? "visible scale-100 opacity-100" : "invisible scale-90 opacity-0"} flex origin-center transform gap-3 self-start duration-300 ease-in-out group-focus-within/div:visible group-focus-within/div:scale-100 group-focus-within/div:opacity-100`}
             >
-              <button
+              <NeutralButton
                 type="reset"
                 onClick={() => {
                   setValue("");
                   document.activeElement.blur();
                 }}
-                className="self-start rounded-lg px-4 py-2 ring-1 ring-inset ring-gray-300 duration-300 hover:bg-neutral-200 active:scale-90 active:bg-neutral-300"
+                label="Cancel"
                 disabled={isPending}
-              >
-                Cancel
-              </button>
+              />
               <PrimaryButton
                 label="Comment"
                 type="submit"

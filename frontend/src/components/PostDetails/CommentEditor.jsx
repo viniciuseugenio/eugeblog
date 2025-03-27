@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { toast } from "sonner";
 import { queryClient } from "../../utils/api/index.js";
 import { updateComment } from "../../utils/api/posts/";
+import NeutralButton from "../NeutralButton.jsx";
 import PrimaryButton from "../PrimaryButton.jsx";
 
 export default function CommentEditor({ comment, setIsEditing }) {
@@ -84,14 +85,11 @@ export default function CommentEditor({ comment, setIsEditing }) {
       />
 
       <div className="flex items-start gap-3 self-end">
-        <button
+        <NeutralButton
           disabled={isPending}
           onClick={() => setIsEditing(false)}
-          aria-label="Cancel editing"
-          className="rounded-md px-5 py-2 font-medium ring-1 ring-inset ring-neutral-300 duration-300 hover:bg-neutral-200 active:bg-neutral-300"
-        >
-          Cancel
-        </button>
+          label="Cancel"
+        />
 
         <PrimaryButton
           onClick={handleSave}

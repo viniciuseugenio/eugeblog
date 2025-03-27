@@ -1,6 +1,7 @@
 import { TriangleAlert, X } from "lucide-react";
 import { motion } from "motion/react";
 import { createPortal } from "react-dom";
+import NeutralButton from "./NeutralButton";
 
 /**
  * Modal component that renders a dialog to confirm an important action. Portal is used to render the dialog in the root element.
@@ -97,12 +98,7 @@ export default function Modal({
           </section>
 
           <footer className="mt-6 flex justify-end gap-3 text-sm">
-            <button
-              onClick={onCancel}
-              className="cursor-pointer rounded-md px-4 py-2 font-medium ring-1 ring-stone-300 duration-300 hover:bg-stone-200 active:bg-stone-300"
-            >
-              {cancelText}
-            </button>
+            <NeutralButton onClick={onCancel} label={cancelText} />
 
             <button
               className={`${colorVariants[variant].button} cursor-pointer rounded-md px-4 py-2 font-medium text-white duration-300`}
