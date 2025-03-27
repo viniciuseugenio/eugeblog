@@ -1,54 +1,63 @@
 import { useState } from "react";
-import SelectCategory from "./SelectCategory.jsx";
+import ExcerptInput from "./ExcerptInput";
 
 export default function PostFormInput({
   label,
   required,
   name,
   id,
-  type,
+  type = "text",
   errors,
   data,
+  placeholder,
+  helpText,
 }) {
   const [inputValue, setInputValue] = useState(data || "");
+  let inputElement;
+  const inputBorders = errors
+    ? "border-red-500 ring-red-200 focus-within:border-red-600"
+    : "border-accent/50 ring-accent/40 focus-within:border-primary/50";
+  const inputStyle =
+    "rounded-md border p-2 text-sm outline-none duration-300 focus:ring-2 " +
+    inputBorders;
 
-  let inputElement = (
-    <input
-      name={name}
-      id={id}
-      value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
-      className="text-md ring-accent rounded-md p-2 outline-none ring-1 duration-300 focus:ring-2"
-      type={type ? type : "text"}
-      required={required}
-    />
-  );
-
-  if (type === "select") {
+  if (type === "text") {
     inputElement = (
-      <SelectCategory
-        key={inputValue?.id}
-        value={inputValue?.id}
+      <input
         name={name}
         id={id}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        className={inputStyle}
+        type={type ? type : "text"}
+        placeholder={placeholder}
+        required={required}
       />
     );
   }
 
+  if (type === "textarea") {
+    inputElement = <ExcerptInput value={inputValue} className={inputStyle} />;
+  }
+
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-primary text-xl" htmlFor={id}>
+      <label
+        className={`${errors ? "text-red-600" : "text-primary"} text-sm font-medium`}
+        htmlFor={id}
+      >
         {label}
-        {required && <span className="text-red-600">*</span>}
       </label>
       {inputElement}
       {errors && (
-        <ul className="text-red-600">
+        <ul className="text-sm text-red-600">
           {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ul>
       )}
+
+      <span className="text-xs text-neutral-500">{helpText}</span>
     </div>
   );
 }

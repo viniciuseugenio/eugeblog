@@ -4,6 +4,7 @@ import ImageInput from "./ImageInput";
 import PrimaryButton from "../PrimaryButton";
 import NeutralButton from "../NeutralButton";
 import { useNavigate } from "react-router";
+import SelectCategory from "./SelectCategory";
 
 export default function PostFormBase({
   queryData,
@@ -12,7 +13,6 @@ export default function PostFormBase({
   isPending,
   mutate,
   title,
-  description,
 }) {
   const navigate = useNavigate();
 
@@ -56,68 +56,65 @@ export default function PostFormBase({
   }
 
   return (
-    <div className="my-12 flex min-h-full flex-1 items-center justify-center">
-      <div className="border-light max-w-[56rem] rounded-md border p-8">
-        <h1 className="text-3xl">{title}</h1>
-        <p>{description}</p>
+    <div className="container mx-auto my-8 max-w-xl rounded-xl bg-white p-6 shadow-sm sm:mx-auto sm:max-w-4xl">
+      <h1 className="mb-6 text-2xl font-bold text-neutral-800">{title}</h1>
 
-        <hr className="my-6" />
+      <form method="POST" onSubmit={handleFormSubmit} className="space-y-6">
+        <PostFormInput
+          key={queryData?.post?.title}
+          label="Title"
+          name="title"
+          id="id_title"
+          placeholder="Enter post title"
+          data={queryData?.post?.title}
+          errors={mutationData?.errors?.title}
+          required
+        />
 
-        <form
-          method="POST"
-          onSubmit={handleFormSubmit}
-          className="grid grid-cols-2 gap-6"
-        >
-          <PostFormInput
-            key={queryData?.post?.title}
-            label="Title"
-            name="title"
-            id="id_title"
-            data={queryData?.post?.title}
-            errors={mutationData?.errors?.title}
-            required
-          />
-          <PostFormInput
-            key={queryData?.post?.excerpt}
-            label="Excerpt"
-            name="excerpt"
-            id="id_excerpt"
-            data={queryData?.post?.excerpt}
-            errors={mutationData?.errors?.excerpt}
-            required
-          />
-          <Editor
-            key={queryData?.post?.content}
-            data={queryData?.post?.content}
-            errors={mutationData?.errors?.content}
-          />
-          <PostFormInput
-            key={queryData?.post?.category}
-            label="Category"
-            name="category"
-            id="id_category"
-            type="select"
-            data={queryData?.post?.category}
-            errors={mutationData?.errors?.category}
-            required
-          />
-          <ImageInput
-            key={queryData?.post?.image}
-            data={queryData?.post?.image}
-            errors={mutationData?.errors?.image}
-          />
+        <PostFormInput
+          key={queryData?.post?.excerpt}
+          label="Excerpt"
+          name="excerpt"
+          id="id_excerpt"
+          type="textarea"
+          placeholder="Brief summary of your post"
+          data={queryData?.post?.excerpt}
+          errors={mutationData?.errors?.excerpt}
+          helpText="A short description that appears in post previews (150-200 characters recommended)"
+          required
+        />
 
-          <div className="col-span-2 flex gap-3 justify-self-end">
-            <NeutralButton onClick={handleCancel} label="Cancel" />
-            <PrimaryButton
-              label="Publish Post"
-              disabled={isPending}
-              className="self-end px-4 text-sm font-medium"
-              type="submit"
-            />
-          </div>
-        </form>
-      </div>
+        <SelectCategory
+          value={queryData?.post?.category}
+          name="category"
+          id="category"
+          errors={mutationData?.errors?.category}
+        />
+
+        <ImageInput
+          key={queryData?.post?.image}
+          data={queryData?.post?.image}
+          errors={mutationData?.errors?.image}
+          helpText="Recommended size: 1366x720px"
+        />
+
+        <Editor
+          key={queryData?.post?.content}
+          data={queryData?.post?.content}
+          errors={mutationData?.errors?.content}
+        />
+
+        <div className="ml-auto flex w-max gap-3">
+          <NeutralButton onClick={handleCancel} label="Cancel" />
+
+          <PrimaryButton
+            label="Publish Post"
+            disabled={isPending}
+            className="self-end px-4 text-sm font-medium"
+            type="submit"
+          />
+        </div>
+      </form>
     </div>
   );
 }

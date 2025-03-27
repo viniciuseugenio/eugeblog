@@ -7,4 +7,5 @@ export const ERROR_MESSAGES = {
   CONFIRM_PASSWORD: "Both passwords fields must be identical.",
   AGREE_TERMS: "You must agree with the terms and conditions.",
   EMAIL_IN_USE: "This e-mail is already in use.",
+  FORM_ERROR: "There was an error with your submission. Check all the fields.",
 };

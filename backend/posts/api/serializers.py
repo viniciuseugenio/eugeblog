@@ -49,6 +49,14 @@ class PostCreationSerializer(serializers.ModelSerializer):
     class Meta(PostBaseSerializer.Meta):
         fields = PostBaseSerializer.Meta.fields
 
+    def validate_title(self, value):
+        if not value or len(value.strip()) < 40:
+            raise serializers.ValidationError(
+                "This title is too short! It must have at least 40 characters."
+            )
+
+        return value
+
     def validate_content(self, value):
         if not value or len(value.strip()) < 1000:
             raise serializers.ValidationError(

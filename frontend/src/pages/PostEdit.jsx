@@ -7,6 +7,7 @@ import {
   loadPendingAndPublishedPost,
   queryClient,
 } from "../utils/api";
+import { ERROR_MESSAGES } from "../utils/constants";
 import { invalidatePostListQueries } from "../utils/query";
 
 export default function PostEditPage() {
@@ -28,14 +29,22 @@ export default function PostEditPage() {
     onSuccess: (successData) => {
       if (successData?.id === "no-changes") {
         toast.info(successData.detail);
-        navigate(`/post/${postId}`);
+        const url =
+          data?.post.review_status === "A"
+            ? `/post/${postId}`
+            : `/post/review/${postId}`;
+        navigate(url);
         return;
       }
 
       if (successData.errors) {
-        toast.error(
-          "There was an error with your submission. Check all the fields.",
-        );
+        toast.error(ERROR_MESSAGES.FORM_ERROR);
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }, [100]);
         return;
       }
 
@@ -51,6 +60,12 @@ export default function PostEditPage() {
     },
     onError: (error) => {
       toast.error(error.message);
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }, [100]);
     },
   });
 
@@ -61,8 +76,7 @@ export default function PostEditPage() {
       postId={postId}
       isPending={isPending}
       mutate={mutate}
-      title="Looks like you want to get your post even better!"
-      description="The data is all loaded. You just have to change it and submit so we can see your changes and approve your post again."
+      title="Edit Existing Post"
     />
   );
 }
