@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import LoggedIcon from "../../assets/eu-icon.svg";
 import NormalIcon from "../../assets/eugeblog-hori.svg";
 import { useAuthContext } from "../../store/auth-context";
-import AuthHeader from "./AuthHeader";
+import AuthLinks from "./AuthLinks";
 import LogoutButton from "./LogoutButton";
 import SearchInput from "./SearchInput";
 import LoggedHeader from "./LoggedHeader";
@@ -25,7 +25,7 @@ export default function MainHeader() {
 
       <div className="flex items-center justify-center">
         <SearchInput />
-        <>{!isLogged ? <AuthHeader /> : <LogoutButton />}</>
+        <>{!isLogged ? <AuthLinks /> : <LogoutButton />}</>
       </div>
     </header>
   );

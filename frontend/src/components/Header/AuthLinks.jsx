@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-export default function AuthHeader() {
+export default function AuthLinks() {
   return (
     <ul className="ml-3 flex gap-3">
       <li>
