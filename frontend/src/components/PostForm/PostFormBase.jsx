@@ -102,9 +102,9 @@ export default function PostFormBase({
             </button>
 
             <PrimaryButton
-              text="Send Post"
-              isPending={isPending}
-              className="px-8"
+              label="Publish Post"
+              disabled={isPending}
+              className="self-end px-4 text-sm font-medium"
               type="submit"
             />
           </div>

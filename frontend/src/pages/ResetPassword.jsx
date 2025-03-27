@@ -116,10 +116,10 @@ export default function PasswordResetPage() {
 
           <div className="flex flex-col items-center justify-center">
             <PrimaryButton
-              text="Reset password"
+              label="Reset password"
               type="submit"
               className="mb-3 font-medium"
-              isPending={isPending}
+              disabled={isPending}
             />
 
             <Link

@@ -56,11 +56,10 @@ export default function ForgotPasswordPage() {
 
           <div className="flex flex-col items-center justify-center">
             <PrimaryButton
-              isPending={isPending}
-              text="Send e-mail"
+              disabled={isPending}
+              label="Send e-mail"
               type="submit"
               className="mb-3 font-medium"
-              aria-label="Send e-mail"
             />
 
             <Link

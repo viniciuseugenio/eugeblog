@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import { toast } from "sonner";
 import { queryClient } from "../../utils/api/index.js";
 import { updateComment } from "../../utils/api/posts/";
+import PrimaryButton from "../PrimaryButton.jsx";
 
 export default function CommentEditor({ comment, setIsEditing }) {
   const { id: postId } = useParams();
@@ -92,14 +93,12 @@ export default function CommentEditor({ comment, setIsEditing }) {
           Cancel
         </button>
 
-        <button
-          disabled={isPending}
+        <PrimaryButton
           onClick={handleSave}
-          aria-label="Save changes"
-          className="bg-primary/80 hover:bg-primary/90 active:bg-primary rounded-md px-5 py-2 font-medium text-white duration-300"
-        >
-          Save
-        </button>
+          disabled={isPending}
+          className="py-2 text-sm"
+          label="Save"
+        />
       </div>
     </div>
   );

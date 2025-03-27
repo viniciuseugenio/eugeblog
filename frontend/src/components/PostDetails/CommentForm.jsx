@@ -69,10 +69,10 @@ export default function CommentForm() {
                 Cancel
               </button>
               <PrimaryButton
-                text="Comment"
+                label="Comment"
                 type="submit"
                 isPending={isPending}
-                className="self-start px-6 active:scale-90"
+                className="self-start px-6 text-sm"
               />
             </div>
           </div>

@@ -118,7 +118,7 @@ export default function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <PrimaryButton type="submit" text="Log In" isPending={isPending} />
+            <PrimaryButton type="submit" label="Log In" disabled={isPending} />
           </form>
 
           <div className="mt-6">

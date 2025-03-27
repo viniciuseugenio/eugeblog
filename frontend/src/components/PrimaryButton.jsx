@@ -1,21 +1,21 @@
 import { CircularProgress } from "@mui/material";
 
 export default function PrimaryButton({
-  text,
+  label,
   type,
   className,
-  isPending,
+  disabled,
   ...props
 }) {
   return (
     <button
       type={type}
-      disabled={isPending}
-      className={`font-inherit bg-primary active:bg-primary min-w-32 group flex w-full items-center justify-center rounded-lg py-2 text-white shadow-md shadow-neutral-400 duration-300 hover:bg-[#5b4a3e] ${className}`}
+      disabled={disabled}
+      className={`font-inherit bg-primary/80 active:bg-primary min-w-32 hover:bg-primary/90 group flex w-full items-center justify-center rounded-md py-2 font-medium text-white shadow-sm shadow-neutral-400 duration-300 ${className}`}
       {...props}
     >
       <span className="flex items-center justify-center duration-300 ease-out">
-        {isPending ? <CircularProgress size={24} color="inherit" /> : `${text}`}
+        {disabled ? <CircularProgress size={24} color="inherit" /> : `${label}`}
       </span>
     </button>
   );

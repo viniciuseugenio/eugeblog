@@ -182,9 +182,9 @@ export default function SignupPage() {
             </div>
 
             <PrimaryButton
-              text="Sign Up"
+              label="Sign Up"
               className="col-span-2"
-              isPending={isPending}
+              disabled={isPending}
             />
           </form>
 
