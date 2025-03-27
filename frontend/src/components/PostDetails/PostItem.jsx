@@ -1,4 +1,4 @@
-import { CalendarDays, CircleUserRound } from "lucide-react";
+import { CalendarDays, ChevronRight, CircleUserRound } from "lucide-react";
 import { Link } from "react-router";
 
 export default function PostItem({ post }) {
@@ -41,9 +41,10 @@ export default function PostItem({ post }) {
         </header>
         <Link
           to={`/post/${post.id}`}
-          className="hover:bg-accent/50 active:bg-accent/70 border-accent/50 mt-auto flex items-center justify-center rounded-md border px-3 py-1.5 font-medium duration-300"
+          className="hover:text-primary text-secondary mt-auto flex items-center gap-2 duration-300"
         >
           Read more
+          <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
     </article>
