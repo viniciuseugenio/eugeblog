@@ -54,7 +54,7 @@ export default function ApproveBtn() {
 
       <button
         onClick={() => setIsOpen(true)}
-        className="flex gap-1 text-sm text-green-600 hover:text-green-800"
+        className="flex gap-1 text-sm text-green-600 duration-300 hover:text-green-800"
       >
         <CircleCheckBig className="h-5 w-5 " />
         <span>Approve</span>
