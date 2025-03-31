@@ -55,7 +55,7 @@ export function useNotifyLoginSuccess() {
 }
 
 export function useLogout() {
-  const { logout: logoutContext } = useAuthContext();
+  const { setUserData } = useAuthContext();
   const navigate = useNavigate();
 
   return useMutation({
@@ -66,7 +66,7 @@ export function useLogout() {
       });
 
       queryClient.invalidateQueries(["authCheck"]);
-      logoutContext();
+      setUserData(null);
       navigate("/");
     },
     onError: (error) => {
@@ -76,7 +76,7 @@ export function useLogout() {
 }
 
 export function useAuthCheck() {
-  const { login, logout } = useAuthContext();
+  const { setUserData } = useAuthContext();
 
   const query = useQuery({
     queryFn: isUserAuthenticated,
@@ -86,13 +86,9 @@ export function useAuthCheck() {
 
   useEffect(() => {
     if (query.isSuccess && query.data) {
-      if (query.data.isAuthenticated) {
-        login(query.data.userId);
-      } else {
-        logout();
-      }
+      setUserData(query.data);
     }
-  }, [query.isSuccess, query.data, login, logout]);
+  }, [query.isSuccess, query.data, setUserData]);
 
   return query;
 }

@@ -14,7 +14,7 @@ export default function LoginPage() {
   useSocialErrorDisplay();
 
   const navigate = useNavigate();
-  const { login: loginContext } = useAuthContext();
+  const { setUserData } = useAuthContext();
   const { data: authData } = useAuthCheck();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function LoginPage() {
     mutationFn: loginUser,
     onSuccess: (data) => {
       toast.success(data.detail);
-      loginContext(data.user_id);
+      setUserData(data);
       queryClient.invalidateQueries(["auth"]);
       navigate("/");
     },

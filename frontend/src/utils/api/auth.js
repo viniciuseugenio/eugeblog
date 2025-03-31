@@ -40,26 +40,32 @@ async function verifyToken() {
 }
 
 export async function isUserAuthenticated() {
+  const getAuthData = (data) => ({
+    isAuthenticated: true,
+    id: data.user_id,
+    firstName: data.first_name,
+    lastName: data.last_name,
+  });
+
+  const getUnauthData = () => ({
+    isAuthenticated: false,
+    id: null,
+    firstName: null,
+    lastName: null,
+  });
+
   try {
     let data = await verifyToken();
-
-    if (data) {
-      return { isAuthenticated: true, userId: data.user_id };
-    }
+    if (data) return getAuthData(data);
 
     const refreshed = await refreshToken();
+    if (!refreshed) return getUnauthData();
 
-    if (refreshed) {
-      data = await verifyToken();
-      if (data) {
-        return { isAuthenticated: true, userId: data.user_id };
-      }
-    }
-
-    return { isAuthenticated: false, userId: null };
+    data = await verifyToken();
+    return data ? getAuthData(data) : getUnauthData();
   } catch (error) {
     console.error("Error checking authentication:", error);
-    return { isAuthenticated: false, userId: null };
+    return getUnauthData();
   }
 }
 

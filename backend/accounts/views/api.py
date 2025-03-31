@@ -54,7 +54,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         access_token = refresh.access_token
 
         response = Response(
-            {"detail": "You have successfully logged in!", "user_id": user.id},
+            {
+                "detail": "You have successfully logged in!",
+                "user_id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -106,8 +111,14 @@ class CustomTokenVerifyView(TokenVerifyView):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             user_id = payload.get("user_id")
+            user = User.objects.get(id=user_id)
             return Response(
-                {"detail": "Token is valid.", "user_id": user_id},
+                {
+                    "detail": "Token is valid.",
+                    "user_id": user_id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                },
                 status=status.HTTP_200_OK,
             )
 

@@ -1,33 +1,34 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
+const DEFAULT_USER = {
+  isAuthenticated: null,
+  id: null,
+  firstName: null,
+  lastName: null,
+};
+
 const AuthContext = createContext({
   isLogged: false,
-  userId: null,
-  login: () => {},
-  logout: () => {},
+  user: DEFAULT_USER,
+  setUserData: () => {},
 });
 
 export default function AuthContextProvider({ children, initialAuthState }) {
-  const [userId, setUserId] = useState(initialAuthState?.userId || null);
-  const isLogged = !!userId;
+  const [user, setUser] = useState(initialAuthState);
+  const isLogged = user?.isAuthenticated || false;
 
   useEffect(() => {
-    setUserId(initialAuthState?.userId);
+    setUser(initialAuthState);
   }, [initialAuthState]);
 
-  function login(userId) {
-    setUserId(userId);
-  }
-
-  function logout() {
-    setUserId(null);
+  function setUserData(userData) {
+    setUser(userData);
   }
 
   const authContext = {
     isLogged,
-    userId,
-    login,
-    logout,
+    user,
+    setUserData,
   };
 
   return (

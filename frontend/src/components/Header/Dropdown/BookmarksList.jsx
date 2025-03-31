@@ -3,7 +3,8 @@ import { useAuthContext } from "../../../store/auth-context";
 import DropdownList from "./DropdownList";
 
 export default function BookmarksList({ setIsOpen }) {
-  const { userId } = useAuthContext();
+  const { user } = useAuthContext();
+  const userId = user.id;
 
   return (
     <DropdownList

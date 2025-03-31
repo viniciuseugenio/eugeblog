@@ -7,13 +7,8 @@ export default function ContextWrapper() {
   useNotifyLoginSuccess();
   const { data } = useAuthCheck();
 
-  const initialState = {
-    isAuthenticated: data?.isAuthenticated,
-    userId: data?.userId,
-  };
-
   return (
-    <AuthContextProvider initialAuthState={initialState}>
+    <AuthContextProvider initialAuthState={data}>
       <Toaster position="top-right" closeButton richColors duration={10000} />
       <Outlet />
     </AuthContextProvider>

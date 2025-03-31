@@ -3,7 +3,8 @@ import { fetchUserPosts } from "../../../utils/api";
 import DropdownList from "./DropdownList";
 
 export default function UserPostsList({ setIsOpen }) {
-  const { userId } = useAuthContext();
+  const { user } = useAuthContext();
+  const userId = user.id;
 
   return (
     <DropdownList
