@@ -1,10 +1,16 @@
 import { motion } from "motion/react";
 import { useContext } from "react";
+import { useAuthContext } from "../../../store/auth-context";
+import { hasPermission } from "../../../utils/helpers.js";
 import { OptionsContext } from "./UserDropdown";
 
 export default function Dropdown({ children }) {
   const { dropdownPage, DROPDOWN_PAGES } = useContext(OptionsContext);
   const isHome = dropdownPage == DROPDOWN_PAGES.HOME;
+
+  const { user } = useAuthContext();
+  const isPostReviewer = hasPermission(user, "post_reviewer");
+  const homeMinHeight = isPostReviewer ? "191px" : "156px";
 
   return (
     <motion.div
@@ -17,7 +23,7 @@ export default function Dropdown({ children }) {
         opacity: 1,
         y: 0,
         scale: 1,
-        minHeight: isHome ? "156px" : "620px",
+        minHeight: isHome ? homeMinHeight : "620px",
         minWidth: isHome ? "208px" : "418px",
       }}
       exit="hidden"

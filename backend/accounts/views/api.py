@@ -59,6 +59,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 "user_id": user.id,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "permissions": api_helpers.get_user_groups(user),
             },
             status=status.HTTP_200_OK,
         )
@@ -118,6 +119,7 @@ class CustomTokenVerifyView(TokenVerifyView):
                     "user_id": user_id,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
+                    "permissions": api_helpers.get_user_groups(user),
                 },
                 status=status.HTTP_200_OK,
             )

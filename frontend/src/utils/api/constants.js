@@ -19,4 +19,5 @@ export const API_ENDPOINTS = {
   USER_POSTS: "/api/posts/user/",
   POST_REVIEW: "/api/posts/:postId/review/",
   POST_REVIEW_ACCEPT: "/api/posts/:postId/review/accept/",
+  POST_REVIEW_LIST: "/api/posts/review/",
 };

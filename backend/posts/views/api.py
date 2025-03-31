@@ -4,12 +4,12 @@ from django.db.models import Q
 from django.http import Http404
 from dotenv import load_dotenv
 from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import ListAPIView
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotAuthenticated, NotFound
+from rest_framework.exceptions import NotFound
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from utils.make_pagination import BaseDropdownPagination, BaseListPagination
 from utils.permissions import IsOwnerOrPostReviewer
@@ -35,6 +35,8 @@ class CategoryList(ListAPIView):
 
 class PostViewSet(ModelViewSet):
     pagination_class = BaseListPagination
+    PENDING_STATUS = "P"
+    APPROVED_STATUS = "A"
 
     def get_serializer_class(self):
         serializers = {
@@ -42,6 +44,7 @@ class PostViewSet(ModelViewSet):
             "partial_update": PostCreationSerializer,
             "list": PostListSerializer,
             "user_posts": PostListSerializer,
+            "review_posts": PostListSerializer,
         }
 
         return serializers.get(self.action, PostDetailsSerializer)
@@ -71,6 +74,7 @@ class PostViewSet(ModelViewSet):
             "accept_review": [IsOwnerOrPostReviewer()],
             "create": [IsAuthenticated()],
             "user_posts": [IsAuthenticated()],
+            "review_posts": [IsAuthenticated()],
             "manage_comment": [IsAuthenticated()],
         }
 
@@ -98,7 +102,7 @@ class PostViewSet(ModelViewSet):
                 {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer.save(author=user, review_status="P")
+        serializer.save(author=user, review_status=self.PENDING_STATUS)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
@@ -129,7 +133,7 @@ class PostViewSet(ModelViewSet):
 
         # Ensure the post is sent to review after editing
         instance.is_published = False
-        instance.review_status = "P"
+        instance.review_status = self.PENDING_STATUS
 
         serializer.save()
 
@@ -137,6 +141,25 @@ class PostViewSet(ModelViewSet):
             {"detail": "This post was successfully updated!"},
             status=status.HTTP_200_OK,
         )
+
+    @action(
+        detail=False,
+        methods=["GET"],
+        url_path="review",
+        pagination_class=BaseDropdownPagination,
+    )
+    def review_posts(self, request):
+        qs = Post.objects.filter(review_status=self.PENDING_STATUS).order_by(
+            "updated_at"
+        )
+
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["GET"])
     def review(self, request, pk=None):
@@ -163,7 +186,7 @@ class PostViewSet(ModelViewSet):
         except Post.DoesNotExist:
             raise Http404("This post does not exist or was already reviewed.")
 
-        post.review_status = "A"
+        post.review_status = self.APPROVED_STATUS
         post.is_published = True
         post.save()
 

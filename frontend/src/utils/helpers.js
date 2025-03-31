@@ -27,3 +27,9 @@ export function paginationRange(
 
   return pageRange.slice(start - 1, end);
 }
+
+export function hasPermission(user, permission) {
+  if (!user || !user.permissions) return false;
+  console.log(user);
+  return user.permissions.some((perm) => perm === permission);
+}

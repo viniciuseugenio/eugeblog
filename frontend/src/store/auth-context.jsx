@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const DEFAULT_USER = {
   isAuthenticated: null,
   id: null,
   firstName: null,
   lastName: null,
+  permissions: null,
 };
 
 const AuthContext = createContext({

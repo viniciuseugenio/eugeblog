@@ -105,3 +105,7 @@ def create_account_and_jwt_tokens(
     set_refresh_token(response, str(refresh_obj))
 
     return response
+
+
+def get_user_groups(user):
+    return list(user.groups.values_list("name", flat=True))

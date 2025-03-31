@@ -1,9 +1,10 @@
 import { AnimatePresence } from "motion/react";
 import { createContext, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../../../store/auth-context";
-import OptionsList from "./OptionsList";
 import BookmarksList from "./BookmarksList";
 import Dropdown from "./Dropdown";
+import OptionsList from "./OptionsList";
+import ReviewPostsList from "./ReviewPostsList";
 import UserPostsList from "./UserPostsList";
 
 export const OptionsContext = createContext({
@@ -19,6 +20,7 @@ export const DROPDOWN_PAGES = {
   HOME: 0,
   BOOKMARKS: 1,
   USER_POSTS: 2,
+  REVIEW_POSTS: 3,
 };
 
 export default function UserDropdown() {
@@ -32,6 +34,7 @@ export default function UserDropdown() {
     0: <OptionsList />,
     1: <BookmarksList />,
     2: <UserPostsList />,
+    3: <ReviewPostsList />,
   };
 
   useEffect(() => {

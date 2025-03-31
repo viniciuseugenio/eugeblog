@@ -31,6 +31,20 @@ export async function fetchUserPosts(page) {
   }
 }
 
+export async function fetchPendingPosts(page) {
+  try {
+    let url = API_ENDPOINTS.POST_REVIEW_LIST;
+
+    if (page > 1) {
+      url += `?page=${page}`;
+    }
+
+    return await fetchWithErrorHandling(url);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function loadPosts({ currentPage, search }) {
   try {
     let url = API_ENDPOINTS.POSTS;

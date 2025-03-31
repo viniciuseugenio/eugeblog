@@ -2,15 +2,15 @@ import { CircleUser } from "lucide-react";
 import { useState } from "react";
 import { useAuthContext } from "../../store/auth-context";
 import { formatDate } from "../../utils/helpers";
-import CommentEditor from "./CommentEditor";
 import ActionsDropdown from "./ActionsDropdown";
+import CommentEditor from "./CommentEditor";
 
 export default function Comment({ comment }) {
   const createdAt = formatDate(comment.created_at);
   const authorName = `${comment.author.first_name} ${comment.author.last_name}`;
 
   const { user } = useAuthContext();
-  const isAuthor = user.id === comment.author.id;
+  const isAuthor = user?.id === comment.author.id;
 
   const actionStates =
     "group-focus-within:visible group-focus-within:scale-100 group-focus-within:opacity-100 group-hover:visible group-hover:scale-100 group-hover:opacity-100";

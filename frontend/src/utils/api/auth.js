@@ -1,5 +1,5 @@
 import { fetchWithErrorHandling } from ".";
-import { BACKEND_URL, UNEXPECTED_ERROR, API_ENDPOINTS } from "./constants";
+import { API_ENDPOINTS, BACKEND_URL, UNEXPECTED_ERROR } from "./constants";
 
 async function refreshToken() {
   try {
@@ -45,6 +45,7 @@ export async function isUserAuthenticated() {
     id: data.user_id,
     firstName: data.first_name,
     lastName: data.last_name,
+    permissions: data.permissions,
   });
 
   const getUnauthData = () => ({
@@ -52,6 +53,7 @@ export async function isUserAuthenticated() {
     id: null,
     firstName: null,
     lastName: null,
+    permissions: null,
   });
 
   try {
