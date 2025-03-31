@@ -3,16 +3,10 @@ import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { useLogout } from "../../utils/hooks";
 import Modal from "../Modal";
-import IconSpan from "./IconSpan";
 
-export default function LogoutButton() {
+export default function LogoutButton({ Icon }) {
   const { mutate } = useLogout();
-  const [isOpen, setIsOpen] = useState();
-
-  function handleLogout(event) {
-    event.preventDefault();
-    setIsOpen(true);
-  }
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -31,14 +25,13 @@ export default function LogoutButton() {
         )}
       </AnimatePresence>
 
-      <form onSubmit={handleLogout}>
-        <button className="active:bg-accent flex items-center justify-center gap-2 rounded-lg px-4 py-1.5 text-base duration-300 hover:bg-[#e2d3ca] hover:text-black">
-          <IconSpan>
-            <LogOutIcon size={15} />
-          </IconSpan>
-          <span className="font-medium">Logout</span>
-        </button>
-      </form>
+      <li
+        onClick={() => setIsOpen(true)}
+        className="hover:bg-light/70 m-1 grid grid-cols-[1fr_auto] items-center gap-1 rounded-md px-2 py-1.5 text-red-500 duration-300 hover:text-red-600"
+      >
+        Log out
+        <Icon className="h-4 w-4" />
+      </li>
     </>
   );
 }

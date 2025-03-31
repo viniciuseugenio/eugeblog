@@ -3,9 +3,9 @@ import LoggedIcon from "../../assets/eu-icon.svg";
 import NormalIcon from "../../assets/eugeblog-hori.svg";
 import { useAuthContext } from "../../store/auth-context";
 import AuthLinks from "./AuthLinks";
-import LogoutButton from "./LogoutButton";
-import SearchInput from "./SearchInput";
+import UserDropdown from "./Dropdown/UserDropdown";
 import LoggedHeader from "./LoggedHeader";
+import SearchInput from "./SearchInput";
 
 export default function MainHeader() {
   const { isLogged } = useAuthContext();
@@ -25,7 +25,7 @@ export default function MainHeader() {
 
       <div className="flex items-center justify-center">
         <SearchInput />
-        <>{!isLogged ? <AuthLinks /> : <LogoutButton />}</>
+        <>{!isLogged ? <AuthLinks /> : <UserDropdown />}</>
       </div>
     </header>
   );

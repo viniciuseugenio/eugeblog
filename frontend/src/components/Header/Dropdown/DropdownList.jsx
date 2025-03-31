@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useContext } from "react";
+import { ArrowLeft, CircleAlert, X } from "lucide-react";
+import { motion } from "motion/react";
+import { useContext, useState } from "react";
 import Pagination from "../../Pagination/Pagination.jsx";
 import DropdownListItem from "./DropdownListItem.jsx";
-import { CircleAlert, X, Home, ArrowLeft } from "lucide-react";
-import { OptionsDropdownCtx, DROPDOWN_PAGES } from "./OptionsDropdown.jsx";
-import { motion } from "motion/react";
 import ItemSkeleton from "./ItemSkeleton.jsx";
+import { DROPDOWN_PAGES, OptionsContext } from "./UserDropdown.jsx";
 
 export default function DropdownList({
   queryKey,
@@ -17,7 +17,7 @@ export default function DropdownList({
   const [page, setPage] = useState(1);
   const isArchived = queryKey[0] === "archivedPosts";
 
-  const { setIsOpen, setSelectedContent } = useContext(OptionsDropdownCtx);
+  const { setDropdownPage, setDropdownOpen } = useContext(OptionsContext);
 
   const { data, isError, isPending, error } = useQuery({
     queryKey: [queryKey, { page }],
@@ -58,7 +58,7 @@ export default function DropdownList({
   }
 
   if (data) {
-    if (data.results.length > 0) {
+    if (data.results.length >= 1) {
       content = (
         <>
           <ul className="flex flex-col gap-y-3 p-2 pb-6">
@@ -91,23 +91,23 @@ export default function DropdownList({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -40, width: "202px", heihgt: "114px" }}
-      animate={{ opacity: 1, x: 0, width: "418px", height: "633px" }}
-      exit={{ opacity: 0, x: 40 }}
-      className="flex h-full flex-1 flex-col"
+      initial={{ opacity: 0, x: -40 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="flex flex-col absolute inset-0"
       transition={{ type: "spring", bounce: 0, duration: 0.4 }}
     >
       <div className="mb-3 flex items-center justify-between border-b p-4">
         <button
-          onClick={() => setSelectedContent(DROPDOWN_PAGES.INITIAL)}
+          onClick={() => setDropdownPage(DROPDOWN_PAGES.HOME)}
           className="flex items-center gap-1 rounded-md px-2 py-1 text-neutral-500 duration-300 hover:text-blue-600"
+          aria-label="Back to home"
         >
           <ArrowLeft size={16} />
           <span className="text-sm">Back</span>
         </button>
         <h1 className="text-lg font-semibold">{label}</h1>
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={() => setDropdownOpen(false)}
           className="text-neutral-500 duration-300 hover:text-red-600"
           aria-label="Close dropdown"
         >
