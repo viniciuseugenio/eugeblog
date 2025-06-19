@@ -39,5 +39,5 @@ requests==2.32.3
 six==1.16.0
 sqlparse==0.5.1
 tqdm==4.66.5
-urllib3==2.2.3
+urllib3==2.5.0
 webencodings==0.5.1
