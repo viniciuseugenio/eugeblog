@@ -1,4 +1,4 @@
-import { fetchWithErrorHandling } from ".";
+import { apiRequest } from ".";
 import { API_ENDPOINTS, BACKEND_URL, UNEXPECTED_ERROR } from "./constants";
 
 async function refreshToken() {
@@ -77,7 +77,7 @@ export async function loginUser(formData) {
   const remember = formData.get("remember");
 
   try {
-    return await fetchWithErrorHandling(API_ENDPOINTS.LOGIN, {
+    return await apiRequest(API_ENDPOINTS.LOGIN, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export async function loginUser(formData) {
 
 export async function signUser(formData) {
   try {
-    return await fetchWithErrorHandling(
+    return await apiRequest(
       API_ENDPOINTS["SIGNUP"],
       {
         method: "POST",
@@ -109,7 +109,7 @@ export async function signUser(formData) {
 
 export async function performLogout() {
   try {
-    return await fetchWithErrorHandling(API_ENDPOINTS.LOGOUT, {
+    return await apiRequest(API_ENDPOINTS.LOGOUT, {
       method: "POST",
     });
   } catch (error) {
@@ -119,7 +119,7 @@ export async function performLogout() {
 
 export async function requestPasswordReset(email) {
   try {
-    return await fetchWithErrorHandling(API_ENDPOINTS.PASSWORD_RESET, {
+    return await apiRequest(API_ENDPOINTS.PASSWORD_RESET, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export async function requestPasswordReset(email) {
 
 export async function resetPassword({ uid, token, formData }) {
   try {
-    return await fetchWithErrorHandling(
+    return await apiRequest(
       `${API_ENDPOINTS.PASSWORD_RESET_SET}${uid}/${token}/`,
       {
         method: "POST",

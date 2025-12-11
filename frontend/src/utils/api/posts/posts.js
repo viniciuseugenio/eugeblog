@@ -1,10 +1,10 @@
-import { fetchWithErrorHandling } from "..";
+import { apiRequest } from "..";
 import { API_ENDPOINTS, BACKEND_URL, UNEXPECTED_ERROR } from "../constants";
 import { buildApiUrl } from "../helpers"; //
 
 export async function createPost(postData) {
   try {
-    return await fetchWithErrorHandling(
+    return await apiRequest(
       API_ENDPOINTS.POSTS,
       {
         method: "POST",
@@ -25,7 +25,7 @@ export async function fetchUserPosts(page) {
       url += `?page=${page}`;
     }
 
-    return await fetchWithErrorHandling(url);
+    return await apiRequest(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -39,7 +39,7 @@ export async function fetchPendingPosts(page) {
       url += `?page=${page}`;
     }
 
-    return await fetchWithErrorHandling(url);
+    return await apiRequest(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -57,7 +57,7 @@ export async function loadPosts({ currentPage, search }) {
       url += `${currentPage > 1 ? "&" : "?"}q=${search}`;
     }
 
-    const data = await fetchWithErrorHandling(url);
+    const data = await apiRequest(url);
     return { posts: data.results, pagination: data.pagination };
   } catch (error) {
     throw new Error(error.message);
@@ -67,7 +67,7 @@ export async function loadPosts({ currentPage, search }) {
 export async function loadPost(id) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST, { postId: id });
-    return await fetchWithErrorHandling(url);
+    return await apiRequest(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -80,7 +80,7 @@ export async function editPost({ postId, formData }) {
 
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST, { postId });
-    return await fetchWithErrorHandling(
+    return await apiRequest(
       url,
       {
         method: "PATCH",

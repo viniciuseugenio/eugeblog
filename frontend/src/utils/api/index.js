@@ -15,11 +15,7 @@ import { BACKEND_URL, UNEXPECTED_ERROR } from "./constants";
  * @returns {Promise<Object>} - The response data.
  * @throws {Error} - Throws an error if the response is not OK (and not a 400 if ignore400 is true).
  */
-export async function fetchWithErrorHandling(
-  url,
-  options = {},
-  ignore400 = false,
-) {
+export async function apiRequest(url, options = {}, ignore400 = false) {
   try {
     const response = await fetch(`${BACKEND_URL}${url}`, {
       ...options,

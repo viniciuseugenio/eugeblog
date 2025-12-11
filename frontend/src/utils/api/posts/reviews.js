@@ -1,4 +1,4 @@
-import { fetchWithErrorHandling } from "..";
+import { apiRequest } from "..";
 import { API_ENDPOINTS } from "../constants";
 import { buildApiUrl } from "../helpers";
 
@@ -7,7 +7,7 @@ const { VITE_BASE_BACKEND_URL } = import.meta.env;
 export async function loadPostReview(postId) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST_REVIEW, { postId });
-    return await fetchWithErrorHandling(url);
+    return await apiRequest(url);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -16,7 +16,7 @@ export async function loadPostReview(postId) {
 export async function acceptPostReview(postId) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST_REVIEW_ACCEPT, { postId });
-    return await fetchWithErrorHandling(url, {
+    return await apiRequest(url, {
       method: "POST",
     });
   } catch (error) {
