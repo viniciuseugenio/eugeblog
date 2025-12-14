@@ -9,4 +9,5 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "accounts.middleware.SetTokenMiddleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 ]

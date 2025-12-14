@@ -2,7 +2,7 @@ import { CalendarDays, ChevronRight, CircleUserRound } from "lucide-react";
 import { Link } from "react-router";
 
 export default function PostItem({ post }) {
-  const date = new Date(post.created_at);
+  const date = new Date(post.createdAt);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",

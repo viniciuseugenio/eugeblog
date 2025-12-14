@@ -33,7 +33,7 @@ export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
   });
 
   const post = data?.post;
-  const createdAt = post && formatDate(post?.created_at);
+  const createdAt = post && formatDate(post?.createdAt);
   const isReviewer = data?.is_reviewer;
   const readingTime = post?.content ? estimateReadingTime(post?.content) : 0;
 

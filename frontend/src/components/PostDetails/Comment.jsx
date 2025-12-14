@@ -6,8 +6,8 @@ import ActionsDropdown from "./ActionsDropdown";
 import CommentEditor from "./CommentEditor";
 
 export default function Comment({ comment }) {
-  const createdAt = formatDate(comment.created_at);
-  const authorName = `${comment.author.first_name} ${comment.author.last_name}`;
+  const createdAt = formatDate(comment.createdAt);
+  const authorName = `${comment.author.firstName} ${comment.author.lastName}`;
 
   const { user } = useAuthContext();
   const isAuthor = user?.id === comment.author.id;
