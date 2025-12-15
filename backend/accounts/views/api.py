@@ -25,9 +25,9 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from utils.throttling import EmailBasedThrottle
 
 from utils import api_helpers
-from utils.throttling import EmailBasedThrottle
 
 from ..api.serializers import UserSerializer
 
@@ -44,7 +44,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             serializer.is_valid(raise_exception=True)
         except exceptions.AuthenticationFailed:
             raise exceptions.AuthenticationFailed(
-                "The email or password you entered is incorrect."
+                "The provided credentials were incorrect"
             )
 
         user = serializer.user
