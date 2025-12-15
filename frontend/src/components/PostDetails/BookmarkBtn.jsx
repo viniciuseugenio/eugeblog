@@ -1,15 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import Tooltip from "../Tooltip";
 import { useAuthContext } from "../../store/auth-context";
 
 export default function BookmarkBtn({
   postId,
   mutationFn,
-  successToast,
-  setIsBookmarked,
-  authMessage,
+  onSuccess,
   label,
   icon,
   color = "text-primary",
@@ -19,10 +16,7 @@ export default function BookmarkBtn({
 
   const { mutate } = useMutation({
     mutationFn: mutationFn,
-    onSuccess: () => {
-      successToast();
-      setIsBookmarked();
-    },
+    onSuccess: onSuccess,
     onError: (error) => {
       toast.error(error.message, { id: "bookmark-error" });
     },
