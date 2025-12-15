@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useAuthContext } from "../store/auth-context";
 import { toast } from "sonner";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { performLogout, isUserAuthenticated, queryClient } from "./api";
 
 export function useSocialErrorDisplay() {
   const location = useLocation();
@@ -52,45 +49,6 @@ export function useNotifyLoginSuccess() {
       navigate(location.pathname, { replace: true });
     }
   }, [location, navigate]);
-}
-
-export function useLogout() {
-  const { setUserData } = useAuthContext();
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: performLogout,
-    onSuccess: () => {
-      toast.info("You have been logged out.", {
-        id: "logout-message",
-      });
-
-      queryClient.invalidateQueries(["authCheck"]);
-      setUserData(null);
-      navigate("/");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-}
-
-export function useAuthCheck() {
-  const { setUserData } = useAuthContext();
-
-  const query = useQuery({
-    queryFn: isUserAuthenticated,
-    queryKey: ["authCheck"],
-    staleTime: 5 * 60 * 1000,
-  });
-
-  useEffect(() => {
-    if (query.isSuccess && query.data) {
-      setUserData(query.data);
-    }
-  }, [query.isSuccess, query.data, setUserData]);
-
-  return query;
 }
 
 /**

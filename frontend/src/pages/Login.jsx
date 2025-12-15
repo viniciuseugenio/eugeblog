@@ -1,60 +1,30 @@
-import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
 import { useAuthContext } from "../store/auth-context";
-import { useAuthCheck, useSocialErrorDisplay } from "../utils/hooks";
-import { loginUser, queryClient } from "../utils/api";
+import { useSocialErrorDisplay } from "../utils/hooks";
 
 export default function LoginPage() {
   useSocialErrorDisplay();
 
   const navigate = useNavigate();
-  const { setUserData } = useAuthContext();
-  const { data: authData } = useAuthCheck();
+  const { login, isAuthenticated } = useAuthContext();
+  const { isPending, isError, error } = login;
 
   useEffect(() => {
-    if (authData?.isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/");
     }
-  }, [authData?.isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate]);
 
-  const {
-    mutate: login,
-    isError,
-    error,
-    isPending,
-  } = useMutation({
-    mutationFn: loginUser,
-    onSuccess: (data) => {
-      toast.success(data.detail);
-      setUserData(data);
-      queryClient.invalidateQueries(["auth"]);
-      navigate("/");
-    },
-  });
+  const onSubmit = (data) => {
+    login.mutate(data);
+  };
 
-  function handleLoginSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-
-    const email = data.get("email");
-    const password = data.get("password");
-
-    if (!email || !password) {
-      toast.error("Please, fill in the e-mail and the password fields.", {
-        id: "login-error",
-      });
-      return;
-    }
-
-    login(data);
-  }
   const { register, handleSubmit } = useForm();
 
   return (

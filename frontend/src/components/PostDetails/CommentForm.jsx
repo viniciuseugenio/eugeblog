@@ -10,7 +10,7 @@ import NeutralButton from "../NeutralButton.jsx";
 
 export default function CommentForm() {
   const { id: postId } = useParams();
-  const { isLogged } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
   const [value, setValue] = useState();
 
   const { mutate, isPending } = useMutation({
@@ -29,7 +29,7 @@ export default function CommentForm() {
     onError: (error) => {
       toast.error(
         error.message ||
-          "An unexpected error occurred while creating your comment. Try again later.",
+        "An unexpected error occurred while creating your comment. Try again later.",
       );
     },
   });
@@ -48,7 +48,7 @@ export default function CommentForm() {
     mutate({ content, postId });
   }
 
-  if (isLogged) {
+  if (isAuthenticated) {
     return (
       <form onSubmit={handleCommentCreation} method="post">
         <div className="group/div">

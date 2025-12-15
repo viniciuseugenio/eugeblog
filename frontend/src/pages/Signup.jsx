@@ -6,8 +6,8 @@ import logoImg from "../assets/eu-icon.svg";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
 import SocialLogin from "../components/SocialLogin";
+import { useAuthContext } from "../store/auth-context";
 import { signUser } from "../utils/api";
-import { useAuthCheck } from "../utils/hooks";
 import {
   validateConfirmPassword,
   validateEmail,
@@ -20,13 +20,13 @@ export default function SignupPage() {
   const formRef = useRef(null);
   const [clientSide, setClientSide] = useState({ errors: {} });
 
-  const { data: authData } = useAuthCheck();
+  const { isAuthenticated } = useAuthContext();
 
   useEffect(() => {
-    if (authData && authData?.isAuthenticated) {
+    if (isAuthenticated) {
       navigate("/");
     }
-  }, [authData, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const {
     mutate,

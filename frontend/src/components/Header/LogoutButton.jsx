@@ -1,11 +1,11 @@
 import { LogOutIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
-import { useLogout } from "../../utils/hooks";
 import Modal from "../Modal";
+import { useAuthContext } from "../../store/auth-context";
 
 export default function LogoutButton({ Icon }) {
-  const { mutate } = useLogout();
+  const { logout } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ export default function LogoutButton({ Icon }) {
       <AnimatePresence>
         {isOpen && (
           <Modal
-            onConfirm={mutate}
+            onConfirm={logout.mutate}
             onCancel={() => setIsOpen(false)}
             title="Logout Confirmation"
             description="Are you sure you want to log out of your account?"

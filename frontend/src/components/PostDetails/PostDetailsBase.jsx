@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { toast } from "sonner";
 import { formatDate } from "../../utils/helpers";
-import { useAuthCheck } from "../../utils/hooks.js";
 import PostActions from "./PostActions";
 import PostMeta from "./PostMeta";
 import PostDetailsSkeleton from "./PostDetailsSkeleton.jsx";
@@ -22,9 +21,6 @@ function estimateReadingTime(content) {
 }
 
 export default function PostDetailsBase({ queryKey, fetchFn, isReview }) {
-  // Check if user is authenticated
-  useAuthCheck();
-
   const params = useParams();
 
   const { data, isLoading, isError, error } = useQuery({

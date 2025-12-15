@@ -1,19 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
+import { Key } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import Input from "../components/Input";
 import PrimaryButton from "../components/PrimaryButton";
-import { useAuthCheck } from "../utils/hooks";
+import { useAuthContext } from "../store/auth-context";
 import { resetPassword } from "../utils/api";
-import { Key } from "lucide-react";
 
 export default function PasswordResetPage() {
   const navigate = useNavigate();
 
-  const { data: authData } = useAuthCheck();
+  const { isAuthenticated } = useAuthContext();
 
-  if (authData?.isAuthenticated) {
+  if (isAuthenticated) {
     navigate("/");
   }
 

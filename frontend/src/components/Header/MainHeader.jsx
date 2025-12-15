@@ -8,10 +8,10 @@ import LoggedHeader from "./LoggedHeader";
 import SearchInput from "./SearchInput";
 
 export default function MainHeader() {
-  const { isLogged } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
 
-  const logoSrc = isLogged ? LoggedIcon : NormalIcon;
-  const iconClasses = isLogged ? "w-14" : "w-32 py-2";
+  const logoSrc = isAuthenticated ? LoggedIcon : NormalIcon;
+  const iconClasses = isAuthenticated ? "w-14" : "w-32 py-2";
 
   return (
     <header className="bg-light flex items-center justify-between px-14 py-2">
@@ -20,12 +20,12 @@ export default function MainHeader() {
           <img src={logoSrc} alt="Site logo" className={iconClasses} />
         </Link>
 
-        {isLogged && <LoggedHeader />}
+        {isAuthenticated && <LoggedHeader />}
       </div>
 
       <div className="flex items-center justify-center">
         <SearchInput />
-        <>{!isLogged ? <AuthLinks /> : <UserDropdown />}</>
+        <>{!isAuthenticated ? <AuthLinks /> : <UserDropdown />}</>
       </div>
     </header>
   );

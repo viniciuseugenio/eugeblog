@@ -3,22 +3,22 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import PostFormBase from "../components/PostForm/PostFormBase";
-import { useAuthCheck } from "../utils/hooks";
 import { createPost } from "../utils/api";
 import { ERROR_MESSAGES } from "../utils/constants";
+import { useAuthContext } from "../store/auth-context";
 
 export default function PostCreationPage() {
   const navigate = useNavigate();
-  const { data: authData } = useAuthCheck();
+  const { isAuthenticated, isLoading } = useAuthContext();
 
   useEffect(() => {
-    if (authData && !authData.isAuthenticated) {
+    if (!isAuthenticated && !isLoading) {
       toast.error("You must be logged in to create a post.", {
         id: "login-required",
       });
       navigate("/login?next=/post/create");
     }
-  }, [authData, navigate]);
+  }, [isAuthenticated, isLoading, navigate]);
 
   const { mutate, data, isPending, isError } = useMutation({
     mutationFn: createPost,

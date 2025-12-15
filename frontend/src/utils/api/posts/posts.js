@@ -15,7 +15,7 @@ export async function createPost(postData) {
   }
 }
 
-export async function fetchUserPosts(page) {
+export async function getCurrentUserPosts(page) {
   try {
     let url = API_ENDPOINTS.USER_POSTS;
 
@@ -29,7 +29,7 @@ export async function fetchUserPosts(page) {
   }
 }
 
-export async function fetchPendingPosts(page) {
+export async function getPendingPosts(page) {
   try {
     let url = API_ENDPOINTS.POST_REVIEW_LIST;
 
@@ -43,7 +43,7 @@ export async function fetchPendingPosts(page) {
   }
 }
 
-export async function loadPosts({ currentPage, search }) {
+export async function getPosts({ currentPage, search }) {
   try {
     let url = API_ENDPOINTS.POSTS;
 
@@ -62,7 +62,7 @@ export async function loadPosts({ currentPage, search }) {
   }
 }
 
-export async function loadPost(id) {
+export async function getPost(id) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST, { postId: id });
     return await apiRequest(url);
@@ -71,21 +71,18 @@ export async function loadPost(id) {
   }
 }
 
-export async function editPost({ postId, formData }) {
+export async function updatePost({ postId, formData }) {
   if (Array.from(formData.entries()).length === 0) {
     return { detail: "No changes were made.", id: "no-changes" };
   }
 
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST, { postId });
-    return await apiRequest(
-      url,
-      {
-        method: "PATCH",
-        body: formData,
-      },
-      true, // Do not throw 400 errors;
-    );
+    return await apiRequest(url, {
+      method: "PATCH",
+      body: formData,
+      returnBadRequest: true,
+    });
   } catch (error) {
     throw new Error(error.message);
   }

@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { useAuthCheck } from "../../utils/hooks";
 import Tooltip from "../Tooltip";
+import { useAuthContext } from "../../store/auth-context";
 
 export default function BookmarkBtn({
   postId,
@@ -14,7 +14,7 @@ export default function BookmarkBtn({
   icon,
   color = "text-primary",
 }) {
-  const { data: authData } = useAuthCheck();
+  const { isAuthenticated } = useAuthContext();
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
@@ -29,8 +29,8 @@ export default function BookmarkBtn({
   });
 
   function handleClick() {
-    if (!authData.isAuthenticated) {
-      toast.error(authMessage);
+    if (!isAuthenticated) {
+      toast.error("You have to be authenticated to perform this action!");
       return navigate(`/login?next=/post/${postId}`);
     }
 
