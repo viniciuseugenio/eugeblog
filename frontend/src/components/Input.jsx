@@ -11,6 +11,7 @@ export default function Input({
   isError,
   fieldValidation,
   setClientSide,
+  register,
   ...props
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -67,9 +68,8 @@ export default function Input({
     <div className={className || ""}>
       <div className="relative">
         <input
+          {...register(name)}
           type={isPassword ? (isPasswordVisible ? "text" : "password") : type}
-          name={name}
-          id={id}
           placeholder=" "
           aria-invalid={isError || !!error}
           className={`${borderColor} ${textColor} peer box-border w-full rounded-md border py-2 pl-4 text-base outline-none duration-300 focus:ring-2`}

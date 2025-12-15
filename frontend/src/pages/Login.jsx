@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import logoImg from "../assets/eu-icon.svg";
@@ -54,6 +55,7 @@ export default function LoginPage() {
 
     login(data);
   }
+  const { register, handleSubmit } = useForm();
 
   return (
     <div className="flex min-h-screen flex-col justify-center py-12">
@@ -73,7 +75,7 @@ export default function LoginPage() {
       </div>
       <div className="mx-auto mt-8 w-full max-w-md">
         <div className="rounded-md bg-white px-10 py-8 shadow">
-          <form className="" onSubmit={handleLoginSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {/* {isError && ( */}
             {/*   <div className="mb-6 text-center"> */}
             {/*     <p className="text-red-500">{error.message}</p> */}
@@ -82,6 +84,7 @@ export default function LoginPage() {
 
             <div className="mb-6 flex flex-col gap-6">
               <Input
+                register={register}
                 type="email"
                 isError={isError}
                 name="email"
@@ -90,6 +93,7 @@ export default function LoginPage() {
               />
 
               <Input
+                register={register}
                 type="password"
                 name="password"
                 id="id_password"
@@ -103,8 +107,8 @@ export default function LoginPage() {
               <div>
                 <label className="flex items-center text-sm">
                   <input
+                    {...register("rememberMe")}
                     type="checkbox"
-                    name="remember"
                     id="id_remember"
                     className="accent-primary mr-1"
                   />
