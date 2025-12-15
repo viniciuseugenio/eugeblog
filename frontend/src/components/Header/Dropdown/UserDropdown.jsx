@@ -6,6 +6,7 @@ import Dropdown from "./Dropdown";
 import OptionsList from "./OptionsList";
 import ReviewPostsList from "./ReviewPostsList";
 import UserPostsList from "./UserPostsList";
+import { useClickOutside } from "../../../hooks/useClickOutside";
 
 export const OptionsContext = createContext({
   dropdownPage: 0,
@@ -37,20 +38,7 @@ export default function UserDropdown() {
     3: <ReviewPostsList />,
   };
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        dropdownRef &&
-        !dropdownRef.current.contains(event.target) &&
-        !document.getElementById("modal").contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  });
+  useClickOutside(dropdownRef, () => setIsOpen(false), isOpen);
 
   return (
     <div className="relative" ref={dropdownRef}>
