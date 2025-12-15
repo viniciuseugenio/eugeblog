@@ -1,11 +1,11 @@
 import { Outlet, ScrollRestoration } from "react-router";
-import MainHeader from "../components/Header/MainHeader";
+import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer";
 
 export default function RootPage() {
   return (
     <>
-      <MainHeader />
+      <Navbar />
       <Outlet />
       <Footer />
       <ScrollRestoration />

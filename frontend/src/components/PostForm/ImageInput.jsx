@@ -1,6 +1,5 @@
-import IconSpan from "../Header/IconSpan";
-import { useState, useRef } from "react";
 import { ImagePlus, Info, X } from "lucide-react";
+import { useRef, useState } from "react";
 
 export default function ImageInput({ data, errors }) {
   const [image, setImage] = useState(data);
