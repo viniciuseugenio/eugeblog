@@ -2,12 +2,12 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.permissions import BasePermission
-from rest_framework.exceptions import PermissionDenied
-from rest_framework_simplejwt.tokens import RefreshToken
-
 from posts.models import Post
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import BasePermission
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -25,33 +25,28 @@ class JWTCustomAuthentication(BaseAuthentication):
 
         return (AnonymousUser(), None)
 
-    def _authenticate_with_access_token(self, access_token, refresh_token):
+    def _authenticate_with_access_token(self, access_token):
         try:
             payload = jwt.decode(
                 access_token, settings.SECRET_KEY, algorithms=["HS256"]
             )
             user = User.objects.get(id=payload.get("user_id"))
-            return (user, {"access": access_token, "refresh": refresh_token})
+            return (user, None)
 
-        except jwt.ExpiredSignatureError:
-            return self._authenticate_with_refresh_token(refresh_token)
-
-        except jwt.InvalidTokenError:
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             return (AnonymousUser(), None)
 
     def _authenticate_with_refresh_token(self, refresh_token):
         try:
             refresh = RefreshToken(refresh_token)
-            access_token = str(refresh.access_token)
-
             user_id = refresh.payload.get("user_id")
             if not user_id:
                 return (AnonymousUser(), None)
 
             user = User.objects.get(id=user_id)
-            return (user, {"access": access_token, "refresh": str(refresh)})
+            return (user, None)
 
-        except jwt.InvalidTokenError:
+        except (jwt.InvalidTokenError, TokenError):
             return (AnonymousUser(), None)
 
 
