@@ -56,10 +56,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         response = Response(
             {
                 "detail": "You have successfully logged in!",
-                "user_id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "permissions": api_helpers.get_user_groups(user),
+                "user": {
+                    "id": user.id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "permissions": api_helpers.get_user_groups(user),
+                },
             },
             status=status.HTTP_200_OK,
         )
@@ -115,11 +117,13 @@ class CustomTokenVerifyView(TokenVerifyView):
             user = User.objects.get(id=user_id)
             return Response(
                 {
-                    "detail": "Token is valid.",
-                    "user_id": user_id,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "permissions": api_helpers.get_user_groups(user),
+                    "authenticated": True,
+                    "user": {
+                        "id": user_id,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "permissions": api_helpers.get_user_groups(user),
+                    },
                 },
                 status=status.HTTP_200_OK,
             )
