@@ -6,8 +6,7 @@ app_name = "bookmarks"
 
 
 urlpatterns = [
-    path("create/<int:pk>", views.CreateBookmark.as_view(), name="create_view"),
-    path("list/", views.DisplayBookmarks.as_view(), name="list_view"),
+    path("/", views.BookmarksListCreate.as_view(), name="list_create"),
     path(
         "delete/<int:post_pk>/<str:origin>",
         views.DeleteBookmark.as_view(),
