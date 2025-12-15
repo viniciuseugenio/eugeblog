@@ -1,8 +1,7 @@
-import { CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert } from "lucide-react";
 import { useParams } from "react-router";
-import { loadComments } from "../../utils/api/index.js";
+import { getComments } from "../../utils/api/index.js";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm.jsx";
 import CommentsCount from "./CommentsCount.jsx";
@@ -12,7 +11,7 @@ export default function Comments() {
   const { id: postId } = useParams();
 
   const { data, isPending, isError } = useQuery({
-    queryFn: () => loadComments(postId),
+    queryFn: () => getComments(postId),
     queryKey: ["comments", +postId],
   });
 
