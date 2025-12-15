@@ -1,3 +1,4 @@
+from bookmarks.models import Bookmarks
 from django.contrib.auth import get_user_model
 from posts.models import Post
 from rest_framework import generics, status
@@ -5,8 +6,6 @@ from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from utils.make_pagination import BaseDropdownPagination
-
-from bookmarks.models import Bookmarks
 
 from ..api.serializers import BookmarksSerializer
 
@@ -29,7 +28,7 @@ class BookmarksListCreate(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        post_id = request.data.get("postId")
+        post_id = request.data.get("post_id")
         post_obj = Post.objects.get(id=post_id)
 
         if post_obj.is_published is False:

@@ -48,7 +48,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
 
         user = serializer.user
-        remember = request.data.get("remember", None)
+        remember_me = request.data.get("remember_me", None)
 
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
@@ -64,9 +64,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             status=status.HTTP_200_OK,
         )
 
-        api_helpers.set_access_token(response, access_token, remember)
+        api_helpers.set_access_token(response, access_token, remember_me)
 
-        if remember:
+        if remember_me:
             api_helpers.set_refresh_token(response, str(refresh))
 
         return response
