@@ -1,4 +1,4 @@
-import { fetchBookmarks } from "../../../utils/api";
+import { getBookmarks } from "../../../utils/api";
 import { useAuthContext } from "../../../store/auth-context";
 import DropdownList from "./DropdownList";
 
@@ -10,7 +10,7 @@ export default function BookmarksList({ setIsOpen }) {
     <DropdownList
       label="Bookmarks"
       queryKey={["bookmarks", { userId }]}
-      queryFn={fetchBookmarks}
+      queryFn={getBookmarks}
       emptyMessage="You have no bookmarks yet."
       setIsOpen={setIsOpen}
     />

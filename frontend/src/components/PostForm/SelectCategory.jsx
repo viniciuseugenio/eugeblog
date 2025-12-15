@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { fetchCategories } from "../../utils/api";
+import { getCategories } from "../../utils/api";
 import { ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function SelectCategory({ value, name, id, errors }) {
   const { data, isPending } = useQuery({
     queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryFn: getCategories,
   });
   const [selectedCategory, setSelectedCategory] = useState(value || "");
   const [isOpen, setIsOpen] = useState(false);

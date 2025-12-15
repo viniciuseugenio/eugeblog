@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import PostFormBase from "../components/PostForm/PostFormBase";
 import {
-  editPost,
-  loadPendingAndPublishedPost,
+  updatePost,
+  getPendingAndPublishedPost,
   queryClient,
 } from "../utils/api";
 import { ERROR_MESSAGES } from "../utils/constants";
@@ -17,7 +17,7 @@ export default function PostEditPage() {
 
   const { data } = useQuery({
     queryKey: ["post", postId],
-    queryFn: () => loadPendingAndPublishedPost(postId),
+    queryFn: () => getPendingAndPublishedPost(postId),
   });
 
   const {
@@ -25,7 +25,7 @@ export default function PostEditPage() {
     isPending,
     data: mutationData,
   } = useMutation({
-    mutationFn: editPost,
+    mutationFn: updatePost,
     onSuccess: (successData) => {
       if (successData?.id === "no-changes") {
         toast.info(successData.detail);

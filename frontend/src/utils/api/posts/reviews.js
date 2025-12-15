@@ -4,7 +4,7 @@ import { buildApiUrl } from "../helpers";
 
 const { VITE_BASE_BACKEND_URL } = import.meta.env;
 
-export async function loadPostReview(postId) {
+export async function getPostReview(postId) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.POST_REVIEW, { postId });
     return await apiRequest(url);
@@ -24,7 +24,7 @@ export async function acceptPostReview(postId) {
   }
 }
 
-export async function loadPendingAndPublishedPost(postId) {
+export async function getPendingAndPublishedPost(postId) {
   try {
     const publishedUrl = buildApiUrl(API_ENDPOINTS.POST, { postId });
     const publishedPosts = await fetch(

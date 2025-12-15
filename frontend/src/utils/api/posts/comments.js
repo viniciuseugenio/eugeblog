@@ -2,7 +2,7 @@ import { apiRequest } from "..";
 import { buildApiUrl } from "../helpers";
 import { API_ENDPOINTS } from "../constants";
 
-export async function loadComments(postId) {
+export async function getComments(postId) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.COMMENTS, { postId });
     return await apiRequest(url);

@@ -1,5 +1,5 @@
 import { useAuthContext } from "../../../store/auth-context";
-import { fetchUserPosts } from "../../../utils/api";
+import { getCurrentUserPosts } from "../../../utils/api";
 import DropdownList from "./DropdownList";
 
 export default function UserPostsList({ setIsOpen }) {
@@ -10,7 +10,7 @@ export default function UserPostsList({ setIsOpen }) {
     <DropdownList
       label="Your posts"
       queryKey={["archivedPosts", { userId }]}
-      queryFn={fetchUserPosts}
+      queryFn={getCurrentUserPosts}
       emptyMessage="You have no posts yet."
       setIsOpen={setIsOpen}
     />
