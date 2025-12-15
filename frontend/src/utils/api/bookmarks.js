@@ -20,9 +20,7 @@ export async function addBookmark(postId) {
     return await apiRequest(API_ENDPOINTS.BOOKMARKS, {
       method: "POST",
       body: JSON.stringify({ postId }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      requiresAuth: true,
     });
   } catch (error) {
     throw new Error(error.message);
@@ -33,6 +31,7 @@ export async function removeBookmark(postId) {
   try {
     return await apiRequest(`${API_ENDPOINTS.BOOKMARKS}${postId}/`, {
       method: "DELETE",
+      requiresAuth: true,
     });
   } catch (error) {
     throw new Error(error.message);

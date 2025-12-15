@@ -14,17 +14,11 @@ export async function loadComments(postId) {
 export async function createComment({ content, postId }) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.COMMENTS, { postId });
-    return await apiRequest(
-      url,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content }),
-      },
-      true,
-    );
+    return await apiRequest(url, {
+      method: "POST",
+      body: JSON.stringify({ content }),
+      returnBadRequest: true,
+    });
   } catch (error) {
     throw new Error(error.message);
   }
@@ -33,17 +27,11 @@ export async function createComment({ content, postId }) {
 export async function updateComment({ content, commentId }) {
   try {
     const url = buildApiUrl(API_ENDPOINTS.COMMENT, { commentId });
-    return await apiRequest(
-      url,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content }),
-      },
-      true,
-    );
+    return await apiRequest(url, {
+      method: "PATCH",
+      body: JSON.stringify({ content }),
+      returnBadRequest: true,
+    });
   } catch (error) {
     throw new Error(error.message);
   }

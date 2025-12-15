@@ -4,14 +4,12 @@ import { buildApiUrl } from "../helpers"; //
 
 export async function createPost(postData) {
   try {
-    return await apiRequest(
-      API_ENDPOINTS.POSTS,
-      {
-        method: "POST",
-        body: postData,
-      },
-      true,
-    );
+    return await apiRequest(API_ENDPOINTS.POSTS, {
+      method: "POST",
+      body: postData,
+      requiresAuth: true,
+      returnBadRequest: true,
+    });
   } catch (error) {
     throw new Error(error.message);
   }
