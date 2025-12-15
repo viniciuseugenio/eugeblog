@@ -87,11 +87,17 @@ class CustomTokenRefreshView(TokenRefreshView):
         try:
             refresh = RefreshToken(refresh_token)
             new_access_token = str(refresh.access_token)
+            new_refresh_token = (
+                str(refresh)
+                if settings.SIMPLE_JWT.get("ROTATE_REFRESH_TOKENS")
+                else refresh_token
+            )
 
             response = Response(
                 {"detail": "Access token refreshed!"}, status=status.HTTP_200_OK
             )
             api_helpers.set_access_token(response, new_access_token, max_age=True)
+            api_helpers.set_refresh_token(response, new_refresh_token)
 
             return response
 
@@ -195,7 +201,6 @@ class GoogleLogin(APIView):
         redirect_uri = f"{domain}{api_uri}"
 
         try:
-
             tokens = api_helpers.google_get_tokens(code=code, redirect_uri=redirect_uri)
             user_data = api_helpers.google_get_user_info(
                 access_token=tokens["access_token"]
