@@ -18,7 +18,7 @@ class JWTCustomAuthentication(BaseAuthentication):
         refresh_token = request.COOKIES.get("refresh_token")
 
         if access_token:
-            return self._authenticate_with_access_token(access_token, refresh_token)
+            return self._authenticate_with_access_token(access_token)
 
         if refresh_token:
             return self._authenticate_with_refresh_token(refresh_token)
