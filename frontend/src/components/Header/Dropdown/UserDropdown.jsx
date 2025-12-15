@@ -24,6 +24,13 @@ export const DROPDOWN_PAGES = {
   REVIEW_POSTS: 3,
 };
 
+const DROPDOWN_COMPONENTS = {
+  [DROPDOWN_PAGES.HOME]: OptionsList,
+  [DROPDOWN_PAGES.BOOKMARKS]: BookmarksList,
+  [DROPDOWN_PAGES.USER_POSTS]: UserPostsList,
+  [DROPDOWN_PAGES.REVIEW_POSTS]: ReviewPostsList,
+};
+
 export default function UserDropdown() {
   const { user } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,13 +38,7 @@ export default function UserDropdown() {
   const dropdownRef = useRef();
   const userInitials = user.firstName[0] + user.lastName[0];
 
-  const dropdownContentList = {
-    0: <OptionsList />,
-    1: <BookmarksList />,
-    2: <UserPostsList />,
-    3: <ReviewPostsList />,
-  };
-
+  const CurrentComponent = DROPDOWN_COMPONENTS[dropdownPage];
   useClickOutside(dropdownRef, () => setIsOpen(false), isOpen);
 
   return (
@@ -60,7 +61,11 @@ export default function UserDropdown() {
         }}
       >
         <AnimatePresence>
-          {isOpen && <Dropdown>{dropdownContentList[dropdownPage]}</Dropdown>}
+          {isOpen && (
+            <Dropdown>
+              <CurrentComponent />
+            </Dropdown>
+          )}
         </AnimatePresence>
       </OptionsContext.Provider>
     </div>
