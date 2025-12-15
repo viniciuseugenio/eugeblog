@@ -81,7 +81,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         if not refresh_token:
             return Response(
                 {"detail": "No refresh token found in the request."},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         try:
@@ -97,7 +97,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
         except Exception:
             return Response(
-                {"detail": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED
             )
 
 
