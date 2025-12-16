@@ -9,7 +9,7 @@ coverage==7.6.4
 cryptography==43.0.1
 cssbeautifier==1.15.1
 Django==5.1.1
-django-allauth==65.0.1
+django-allauth==65.13.0
 django-cors-headers==4.6.0
 django-resized==1.0.2
 django-summernote==0.8.20.0
